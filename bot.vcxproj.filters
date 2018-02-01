@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{374f8878-96b4-4c6c-83b8-f98dbb2b2316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Planner">
+      <UniqueIdentifier>{1ce18324-d7cb-4f8f-982e-e5be6cc8cb1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Templates">
+      <UniqueIdentifier>{12cd618e-806d-4316-9792-11d9caa33cfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Planner\Actions">
+      <UniqueIdentifier>{98fefa57-f566-482d-b418-9afed71b778b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Planner\Conditions">
+      <UniqueIdentifier>{ac6e100c-03a9-4234-9f1e-0b22e33f0a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Planner\Results">
+      <UniqueIdentifier>{c590fae8-578c-4280-99a9-1e1641597e06}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\Resource.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ItemDependencies.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Launcher.cpp" />
+    <ClCompile Include="BotWithAPlan.cpp" />
+    <ClCompile Include="Planner\Planner.cpp">
+      <Filter>Planner</Filter>
+    </ClCompile>
+    <ClCompile Include="Planner\Conditions\BaseCondition.cpp">
+      <Filter>Planner\Conditions</Filter>
+    </ClCompile>
+    <ClCompile Include="Planner\Actions\BaseAction.cpp">
+      <Filter>Planner\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Planner\Results\BaseResult.cpp">
+      <Filter>Planner\Results</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\ItemDependencies.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Resource.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\GameState.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="BotWithAPlan.h" />
+    <ClInclude Include="Planner\Planner.h">
+      <Filter>Planner</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Conditions\BaseCondition.h">
+      <Filter>Planner\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Conditions\HaveMineralsCondition.h">
+      <Filter>Planner\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h">
+      <Filter>Planner\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\BaseAction.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\BuildMoreWorkersAction.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\BuildResource.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\BuildWorkerAction.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\GatherMineralsAction.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\WinAction.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Results\BaseResult.h">
+      <Filter>Planner\Results</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Results\MineralResult.h">
+      <Filter>Planner\Results</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Results\WorkerResult.h">
+      <Filter>Planner\Results</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common\ItemDependencies.cog">
+      <Filter>Templates</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Planner\cogfiles.txt">
+      <Filter>Templates</Filter>
+    </Text>
+    <Text Include="Planner\deps.txt">
+      <Filter>Templates</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

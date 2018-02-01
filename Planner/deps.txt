@@ -1,0 +1,21 @@
+	{
+	'MINERALS' : ['PROBE'],
+	'PROBE' : ['NEXUS'],
+	'GATEWAY': ['PYLON', 'PROBE']
+	'ZEALOT': ['GATEWAY']
+	'STALKER': ['GATEWAY','CYBERNETICS']
+	'CYBERNETICS': ['PYLON','GATEWAY','PROBE']
+	'PYLON': ['PROBE']
+	'ASSIMILATOR': ['PROBE']
+	'GAS': ['ASSIMILATOR']
+	'NEXUS': ['PROBE'],
+	'STARGATE': ['PROBE','CYBERNETICS','PYLON'],
+	'FLEETBEACON': ['PROBE','PYLON','STARGATE'],
+	'CARRIER': ['STARGATE', 'FLEETBEACON'],
+	'TWILIGHT': ['PROBE','PYLON','CYBERNETICS'],
+	'DARKTEMPLAR': ['GATEWAY','TWILIGHT']
+	}
+
+
+	# to run cog, use cmd.exe and cd to project.
+	# run `python -m cogapp @cogfiles.txt`
