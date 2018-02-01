@@ -20,13 +20,7 @@ bool Planner::Init() {
 	//TODO: Load Available Actions external
 	availableActions = AvailableActions;
 	availableActions.push_back(new BuildWorkerAction());
-	//availableActions.push_back(new BuildMoreWorkersAction());
-	//availableActions.push_back(new GatherMineralsAction());
 
-	//TODO: Load Available Conditions
-	//TODO: Load Available Results
-
-	//TODO: Get Goal
 	return true;
 }
 

@@ -13,8 +13,8 @@ int main(int argc, char* argv[]) {
 
     BotWithAPlan bot;
     coordinator.SetParticipants({
-        CreateParticipant(Race::Terran, &bot),
-        CreateComputer(Race::Zerg)
+        CreateParticipant((Race)GetAgentRace(), &bot),
+        CreateComputer(Race::Terran)
     });
 
     coordinator.LaunchStarcraft();

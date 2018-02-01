@@ -11,7 +11,6 @@ using namespace std;
 class Planner
 {
 private:
-	BaseAction* goal;
 	vector<BaseAction*> availableActions;
 	GameState CalculateTargetGameState(GameState, BaseAction*);
 	vector<BaseAction*> CalculatePlan(GameState*, GameState);

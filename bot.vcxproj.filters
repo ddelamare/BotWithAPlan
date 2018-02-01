@@ -99,10 +99,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Planner\cogfiles.txt">
+    <Text Include="cogfiles.txt">
       <Filter>Templates</Filter>
     </Text>
-    <Text Include="Planner\deps.txt">
+    <Text Include="deps.txt">
       <Filter>Templates</Filter>
     </Text>
   </ItemGroup>

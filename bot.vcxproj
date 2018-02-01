@@ -161,8 +161,8 @@
     <ClInclude Include="Planner\Results\WorkerResult.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Planner\cogfiles.txt" />
-    <Text Include="Planner\deps.txt" />
+    <Text Include="cogfiles.txt" />
+    <Text Include="deps.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

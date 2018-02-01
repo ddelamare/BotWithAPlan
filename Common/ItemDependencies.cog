@@ -26,7 +26,7 @@ resources = {'MINERALS' : ['PROBE'],
 	}
 for res,deps in resources.items():
 	if len(deps)> 0:
-		cog.out("conds.push_back(new BaseCondition(\"Build\ {0}\", {1}".format(res, len(deps) * 2))
+		cog.out("conds.push_back(new BaseCondition(\"Build {0}\", {1}".format(res, len(deps) * 2))
 		for dep in deps:
 			cog.out(", RESOURCES::{0}, 1".format(dep))
 		cog.out("));\n")
