@@ -6,6 +6,8 @@ using namespace std;
 #define LOGLEVEL 1 
 #define LOG(level) if (level>LOGLEVEL){} else cout 
 
+// Due to bugs in the sc2 ai library, value overrides are here
+#define CHRONO_OVERRIDE 3755
 
 enum class RESOURCES {
 	MINERALS = 1,

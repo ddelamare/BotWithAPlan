@@ -68,9 +68,6 @@
     <ClInclude Include="Planner\Actions\BaseAction.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="Planner\Actions\BuildMoreWorkersAction.h">
-      <Filter>Planner\Actions</Filter>
-    </ClInclude>
     <ClInclude Include="Planner\Actions\BuildResource.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
@@ -92,6 +89,16 @@
     <ClInclude Include="Planner\Results\WorkerResult.h">
       <Filter>Planner\Results</Filter>
     </ClInclude>
+    <ClInclude Include="Common\UnitFilters.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Goals\Economy\Probe.h" />
+    <ClInclude Include="Goals\Economy\Pylon.h" />
+    <ClInclude Include="Goals\Economy\Chrono.h" />
+    <ClInclude Include="Goals\Economy\Expand.h" />
+    <ClInclude Include="Goals\BaseGoal.h" />
+    <ClInclude Include="Goals\Economy\Assimilator.h" />
+    <ClInclude Include="Goals\GoalPicker.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

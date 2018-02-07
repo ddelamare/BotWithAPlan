@@ -3,6 +3,7 @@
 #include "Planner\Planner.h"
 #include "Common\Resource.h"
 #include "Common\ItemDependencies.h"
+#include "sc2api/sc2_api.h"
 #include <iostream>
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;

@@ -145,8 +145,15 @@
     <ClInclude Include="BotWithAPlan.h" />
     <ClInclude Include="Common\ItemDependencies.h" />
     <ClInclude Include="Common\Resource.h" />
+    <ClInclude Include="Common\UnitFilters.h" />
+    <ClInclude Include="Goals\BaseGoal.h" />
+    <ClInclude Include="Goals\Economy\Chrono.h" />
+    <ClInclude Include="Goals\Economy\Expand.h" />
+    <ClInclude Include="Goals\Economy\Assimilator.h" />
+    <ClInclude Include="Goals\Economy\Probe.h" />
+    <ClInclude Include="Goals\Economy\Pylon.h" />
+    <ClInclude Include="Goals\GoalPicker.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
-    <ClInclude Include="Planner\Actions\BuildMoreWorkersAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\BuildWorkerAction.h" />
     <ClInclude Include="Planner\Actions\GatherMineralsAction.h" />

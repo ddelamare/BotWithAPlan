@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseAction.h"
-#include #"../../Common/Resource.h"
+#include "../../Common/Resource.h"
 #include "../Results/WorkerResult.h"
 class BuildResouce : public BaseAction
 {

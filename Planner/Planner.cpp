@@ -19,7 +19,6 @@ bool Planner::Init() {
 
 	//TODO: Load Available Actions external
 	availableActions = AvailableActions;
-	availableActions.push_back(new BuildWorkerAction());
 
 	return true;
 }

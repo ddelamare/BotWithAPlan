@@ -3,9 +3,6 @@
 #include <algorithm>
 #include "../Common/ItemDependencies.h"
 #include "Actions\WinAction.h"
-#include "Actions\BuildWorkerAction.h"
-#include "Actions\BuildMoreWorkersAction.h"
-#include "Actions\GatherMineralsAction.h"
 using namespace std;
 
 class Planner

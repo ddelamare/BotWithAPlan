@@ -5,7 +5,7 @@
 using namespace sc2;
 
 // 
-#define LADDER_MODE 0	  
+#define LADDER_MODE 1	  
 int main(int argc, char* argv[]) {
 #if LADDER_MODE
     Coordinator coordinator;
