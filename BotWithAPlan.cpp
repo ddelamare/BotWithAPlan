@@ -2,7 +2,24 @@
 #include "sc2api/sc2_api.h"
 #include "Common\UnitFilters.h"
 #include <chrono>
+#include "Goals\Economy\Probe.h"
+#include "Goals\Economy\Pylon.h"
+#include "Goals\Economy\Chrono.h"
+#include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
+
+BotWithAPlan::BotWithAPlan() 
+{
+	goalPicker = GoalPicker();
+	planner = Planner();
+	EconomyGoals = vector<BaseGoal*>();
+	//TODO: Fill goal and dependency dictionaries
+
+	EconomyGoals.push_back(new PylonGoal());
+	EconomyGoals.push_back(new ProbeGoal());
+	EconomyGoals.push_back(new ChronoGoal());
+}
+
 void BotWithAPlan::OnGameStart() {
 	LOG(1) << "Bot initialized" << endl;
 }
@@ -11,27 +28,36 @@ void BotWithAPlan::OnStep() {
 	LOG(4) << "Step Begin" << endl;
 	auto startTime = Clock::now();
 	auto obs = Observation();
-	auto units = obs->GetUnits(Unit::Alliance::Self, IsWorker());
+	auto query = Query();
+	auto actions = Actions();
+	
+	auto econGoal  = goalPicker.GetGoal(EconomyGoals, obs);
 
-	// Get All nexuses
-	auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
-	auto allBuildings = obs->GetUnits(Unit::Alliance::Self);
-	auto target = allBuildings[0];
-	// Do Chrono Boost and build probe
-	for (auto nexus : nexuses)
+	if (econGoal)
 	{
-		// Each on itself
-		auto actions = Query()->GetAbilitiesForUnit(nexus);
-		for (auto action : actions.abilities)
+		Debug()->DebugTextOut("Econ Goal Picked:" + econGoal->GetAction()->GetName());
+		auto success = econGoal->Excecute(obs,actions,query);
+	}
+	else
+	{
+		Debug()->DebugTextOut("No Econ Goal Picked.");
+	}
+
+	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
+	if (idleUnits.size() > 0)
+	{
+		Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0,0,1), 10);
+		auto resource = FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
+		if (resource)
 		{
-			Debug()->DebugTextOut(AbilityTypeToName(action.ability_id));
+			// TODO: Send probe to mine
+			Debug()->DebugSphereOut(resource->pos + Point3D(0, 0, 1), 3, Colors::Yellow);
+			actions->UnitCommand(idleUnits[0], ABILITY_ID::HARVEST_GATHER, resource);
 		}
-		Actions()->UnitCommand(nexus, CHRONO_OVERRIDE,nexus);
-		auto orders = nexus->orders;
-		//Actions()->UnitCommand(nexus, ABILITY_ID::EFFECT_CHRONOBOOST, nexus->tag);
-		//auto commands = Actions()->Commands();
-		// Build Probe
-		Actions()->UnitCommand(nexus, ABILITY_ID::TRAIN_PROBE) ;
+		else
+		{
+			// What to do here?
+		}
 	}
 
 	auto endTime = Clock::now();

@@ -2,9 +2,9 @@
 #include "../BaseGoal.h"
 #include "../../Planner/Actions/BaseAction.h"
 
-class ChronoGoal : public BaseGoal
+class ExpandGoal : public BaseGoal
 {
 public:
-	double virtual CalculateScore(GameState*) = 0;
+	double virtual CalculateScore(const sc2::ObservationInterface *obs) = 0;
 	BaseAction virtual *GetAction();
 };

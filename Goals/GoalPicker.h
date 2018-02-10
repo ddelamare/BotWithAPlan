@@ -1,18 +1,20 @@
 #pragma	once
 #include "../Planner/Actions/BaseAction.h"
 #include "BaseGoal.h"
+
 class GoalPicker {
 public:
-	static BaseAction* FindHighestScore(vector<BaseGoal*> goals, GameState* state)
+	static BaseGoal* GetGoal(vector<BaseGoal*> goals,const sc2::ObservationInterface *obs)
 	{
-		BaseAction* selected = 0;
-		double selectedValue = DBL_MAX;
+		BaseGoal* selected = 0;
+		double selectedValue = 0;
 		for (auto goal : goals)
 		{
-			if (goal->CalculateScore(state) < selectedValue)
+			auto score = goal->CalculateScore(obs);
+			if (score > selectedValue)
 			{
-				selected = goal->GetAction();
-				selectedValue = goal->CalculateScore(state);
+				selected = goal;
+				selectedValue = score;
 			}
 		}
 		return selected;

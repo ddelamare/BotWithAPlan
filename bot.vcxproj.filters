@@ -68,9 +68,6 @@
     <ClInclude Include="Planner\Actions\BaseAction.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="Planner\Actions\BuildResource.h">
-      <Filter>Planner\Actions</Filter>
-    </ClInclude>
     <ClInclude Include="Planner\Actions\BuildWorkerAction.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
@@ -99,6 +96,12 @@
     <ClInclude Include="Goals\BaseGoal.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
+    <ClInclude Include="Common\GameState.h" />
+    <ClInclude Include="Common\Util.h" />
+    <ClInclude Include="Planner\Actions\UseAbility.h">
+      <Filter>Planner\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Actions\BuildResource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

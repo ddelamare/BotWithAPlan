@@ -1,6 +1,7 @@
 #include <sc2api/sc2_api.h>
 #include "Common\Resource.h"
 #include "Planner\Planner.h"
+#include "Goals\GoalPicker.h"
 #include "Common\Resource.h"
 #include "Common\ItemDependencies.h"
 #include "sc2api/sc2_api.h"
@@ -10,8 +11,13 @@ using namespace sc2;
 
 class BotWithAPlan : public Agent {
 public:
+	BotWithAPlan();
 	void OnGameStart();
 	void OnStep();
+private:
+	GoalPicker goalPicker;
+	Planner    planner;
+	vector<BaseGoal*> EconomyGoals;
 };
 
 

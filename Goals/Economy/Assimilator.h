@@ -5,6 +5,6 @@
 class AssimilatorGoal : public BaseGoal
 {
 public:
-	double virtual CalculateScore(GameState*);
+	double virtual CalculateScore(const sc2::ObservationInterface *obs);
 	BaseAction virtual *GetAction();
 };

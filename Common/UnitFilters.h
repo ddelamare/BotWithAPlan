@@ -1,7 +1,13 @@
 #pragma once
 #include "UnitFilters.h"
-#include "sc2api/sc2_api.h"
+
 using namespace sc2;
+
+bool IsIdle(const Unit& unit)
+{
+	return unit.orders.size() == 0;
+}
+
 struct IsAttackable {
 	bool operator()(const Unit& unit) {
 		switch (unit.unit_type.ToType()) {
@@ -204,5 +210,29 @@ struct IsWorker {
 		default: return false;
 		}
 	}
+};
+
+struct IsIdleWorker {
+	bool operator()(const Unit& unit) {
+		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::PROTOSS_PROBE: 
+		case UNIT_TYPEID::ZERG_DRONE: 
+		case UNIT_TYPEID::TERRAN_SCV: 
+			return IsIdle(unit);
+		default: return false;
+		}
+	}
+};
+
+struct GetUnitsOfType {
+	GetUnitsOfType(UNIT_TYPEID type)
+	{
+		unitType = type;
+	}
+	bool operator()(const Unit& unit) {
+		return unit.unit_type.ToType() == unitType;
+	}
+private: sc2::UNIT_TYPEID unitType;
+
 };
 

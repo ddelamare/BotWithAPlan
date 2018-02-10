@@ -7,6 +7,8 @@ using namespace sc2;
 // 
 #define LADDER_MODE 1	  
 int main(int argc, char* argv[]) {
+	InitResources();
+	GenerateDependencyList();
 #if LADDER_MODE
     Coordinator coordinator;
     coordinator.LoadSettings(argc, argv);
@@ -23,8 +25,7 @@ int main(int argc, char* argv[]) {
     while (coordinator.Update()) {
     }
 #else
-	InitResources();
-	GenerateDependencyList();
+
 	auto planner = new Planner();
 	auto state = GameState();
 

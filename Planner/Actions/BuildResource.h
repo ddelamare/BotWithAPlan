@@ -2,14 +2,13 @@
 #include "BaseAction.h"
 #include "../../Common/Resource.h"
 #include "../Results/WorkerResult.h"
-class BuildResouce : public BaseAction
+class BuildResource : public BaseAction
 {
 public:
-	BuildResouce()
+	BuildResource(RESOURCES res)
 	{
-		conditions.push_back(new HaveMineralsCondition(50));
-		results.push_back(new WorkerResult(1));
-		name = "Build " + RESOURCES_MAP[res].name;
+		results.push_back(new BaseResult(res,1));
+		name = "Build " + RESOURCE_MAP[res].name;
 	}
 
 };
