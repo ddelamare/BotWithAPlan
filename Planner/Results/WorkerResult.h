@@ -6,6 +6,6 @@ class WorkerResult : public BaseResult
 public:
 	WorkerResult(int number)
 	{
-		resourcesGained[RESOURCES::PROBE] = number;
+		resourcesGained[sc2::UNIT_TYPEID::PROTOSS_PROBE] = number;
 	}
 };

@@ -14,10 +14,15 @@ public:
 	BotWithAPlan();
 	void OnGameStart();
 	void OnStep();
+	void OnBuildingConstructionComplete(const Unit *);
+	void OnUnitCreated(const Unit *);
 private:
 	GoalPicker goalPicker;
 	Planner    planner;
-	vector<BaseGoal*> EconomyGoals;
+	vector<BaseAction*> EconomyGoals;
+	bool shouldRecalcuate;
+	BaseAction* econGoal;
+	BaseAction* nextInPlan;
 };
 
 

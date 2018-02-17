@@ -1,14 +1,13 @@
 #pragma once
-#include "../BaseGoal.h"
 #include "../../Planner/Actions/BaseAction.h"
 #include "../../Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "../../Common/Resource.h"
-class ProbeGoal : public BaseGoal
+class ProbeGoal : public BaseAction
 {
 public:
-	ProbeGoal() : BaseGoal() {
-		goal = new BuildResource(RESOURCES::PROBE);
+	ProbeGoal() : BaseAction() {
+		name = "Build Probe";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs) {
 		units.clear();
@@ -36,16 +35,19 @@ public:
 		}
 		return score;
 	};
-	BaseAction virtual *GetAction() {
-		return goal;
-	};
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query) 
+	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug)
 	{
 		bool builtProbe = false;
-		for (auto nexus : units) {			if (nexus->orders.size() == 0)
+		for (auto nexus : units) {
+			if (nexus->orders.size() == 0)
 			{
 				actions->UnitCommand(nexus, ABILITY_ID::TRAIN_PROBE);
 				builtProbe = true;
-			}		}		return builtProbe;	}
+			}
+		}
+
+		return builtProbe;
+	}
+
 
 };

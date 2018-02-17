@@ -5,7 +5,7 @@
 class BuildResource : public BaseAction
 {
 public:
-	BuildResource(RESOURCES res)
+	BuildResource(sc2::UNIT_TYPEID res)
 	{
 		results.push_back(new BaseResult(res,1));
 		name = "Build " + RESOURCE_MAP[res].name;

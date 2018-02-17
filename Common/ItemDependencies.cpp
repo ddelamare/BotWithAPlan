@@ -8,87 +8,81 @@ void GenerateDependencyList()
 	vector<BaseCondition*> conds;
 	vector<BaseResult*> result;
 
-conds.push_back(new BaseCondition("Build MINERALS", 2, RESOURCES::PROBE, 1));
-result.push_back(new BaseResult(RESOURCES::MINERALS,1));
-AvailableActions.push_back(new BaseAction("Build MINERALS", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_PROBE", 2, sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PROBE,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_PROBE", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build PROBE", 2, RESOURCES::NEXUS, 1));
-result.push_back(new BaseResult(RESOURCES::PROBE,1));
-AvailableActions.push_back(new BaseAction("Build PROBE", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_GATEWAY", 4, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_GATEWAY,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_GATEWAY", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build GATEWAY", 4, RESOURCES::PYLON, 1, RESOURCES::PROBE, 1));
-result.push_back(new BaseResult(RESOURCES::GATEWAY,1));
-AvailableActions.push_back(new BaseAction("Build GATEWAY", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_ZEALOT", 2, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ZEALOT,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_ZEALOT", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build ZEALOT", 2, RESOURCES::GATEWAY, 1));
-result.push_back(new BaseResult(RESOURCES::ZEALOT,1));
-AvailableActions.push_back(new BaseAction("Build ZEALOT", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_STALKER", 4, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STALKER,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_STALKER", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build STALKER", 4, RESOURCES::GATEWAY, 1, RESOURCES::CYBERNETICS, 1));
-result.push_back(new BaseResult(RESOURCES::STALKER,1));
-AvailableActions.push_back(new BaseAction("Build STALKER", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_CYBERNETICSCORE", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_CYBERNETICSCORE", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build CYBERNETICS", 6, RESOURCES::PYLON, 1, RESOURCES::GATEWAY, 1, RESOURCES::PROBE, 1));
-result.push_back(new BaseResult(RESOURCES::CYBERNETICS,1));
-AvailableActions.push_back(new BaseAction("Build CYBERNETICS", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_PYLON", 2, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PYLON,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_PYLON", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build PYLON", 2, RESOURCES::PROBE, 1));
-result.push_back(new BaseResult(RESOURCES::PYLON,1));
-AvailableActions.push_back(new BaseAction("Build PYLON", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_ASSIMILATOR", 2, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ASSIMILATOR,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_ASSIMILATOR", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build ASSIMILATOR", 2, RESOURCES::PROBE, 1));
-result.push_back(new BaseResult(RESOURCES::ASSIMILATOR,1));
-AvailableActions.push_back(new BaseAction("Build ASSIMILATOR", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_NEXUS", 2, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_NEXUS", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build NEXUS", 2, RESOURCES::PROBE, 1));
-result.push_back(new BaseResult(RESOURCES::NEXUS,1));
-AvailableActions.push_back(new BaseAction("Build NEXUS", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_STARGATE", 6, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STARGATE,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_STARGATE", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build STARGATE", 6, RESOURCES::PROBE, 1, RESOURCES::CYBERNETICS, 1, RESOURCES::PYLON, 1));
-result.push_back(new BaseResult(RESOURCES::STARGATE,1));
-AvailableActions.push_back(new BaseAction("Build STARGATE", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_FLEETBEACON", 6, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_FLEETBEACON", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build FLEETBEACON", 6, RESOURCES::PROBE, 1, RESOURCES::PYLON, 1, RESOURCES::STARGATE, 1));
-result.push_back(new BaseResult(RESOURCES::FLEETBEACON,1));
-AvailableActions.push_back(new BaseAction("Build FLEETBEACON", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_CARRIER", 4, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 1, sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_CARRIER,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_CARRIER", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build CARRIER", 4, RESOURCES::STARGATE, 1, RESOURCES::FLEETBEACON, 1));
-result.push_back(new BaseResult(RESOURCES::CARRIER,1));
-AvailableActions.push_back(new BaseAction("Build CARRIER", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_TWILIGHTCOUNCIL", 6, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_TWILIGHTCOUNCIL", conds, result));
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build TWILIGHT", 6, RESOURCES::PROBE, 1, RESOURCES::PYLON, 1, RESOURCES::CYBERNETICS, 1));
-result.push_back(new BaseResult(RESOURCES::TWILIGHT,1));
-AvailableActions.push_back(new BaseAction("Build TWILIGHT", conds, result));
-result.clear();
-conds.clear();
-
-conds.push_back(new BaseCondition("Build DARKTEMPLAR", 4, RESOURCES::GATEWAY, 1, RESOURCES::TWILIGHT, 1));
-result.push_back(new BaseResult(RESOURCES::DARKTEMPLAR,1));
-AvailableActions.push_back(new BaseAction("Build DARKTEMPLAR", conds, result));
+conds.push_back(new BaseCondition("Build PROTOSS_DARKTEMPLAR", 4, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL, 1));
+result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_DARKTEMPLAR,1));
+AvailableActions.push_back(new BaseAction("Build PROTOSS_DARKTEMPLAR", conds, result));
 result.clear();
 conds.clear();
 

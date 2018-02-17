@@ -59,9 +59,6 @@
     <ClInclude Include="Planner\Conditions\BaseCondition.h">
       <Filter>Planner\Conditions</Filter>
     </ClInclude>
-    <ClInclude Include="Planner\Conditions\HaveMineralsCondition.h">
-      <Filter>Planner\Conditions</Filter>
-    </ClInclude>
     <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h">
       <Filter>Planner\Conditions</Filter>
     </ClInclude>
@@ -93,7 +90,6 @@
     <ClInclude Include="Goals\Economy\Pylon.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
     <ClInclude Include="Goals\Economy\Expand.h" />
-    <ClInclude Include="Goals\BaseGoal.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
     <ClInclude Include="Common\GameState.h" />
@@ -102,6 +98,7 @@
       <Filter>Planner\Actions</Filter>
     </ClInclude>
     <ClInclude Include="Planner\Actions\BuildResource.h" />
+    <ClInclude Include="Goals\Tech\Cybernetics.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

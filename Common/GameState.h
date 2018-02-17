@@ -5,7 +5,7 @@ using namespace std;
 struct GameState
 {
 	ResourceMap resources = ResourceMap();	 
-	void AddResource(RESOURCES resource, int qty)
+	void AddResource(sc2::UNIT_TYPEID resource, int qty)
 	{
 		resources[resource] += qty;
 	}

@@ -11,7 +11,7 @@ public:
 	BaseResult() {
 		resourcesGained = ResourceMap();
 	}
-	BaseResult(RESOURCES res, int amount)
+	BaseResult(sc2::UNIT_TYPEID res, int amount)
 	{
 		resourcesGained = ResourceMap();
 		resourcesGained[res] = amount;

@@ -1,12 +1,11 @@
 #pragma	once
 #include "../Planner/Actions/BaseAction.h"
-#include "BaseGoal.h"
 
 class GoalPicker {
 public:
-	static BaseGoal* GetGoal(vector<BaseGoal*> goals,const sc2::ObservationInterface *obs)
+	static BaseAction* GetGoal(vector<BaseAction*> goals,const sc2::ObservationInterface *obs)
 	{
-		BaseGoal* selected = 0;
+		BaseAction* selected = 0;
 		double selectedValue = 0;
 		for (auto goal : goals)
 		{

@@ -14,6 +14,17 @@ void Planner::PrintPlan(vector<BaseAction*> plan)
 	LOG(1) << "done." << endl;
 }
 
+GameState Planner::GetGameState(const sc2::ObservationInterface* obs)
+{
+	auto units = obs->GetUnits(sc2::Unit::Alliance::Self);
+	auto state = GameState();
+	for (auto unit : units)
+	{
+		state.AddResource(unit->unit_type, 1);
+	}
+	return state;
+}
+
 bool Planner::Init() {
 	LOG(4) << "Planner Initialized\n";
 

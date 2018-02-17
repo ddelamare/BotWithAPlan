@@ -236,3 +236,19 @@ private: sc2::UNIT_TYPEID unitType;
 
 };
 
+struct UnitsInProgress
+{
+	UnitsInProgress(UNIT_TYPEID type)
+	{
+		unitType = type;
+	}
+	bool operator()(const Unit& unit) {
+		if (unitType != UNIT_TYPEID::INVALID)
+		{
+			return unit.build_progress < 1;
+		}
+		return false;
+	}
+private: sc2::UNIT_TYPEID unitType;
+};
+

@@ -23,15 +23,15 @@ int main(int argc, char* argv[]) {
     coordinator.StartGame(sc2::kMapBelShirVestigeLE);
 
     while (coordinator.Update()) {
+		
     }
 #else
 
 	auto planner = new Planner();
 	auto state = GameState();
 
-	state.AddResource(RESOURCES::PROBE, 1);
-	state.AddResource(RESOURCES::MINERALS, 14);
-	//state.AddResource(RESOURCES::NEXUS, 14);
+	state.AddResource(sc2::UNIT_TYPEID::PROTOSS_PROBE, 1);
+	//state.AddResource(sc2::UNIT_TYPEID::NEXUS, 14);
 	planner->Init();
 	auto plan = planner->CalculatePlan(state, new WinAction());
 	planner->PrintPlan(plan);

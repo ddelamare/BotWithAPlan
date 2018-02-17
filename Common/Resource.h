@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "sc2api\sc2_api.h"
 using namespace std;
 #define LOGLEVEL 1 
 #define LOG(level) if (level>LOGLEVEL){} else cout 
@@ -9,41 +10,23 @@ using namespace std;
 // Due to bugs in the sc2 ai library, value overrides are here
 #define CHRONO_OVERRIDE 3755
 
-enum class RESOURCES {
-	MINERALS = 1,
-	PROBE,
-	GATEWAY,
-	ZEALOT,
-	STALKER,
-	CYBERNETICS,
-	PYLON,
-	ASSIMILATOR,
-	GAS,
-	NEXUS,
-	STARGATE,
-	TWILIGHT,
-	FLEETBEACON,
-	CARRIER,
-	DARKTEMPLAR
-};
-
 struct Resource
 {
 	Resource() {}
-	Resource(RESOURCES t, string n, float c)
+	Resource(sc2::UNIT_TYPEID t, string n, float c)
 	{
 		type = t;
 		name = n;
 		costModifier = c;
 	}
-	RESOURCES type;
+	sc2::UNIT_TYPEID type;
 	string name;
 	float costModifier;
 };
 
 
-typedef map<RESOURCES, int>	ResourceMap;
-extern map<RESOURCES, Resource> RESOURCE_MAP;
+typedef map<sc2::UNIT_TYPEID, int>	ResourceMap;
+extern map<sc2::UNIT_TYPEID, Resource> RESOURCE_MAP;
 
 
 void InitResources();

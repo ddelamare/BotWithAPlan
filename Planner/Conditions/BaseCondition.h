@@ -28,7 +28,7 @@ public:
 		va_start(vl, numDeps);
 		for (int i = 0; i < numDeps; i += 2)
 		{
-			RESOURCES res = va_arg(vl, RESOURCES);
+			sc2::UNIT_TYPEID res = va_arg(vl, sc2::UNIT_TYPEID);
 			int numReq = va_arg(vl, int);
 			requiredResources[res] = numReq;
 		}

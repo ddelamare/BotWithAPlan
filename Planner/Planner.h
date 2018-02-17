@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "../Common/ItemDependencies.h"
 #include "Actions\WinAction.h"
+#include "sc2api\sc2_api.h"
 using namespace std;
 
 class Planner
@@ -15,6 +16,7 @@ private:
 public: 
 	vector<BaseAction*> CalculatePlan(GameState, BaseAction*);
 	void PrintPlan(vector<BaseAction*>);
+	GameState GetGameState(const sc2::ObservationInterface* obs);
 	Planner();
 	bool Init();
 };

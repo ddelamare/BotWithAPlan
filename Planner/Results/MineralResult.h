@@ -6,6 +6,6 @@ class MineralResult : public BaseResult
 public:
 	MineralResult(int number)
 	{
-		resourcesGained[RESOURCES::MINERALS] = number;
+		resourcesGained[sc2::UNIT_TYPEID::MINERALS] = number;
 	}
 };

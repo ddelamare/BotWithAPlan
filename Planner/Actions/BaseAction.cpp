@@ -26,8 +26,13 @@
 	{
 		return results;
 	}
-	//bool Excecute();
-	float BaseAction::GetActionWeight()
+	bool BaseAction::Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug) {
+		//TODO: Make this abstarct and implement for all units
+		return false;
+	}
+	double BaseAction::CalculateScore(const sc2::ObservationInterface *obs)
 	{
-		return cost;
+		// If this is not overriden in subclass, then the goal derived from here will never show up in the goal picker.
+		// It can, however, be selected as an action by the planner.
+		return 0;
 	}

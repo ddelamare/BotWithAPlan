@@ -5,6 +5,7 @@
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
 #include "Goals\Economy\Chrono.h"
+#include "Goals\Tech\Cybernetics.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -12,16 +13,23 @@ BotWithAPlan::BotWithAPlan()
 {
 	goalPicker = GoalPicker();
 	planner = Planner();
-	EconomyGoals = vector<BaseGoal*>();
+	EconomyGoals = vector<BaseAction*>();
 	//TODO: Fill goal and dependency dictionaries
 
 	EconomyGoals.push_back(new PylonGoal());
 	EconomyGoals.push_back(new ProbeGoal());
 	EconomyGoals.push_back(new ChronoGoal());
+	EconomyGoals.push_back(new CyberneticsGoal());
+
+	planner.Init();
+	shouldRecalcuate = true;
+
 }
 
 void BotWithAPlan::OnGameStart() {
 	LOG(1) << "Bot initialized" << endl;
+	auto nexus = Observation()->GetUnits(IsUnit(UNIT_TYPEID::PROTOSS_NEXUS))[0];
+	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
 }
 
 void BotWithAPlan::OnStep() {
@@ -30,13 +38,35 @@ void BotWithAPlan::OnStep() {
 	auto obs = Observation();
 	auto query = Query();
 	auto actions = Actions();
-	
-	auto econGoal  = goalPicker.GetGoal(EconomyGoals, obs);
 
-	if (econGoal)
+	if (shouldRecalcuate)
 	{
-		Debug()->DebugTextOut("Econ Goal Picked:" + econGoal->GetAction()->GetName());
-		auto success = econGoal->Excecute(obs,actions,query);
+		//shouldRecalcuate = false;
+
+		econGoal = goalPicker.GetGoal(EconomyGoals, obs);
+     
+		if (econGoal)
+		{
+			auto state = planner.GetGameState(obs);
+
+			auto plan = planner.CalculatePlan(state, econGoal);
+			if (plan.size() > 0)
+			{
+				nextInPlan = plan[plan.size() - 1];
+			}
+		}
+
+	}
+
+	// Exceute Econ State
+	Debug()->DebugTextOut("Econ Goal Picked:" + econGoal->GetName());
+	if (nextInPlan)
+		Debug()->DebugTextOut("Econ Goal Next Step:" + nextInPlan->GetName());
+	auto success = nextInPlan->Excecute(obs, actions, query, Debug());
+	if (success)
+	{
+		shouldRecalcuate = true;
+		econGoal = nullptr;
 	}
 	else
 	{
@@ -46,7 +76,7 @@ void BotWithAPlan::OnStep() {
 	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
 	if (idleUnits.size() > 0)
 	{
-		Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0,0,1), 10);
+		Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0, 0, 1), 10);
 		auto resource = FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
 		if (resource)
 		{
@@ -61,13 +91,23 @@ void BotWithAPlan::OnStep() {
 	}
 
 	auto endTime = Clock::now();
-	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count()));
+	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
 	Debug()->SendDebug();
 }
 
+void BotWithAPlan::OnBuildingConstructionComplete(const Unit*) 
+{
+	shouldRecalcuate = true;
+}
 
-
-
+void::BotWithAPlan::OnUnitCreated(const Unit* unit)
+{
+	if (unit->unit_type == UNIT_TYPEID::PROTOSS_NEXUS)
+	{
+		// Clear Rally Point
+		Actions()->UnitCommand(unit, ABILITY_ID::RALLY_WORKERS, unit->pos);
+	}
+}
 
 #pragma region Bot Ladder Hooks
 void *CreateNewAgent()
