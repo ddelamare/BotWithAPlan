@@ -3,13 +3,13 @@
 
 class GoalPicker {
 public:
-	static BaseAction* GetGoal(vector<BaseAction*> goals,const sc2::ObservationInterface *obs)
+	static BaseAction* GetGoal(vector<BaseAction*> goals,const sc2::ObservationInterface *obs, GameState* state )
 	{
 		BaseAction* selected = 0;
 		double selectedValue = 0;
 		for (auto goal : goals)
 		{
-			auto score = goal->CalculateScore(obs);
+			auto score = goal->CalculateScore(obs, state);
 			if (score > selectedValue)
 			{
 				selected = goal;

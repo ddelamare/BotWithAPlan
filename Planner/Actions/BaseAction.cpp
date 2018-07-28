@@ -2,7 +2,7 @@
 #include "BaseAction.h"
 
 
-	bool BaseAction::MeetsConditions(GameState* state) {
+	bool BaseAction::MeetsConditions(ResourceState* state) {
 		return this->GetUnmetConditions(state).size() == 0;
 	}
 	vector<BaseCondition*> BaseAction::GetAllConditions()
@@ -10,7 +10,7 @@
 		return conditions;
 	}
 
-	vector<BaseCondition*> BaseAction::GetUnmetConditions(GameState* state)
+	vector<BaseCondition*> BaseAction::GetUnmetConditions(ResourceState* state)
 	{
 		vector<BaseCondition*> unmet = vector<BaseCondition*>();	   
 		for ( auto cond : conditions)
@@ -26,11 +26,11 @@
 	{
 		return results;
 	}
-	bool BaseAction::Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug) {
-		//TODO: Make this abstarct and implement for all units
+	bool BaseAction::Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state) {
+		//TODO: Make this abstract and implement for all units
 		return false;
 	}
-	double BaseAction::CalculateScore(const sc2::ObservationInterface *obs)
+	double BaseAction::CalculateScore(const sc2::ObservationInterface *obs, GameState* state)
 	{
 		// If this is not overriden in subclass, then the goal derived from here will never show up in the goal picker.
 		// It can, however, be selected as an action by the planner.

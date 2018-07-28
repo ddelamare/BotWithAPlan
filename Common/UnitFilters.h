@@ -1,5 +1,6 @@
 #pragma once
 #include "UnitFilters.h"
+#include "GameState.h"
 
 using namespace sc2;
 
@@ -201,6 +202,22 @@ struct IsVespeneGeyser {
 	}
 };
 
+struct IsMineralField {
+	bool operator() (const Unit& unit)
+	{
+		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::NEUTRAL_LABMINERALFIELD:
+		case UNIT_TYPEID::NEUTRAL_LABMINERALFIELD750:
+		case UNIT_TYPEID::NEUTRAL_MINERALFIELD:
+		case UNIT_TYPEID::NEUTRAL_MINERALFIELD750:
+		case UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD:
+		case UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD750:
+				return true;
+		default: return false;
+		}
+	}
+};
+
 struct IsWorker {
 	bool operator()(const Unit& unit) {
 		switch (unit.unit_type.ToType()) {
@@ -224,17 +241,6 @@ struct IsIdleWorker {
 	}
 };
 
-struct GetUnitsOfType {
-	GetUnitsOfType(UNIT_TYPEID type)
-	{
-		unitType = type;
-	}
-	bool operator()(const Unit& unit) {
-		return unit.unit_type.ToType() == unitType;
-	}
-private: sc2::UNIT_TYPEID unitType;
-
-};
 
 struct UnitsInProgress
 {

@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include <stdarg.h>
-#include "../../Common/GameState.h"
+#include "../../Common/ResourceState.h"
 #include "../../Common/Resource.h"
 using namespace std;
 
@@ -12,7 +12,7 @@ class BaseCondition
 private:
 protected:
 	string name = "Generic Condition";
-	bool HasAllResources(GameState* state);
+	bool HasAllResources(ResourceState* state);
 	ResourceMap requiredResources;
 
 public:
@@ -34,9 +34,9 @@ public:
 		}
 		va_end(vl);
 	}
-	virtual bool IsMet(GameState*);
+	virtual bool IsMet(ResourceState*);
 	ResourceMap GetRequiredResources();
-	ResourceMap NeededResources(GameState* state);
+	ResourceMap NeededResources(ResourceState* state);
 
 	string GetName() 
 	{

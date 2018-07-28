@@ -21,7 +21,7 @@ const Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const Obse
 		}
 
 	}
-	auto assimilators = obs->GetUnits(Unit::Alliance::Self, GetUnitsOfType(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
+	auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
 	for (auto assim : assimilators)
 	{
 		if (assim->ideal_harvesters > assim->assigned_harvesters)
@@ -39,7 +39,7 @@ const Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const Obse
 	{
 		auto nex = target;
 		// Find nearby mineral patch.
-		Units minerals = obs->GetUnits(Unit::Alliance::Neutral, GetUnitsOfType(UNIT_TYPEID::NEUTRAL_MINERALFIELD));
+		Units minerals = obs->GetUnits(Unit::Alliance::Neutral, IsMineralField());
 		float distance = std::numeric_limits<float>::max();
 		for (const auto& m : minerals) {
 			float d = DistanceSquared2D(m->pos, nex->pos);

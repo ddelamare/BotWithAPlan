@@ -1,12 +1,12 @@
 #pragma once
 #include "BaseCondition.h"
 
-bool BaseCondition::IsMet(GameState* state)
+bool BaseCondition::IsMet(ResourceState* state)
 {
 	return HasAllResources(state);
 }
 
-bool BaseCondition::HasAllResources(GameState* state)
+bool BaseCondition::HasAllResources(ResourceState* state)
 {
 	return NeededResources(state).size() == 0;
 }
@@ -17,7 +17,7 @@ ResourceMap BaseCondition::GetRequiredResources()
 	return requiredResources;
 }
 
-ResourceMap BaseCondition::NeededResources(GameState* state)
+ResourceMap BaseCondition::NeededResources(ResourceState* state)
 {
 	auto unmet = ResourceMap();
 	for (auto res : GetRequiredResources())

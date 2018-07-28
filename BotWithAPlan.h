@@ -5,6 +5,7 @@
 #include "Common\Resource.h"
 #include "Common\ItemDependencies.h"
 #include "sc2api/sc2_api.h"
+#include "Common\GameState.h"
 #include <iostream>
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
@@ -23,6 +24,7 @@ private:
 	bool shouldRecalcuate;
 	BaseAction* econGoal;
 	BaseAction* nextInPlan;
+	GameState  state;
 };
 
 

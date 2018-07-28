@@ -2,7 +2,9 @@
 #include <vector>
 #include "../Results/BaseResult.h"
 #include "../Conditions/BaseCondition.h"
+#include "../../Common/ResourceState.h"
 #include "../../Common/GameState.h"
+
 #include "sc2api\sc2_api.h"
 using namespace std;
 
@@ -33,12 +35,12 @@ public:
 		conditions = vector<BaseCondition*>();
 		results = vector<BaseResult*>();
 	}
-	bool MeetsConditions(GameState*);
+	bool MeetsConditions(ResourceState*);
 	vector<BaseCondition*> GetAllConditions();
-	vector<BaseCondition*> GetUnmetConditions(GameState*);
+	vector<BaseCondition*> GetUnmetConditions(ResourceState*);
 	vector<BaseResult*> GetPossibleResults();
-	double virtual CalculateScore(const sc2::ObservationInterface *obs);
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug);
+	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state);
+	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 
 	string GetName()
 	{

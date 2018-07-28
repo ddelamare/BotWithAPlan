@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 #else
 
 	auto planner = new Planner();
-	auto state = GameState();
+	auto state = ResourceState();
 
 	state.AddResource(sc2::UNIT_TYPEID::PROTOSS_PROBE, 1);
 	//state.AddResource(sc2::UNIT_TYPEID::NEXUS, 14);

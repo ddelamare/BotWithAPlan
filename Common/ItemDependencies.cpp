@@ -26,17 +26,17 @@ AvailableActions.push_back(new BaseAction("Build PROTOSS_ZEALOT", conds, result)
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build PROTOSS_STALKER", 4, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
-result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STALKER,1));
-AvailableActions.push_back(new BaseAction("Build PROTOSS_STALKER", conds, result));
-result.clear();
-conds.clear();
+//conds.push_back(new BaseCondition("Build PROTOSS_STALKER", 4, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
+//result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STALKER,1));
+//AvailableActions.push_back(new BaseAction("Build PROTOSS_STALKER", conds, result));
+//result.clear();
+//conds.clear();
 
-conds.push_back(new BaseCondition("Build PROTOSS_CYBERNETICSCORE", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
-result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE,1));
-AvailableActions.push_back(new BaseAction("Build PROTOSS_CYBERNETICSCORE", conds, result));
-result.clear();
-conds.clear();
+//conds.push_back(new BaseCondition("Build PROTOSS_CYBERNETICSCORE", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+//result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE,1));
+//AvailableActions.push_back(new CyberneticsGoal());
+//result.clear();
+//conds.clear();
 
 conds.push_back(new BaseCondition("Build PROTOSS_PYLON", 2, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
 result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PYLON,1));

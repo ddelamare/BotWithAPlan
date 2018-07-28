@@ -14,10 +14,10 @@ void Planner::PrintPlan(vector<BaseAction*> plan)
 	LOG(1) << "done." << endl;
 }
 
-GameState Planner::GetGameState(const sc2::ObservationInterface* obs)
+ResourceState Planner::GetResourceState(const sc2::ObservationInterface* obs)
 {
 	auto units = obs->GetUnits(sc2::Unit::Alliance::Self);
-	auto state = GameState();
+	auto state = ResourceState();
 	for (auto unit : units)
 	{
 		state.AddResource(unit->unit_type, 1);
@@ -34,11 +34,11 @@ bool Planner::Init() {
 	return true;
 }
 
-GameState Planner::CalculateTargetGameState(GameState state, BaseAction* endGoal)
+ResourceState Planner::CalculateTargetResourceState(ResourceState state, BaseAction* endGoal)
 {
 	//Goal needs some conditions met. Determine what it needs to reach the game state we want
 	auto neededConditions = endGoal->GetUnmetConditions(&state);
-	auto goalState = GameState();
+	auto goalState = ResourceState();
 
 	// Make sure all resources known in state make it to the returned state
 	for (auto res : state.resources)
@@ -68,7 +68,7 @@ GameState Planner::CalculateTargetGameState(GameState state, BaseAction* endGoal
 	return goalState;
 }
 
-vector<BaseAction*> Planner::CalculatePlan(GameState* currentState, GameState goalState)
+vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, ResourceState goalState)
 {
 	auto plan = vector<BaseAction*>(0);
 
@@ -179,7 +179,7 @@ vector<BaseAction*> Planner::CalculatePlan(GameState* currentState, GameState go
 	return 	plan;
 }
 
-vector<BaseAction*> Planner::CalculatePlan(GameState state, BaseAction* endGoal)
+vector<BaseAction*> Planner::CalculatePlan(ResourceState state, BaseAction* endGoal)
 {	/*What we really want to find here is not the end action, but the end game state that allows us to excecute that action.
 	    So, the steps are:
 		1) Determine if we are already at a game state that satisfies the endGoal action
@@ -201,7 +201,7 @@ vector<BaseAction*> Planner::CalculatePlan(GameState state, BaseAction* endGoal)
 
 	LOG(3) << "Goal Not Met: " << endGoal->GetName() << endl;
 
-	auto goalState = CalculateTargetGameState(state, endGoal);
+	auto goalState = CalculateTargetResourceState(state, endGoal);
 
 	/*
 		HERE KICK OFF RECURSIVE GRAPH BUILD FUNCTION
@@ -214,7 +214,7 @@ vector<BaseAction*> Planner::CalculatePlan(GameState state, BaseAction* endGoal)
 
 
 //TODO: find a better heuristic method
-float Planner::CalculateHeuristic(BaseAction* action, GameState* state, ResourceMap* neededResources)
+float Planner::CalculateHeuristic(BaseAction* action, ResourceState* state, ResourceMap* neededResources)
 {
 	auto value = 0.0f;
 	auto actionResults = action->GetPossibleResults()[0]->ResourcesGained();

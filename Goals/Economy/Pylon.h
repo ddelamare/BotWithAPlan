@@ -8,9 +8,10 @@ class PylonGoal : public BaseAction
 {
 public:
 	PylonGoal() : BaseAction() {
+		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PYLON, 1));
 		name = "Build Pylon";
 	}
-	double virtual CalculateScore(const sc2::ObservationInterface *obs) {
+	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 16.0f;
 		int foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
@@ -38,18 +39,73 @@ public:
 
 		return score;
 	};
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug)
+	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
+		float PLYLON_RADIUS = 1.125;
 		bool madePylon = false;
 		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 		auto nexii = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
+		auto minerals = obs->GetUnits(Unit::Alliance::Neutral, IsMineralField());
 		bool works = query->Placement(ABILITY_ID::BUILD_PYLON, nexii[0]->pos + Point2D(0, -5));
 		auto probe = obs->GetUnits(Unit::Alliance::Self, IsWorker())[0];
-		actions->UnitCommand(probe, ABILITY_ID::BUILD_PYLON, nexii[0]->pos + Point2D(0, -5));
-		debug->DebugSphereOut(nexii[0]->pos + Point3D(0, -5,0) + Point3D(0, 0, 1), 3, Colors::Teal);
-		//TODO: Find location  away from minerals
+		//TODO: Find location away from minerals
+		Point3D buildPos;
+		if (pylons.size())
+		{
+			// Build near other pylon
+			if (state->MineralDirection.x > state->MineralDirection.y)
+			{
+				// Find newest pylon
+				float maxX = std::numeric_limits<float>::max();
+				float y;
+				for (auto pylon : pylons)
+				{
+					maxX = min(maxX, pylon->pos.x);
+					y = pylon->pos.y;
+				}
+				buildPos = Point3D(maxX - (2 * PLYLON_RADIUS) , y , 0);
+			}
+			else
+			{
+				float maxY = std::numeric_limits<float>::max();
+				float x;
+				for (auto pylon : pylons)
+				{
+					maxY = min(maxY, pylon->pos.y);
+					x = pylon->pos.x;
+				}
+				buildPos = Point3D(x, maxY - (2 * PLYLON_RADIUS), 0);
+			}
+		}
+		else
+		{
+			if (Distance2D(state->MineralDirection,Point2D(0,0)) == 0) // Check if it's been set
+			{
+				//Calc mineral vector and normalize
+				int visibleMinerals = 0;
+				Point3D sum;
+				for (auto min : minerals)
+				{
+					if (min->display_type == Unit::DisplayType::Visible)
+					{
+						sum += min->pos;
+						visibleMinerals++;
+					}
+				}
+				if (visibleMinerals > 0)
+				{
+					sum.z = 0;
+					sum /= visibleMinerals;
+					Normalize3D(sum);
+					state->MineralDirection = sum;
+				}
+			}
+			auto mainNex = nexii[0];
+			buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PLYLON_RADIUS));  // Add pylon and nexus radius
+		}
 		//TODO: Find Nearby Probe
-		//TODO: Build pylon
+		actions->UnitCommand(probe, ABILITY_ID::BUILD_PYLON, buildPos);
+		debug->DebugSphereOut(buildPos, 3, Colors::Teal);
 
 		return madePylon;
 	}

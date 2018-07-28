@@ -1,12 +1,23 @@
 #pragma once
 #include <map>
-#include "Resource.h"
-using namespace std;
+#include "sc2api\sc2_api.h"
+using namespace sc2;
+
+// Holds data that only needs to be calculated once and then referenced or updated
+
+enum YesNo {
+	Undefinded = 0,
+	Yes,
+	No
+};
+
 struct GameState
 {
-	ResourceMap resources = ResourceMap();	 
-	void AddResource(sc2::UNIT_TYPEID resource, int qty)
-	{
-		resources[resource] += qty;
+	GameState() {
+		ScoutingProbes = Units();
+		BuildingProbes = Units();
 	}
+	Units ScoutingProbes;
+	Units BuildingProbes;
+	Point3D MineralDirection;
 };

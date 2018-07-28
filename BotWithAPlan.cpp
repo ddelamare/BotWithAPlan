@@ -5,6 +5,8 @@
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
 #include "Goals\Economy\Chrono.h"
+#include "Goals\Army\Stalker.h"
+#include "Goals\Army\Gateway.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
@@ -19,7 +21,12 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new PylonGoal());
 	EconomyGoals.push_back(new ProbeGoal());
 	EconomyGoals.push_back(new ChronoGoal());
+	EconomyGoals.push_back(new StalkerGoal());
+	EconomyGoals.push_back(new GatewayGoal());
 	EconomyGoals.push_back(new CyberneticsGoal());
+
+	AvailableActions.push_back(new CyberneticsGoal());
+	AvailableActions.push_back(new StalkerGoal());
 
 	planner.Init();
 	shouldRecalcuate = true;
@@ -43,11 +50,11 @@ void BotWithAPlan::OnStep() {
 	{
 		//shouldRecalcuate = false;
 
-		econGoal = goalPicker.GetGoal(EconomyGoals, obs);
+		econGoal = goalPicker.GetGoal(EconomyGoals, obs, &state);
      
 		if (econGoal)
 		{
-			auto state = planner.GetGameState(obs);
+			auto state = planner.GetResourceState(obs);
 
 			auto plan = planner.CalculatePlan(state, econGoal);
 			if (plan.size() > 0)
@@ -62,7 +69,7 @@ void BotWithAPlan::OnStep() {
 	Debug()->DebugTextOut("Econ Goal Picked:" + econGoal->GetName());
 	if (nextInPlan)
 		Debug()->DebugTextOut("Econ Goal Next Step:" + nextInPlan->GetName());
-	auto success = nextInPlan->Excecute(obs, actions, query, Debug());
+	auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
 	if (success)
 	{
 		shouldRecalcuate = true;

@@ -10,13 +10,13 @@ class Planner
 {
 private:
 	vector<BaseAction*> availableActions;
-	GameState CalculateTargetGameState(GameState, BaseAction*);
-	vector<BaseAction*> CalculatePlan(GameState*, GameState);
-	float CalculateHeuristic(BaseAction*, GameState*, ResourceMap*);
+	ResourceState CalculateTargetResourceState(ResourceState, BaseAction*);
+	vector<BaseAction*> CalculatePlan(ResourceState*, ResourceState);
+	float CalculateHeuristic(BaseAction*, ResourceState*, ResourceMap*);
 public: 
-	vector<BaseAction*> CalculatePlan(GameState, BaseAction*);
+	vector<BaseAction*> CalculatePlan(ResourceState, BaseAction*);
 	void PrintPlan(vector<BaseAction*>);
-	GameState GetGameState(const sc2::ObservationInterface* obs);
+	ResourceState GetResourceState(const sc2::ObservationInterface* obs);
 	Planner();
 	bool Init();
 };

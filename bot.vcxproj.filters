@@ -41,6 +41,8 @@
     <ClCompile Include="Planner\Results\BaseResult.cpp">
       <Filter>Planner\Results</Filter>
     </ClCompile>
+    <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
+    <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -92,18 +94,23 @@
     <ClInclude Include="Goals\Economy\Expand.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
-    <ClInclude Include="Common\GameState.h" />
     <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Goals\Tech\Cybernetics.h" />
+    <ClInclude Include="Common\ResourceState.h" />
+    <ClInclude Include="Common\GameState.h" />
+    <ClInclude Include="Goals\Army\Gateway.h" />
+    <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
+    <ClInclude Include="Common\Strategy\Building\SpiralStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
       <Filter>Templates</Filter>
     </None>
+    <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt">

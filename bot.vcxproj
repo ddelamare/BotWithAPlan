@@ -132,22 +132,28 @@
     <ClCompile Include="BotWithAPlan.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
+    <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="Planner\Actions\BaseAction.cpp" />
     <ClCompile Include="Planner\Conditions\BaseCondition.cpp" />
     <ClCompile Include="Planner\Planner.cpp" />
     <ClCompile Include="Planner\Results\BaseResult.cpp" />
+    <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
+    <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BotWithAPlan.h" />
-    <ClInclude Include="Common\GameState.h" />
+    <ClInclude Include="Common\ResourceState.h" />
     <ClInclude Include="Common\ItemDependencies.h" />
+    <ClInclude Include="Common\GameState.h" />
     <ClInclude Include="Common\Resource.h" />
+    <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\UnitFilters.h" />
     <ClInclude Include="Common\Util.h" />
+    <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
     <ClInclude Include="Goals\Economy\Expand.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
@@ -168,6 +174,7 @@
     <ClInclude Include="Planner\Results\BaseResult.h" />
     <ClInclude Include="Planner\Results\MineralResult.h" />
     <ClInclude Include="Planner\Results\WorkerResult.h" />
+    <ClInclude Include="Common\Strategy\Building\SpiralStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt" />

@@ -3,26 +3,35 @@
 #include "../../Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "../../Common/Resource.h"
+#include "../../Common/Strategy/Building/SpiralStrategy.h"
 
-class CyberneticsGoal : public BaseAction
+class CyberneticsGoal : public BaseAction, public BaseCondition
 {
 public:
-	CyberneticsGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Build CYBERNETICS", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+	CyberneticsGoal() : BaseAction() , BaseCondition("Build CYBERNETICS", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1) {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
-		name = "Build Cybernetics";
+		this->BaseAction::name = "Build Cybernetics";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs) {
 		double score = 0;
 		return score + 1;
 	};
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query)
+	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool madePylon = false;
-		//TODO: Find location
-		//TODO: Find Nearby Probe
-		//TODO: Build pylon
+		bool success = false;
 
-		return madePylon;
+		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
+		auto probe = obs->GetUnits(Unit::Alliance::Self, IsWorker())[0];
+		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_CYBERNETICSCORE, true, true);
+		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
+
+		//TODO: Find Nearby Probe
+		if (DistanceSquared3D(buildPos, Point3D()) > 0)
+		{
+			actions->UnitCommand(probe, ABILITY_ID::BUILD_CYBERNETICSCORE, buildPos);
+			debug->DebugSphereOut(buildPos, 3, Colors::Purple);
+		}
+
+		return true;
 	}
 };

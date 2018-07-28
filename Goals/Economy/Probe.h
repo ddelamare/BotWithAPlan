@@ -9,7 +9,7 @@ public:
 	ProbeGoal() : BaseAction() {
 		name = "Build Probe";
 	}
-	double virtual CalculateScore(const sc2::ObservationInterface *obs) {
+	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		units.clear();
 		double score = 0.0f;
 		auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
@@ -19,7 +19,7 @@ public:
 			score += needed;
 			units.push_back(nexus);	
 		}
-		auto assimilators = obs->GetUnits(Unit::Alliance::Self, GetUnitsOfType(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
+		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
 		for (auto assim : assimilators)
 		{
 			auto needed = assim->ideal_harvesters - assim->assigned_harvesters;
@@ -35,7 +35,7 @@ public:
 		}
 		return score;
 	};
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug)
+	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		bool builtProbe = false;
 		for (auto nexus : units) {
