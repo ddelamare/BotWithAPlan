@@ -1,9 +1,9 @@
 #pragma once
-#include "../../Planner/Actions/BaseAction.h"
-#include "../../Planner/Actions/BuildResource.h"
+#include <Planner/Actions/BaseAction.h>
+#include <Planner/Actions/BuildResource.h>
 #include "sc2api\sc2_api.h"
-#include "../../Common/Resource.h"
-#include "../../Common/Strategy/Building/SpiralStrategy.h"
+#include <Common/Resource.h>
+#include <Common/Strategy/Building/SpiralStrategy.h>
 
 class CyberneticsGoal : public BaseAction, public BaseCondition
 {
@@ -21,11 +21,10 @@ public:
 		bool success = false;
 
 		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
-		auto probe = obs->GetUnits(Unit::Alliance::Self, IsWorker())[0];
 		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_CYBERNETICSCORE, true, true);
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
 
-		//TODO: Find Nearby Probe
+		auto probe = FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
 		if (DistanceSquared3D(buildPos, Point3D()) > 0)
 		{
 			actions->UnitCommand(probe, ABILITY_ID::BUILD_CYBERNETICSCORE, buildPos);

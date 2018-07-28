@@ -1,5 +1,6 @@
 #pragma once
-#include "UnitFilters.h"
+#ifndef UNIT_FILTERS
+#define UNIT_FILTERS
 #include "GameState.h"
 
 using namespace sc2;
@@ -258,3 +259,4 @@ struct UnitsInProgress
 private: sc2::UNIT_TYPEID unitType;
 };
 
+#endif // UNIT_FILTERS

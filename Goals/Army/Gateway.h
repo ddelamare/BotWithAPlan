@@ -1,10 +1,10 @@
 #pragma once
-#include "../../Planner/Actions/BaseAction.h"
-#include "../../Planner/Actions/BuildResource.h"
+#include <Planner/Actions/BaseAction.h>
+#include <Planner/Actions/BuildResource.h>
 #include "sc2api\sc2_api.h"
-#include "../../Common/Resource.h"
-#include "../../Common/Strategy/Building/BuildingStrategy.h"
-#include "../../Common/Strategy/Building/SpiralStrategy.h"
+#include <Common/Resource.h>
+#include <Common/Strategy/Building/BuildingStrategy.h>
+#include <Common/Strategy/Building/SpiralStrategy.h>
 using namespace sc2;
 class GatewayGoal : public BaseAction
 {
@@ -23,9 +23,13 @@ public:
 		{
 			return 5;
 		}
+		else if (gateways.size() > 7)
+		{
+			return 0;
+		}
 		else if (obs->GetFoodArmy() > 0)
 		{
-			return obs->GetFoodArmy() / gateways.size();
+			return obs->GetFoodArmy() / (2 * gateways.size());
 		}
 		return 0;
 	}
@@ -34,13 +38,12 @@ public:
 	{
 		bool success = false;
 
-		auto probe = obs->GetUnits(Unit::Alliance::Self, IsWorker())[0];
 		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_GATEWAY, true,true);
 		if (DistanceSquared3D(lastBuildSpot, Point3D()) == 0)
 		{
 			Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
 
-			//TODO: Find Nearby Probe
+			auto probe = FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
 			if (DistanceSquared3D(buildPos, Point3D()) > 0)
 			{
 				actions->UnitCommand(probe, ABILITY_ID::BUILD_GATEWAY, buildPos);

@@ -21,9 +21,12 @@ private:
 	GoalPicker goalPicker;
 	Planner    planner;
 	vector<BaseAction*> EconomyGoals;
+	vector<BaseAction*> ArmyGoals;
 	bool shouldRecalcuate;
 	BaseAction* econGoal;
+	BaseAction* armyGoal;
 	BaseAction* nextInPlan;
+	BaseAction* nextInArmyPlan;
 	GameState  state;
 };
 

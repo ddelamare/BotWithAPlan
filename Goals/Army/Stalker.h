@@ -1,9 +1,9 @@
 #pragma once
-#include "../../Planner/Actions/BaseAction.h"
-#include "../../Planner/Actions/BuildResource.h"
+#include <Planner/Actions/BaseAction.h>
+#include <Planner/Actions/BuildResource.h>
 #include "sc2api\sc2_api.h"
-#include "../../Common/Resource.h"
-#include "../Tech/Cybernetics.h"
+#include <Common/Resource.h>
+#include <Goals/Tech/Cybernetics.h>
 
 class StalkerGoal : public BaseAction, public BaseCondition
 {

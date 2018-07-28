@@ -1,7 +1,7 @@
 #pragma once
-#include "../../Planner/Actions/BaseAction.h"
-#include "../../Common/UnitFilters.h"
-#include "../../Planner/Actions/UseAbility.h"
+#include <Planner/Actions/BaseAction.h>
+#include <Common/UnitFilters.h>
+#include <Planner/Actions/UseAbility.h>
 #include <algorithm>    // std::remove_if
 
 // There's this random buff that shows up and keeps ticking up.

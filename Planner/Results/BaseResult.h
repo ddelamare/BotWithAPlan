@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include "../../Common/Resource.h"
+#include <Common/Resource.h>
 using namespace std;
 
 class BaseResult // This is abstract

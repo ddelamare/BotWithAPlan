@@ -87,7 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include;C:\Users\ddelam\Documents\Git\BotWithAPlan\project</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -133,6 +133,7 @@
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
+    <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
     <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="Planner\Actions\BaseAction.cpp" />
     <ClCompile Include="Planner\Conditions\BaseCondition.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Common\GameState.h" />
     <ClInclude Include="Common\Resource.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
+    <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Common\UnitFilters.h" />
     <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />

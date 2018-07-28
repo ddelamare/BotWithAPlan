@@ -1,8 +1,12 @@
 #pragma once
 #include "sc2api\sc2_api.h"
-#include "..\..\GameState.h"
+#include <Common\GameState.h>
 class BuildingStrategy
 {
+
+public:
+	const Unit * foundUnit;
+
 protected:
 	ABILITY_ID buildingAction;
 	bool useClearance;

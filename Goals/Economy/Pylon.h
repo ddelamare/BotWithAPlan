@@ -1,8 +1,9 @@
 #pragma once
-#include "../../Planner/Actions/BaseAction.h"
-#include "../../Planner/Actions/BuildResource.h"
+#include <Planner/Actions/BaseAction.h>
+#include <Planner/Actions/BuildResource.h>
 #include "sc2api\sc2_api.h"
-#include "../../Common/Resource.h"
+#include <Common/Resource.h>
+#include <Common\Util.h>
 using namespace sc2;
 class PylonGoal : public BaseAction
 {
@@ -47,7 +48,6 @@ public:
 		auto nexii = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
 		auto minerals = obs->GetUnits(Unit::Alliance::Neutral, IsMineralField());
 		bool works = query->Placement(ABILITY_ID::BUILD_PYLON, nexii[0]->pos + Point2D(0, -5));
-		auto probe = obs->GetUnits(Unit::Alliance::Self, IsWorker())[0];
 		//TODO: Find location away from minerals
 		Point3D buildPos;
 		if (pylons.size())
@@ -103,7 +103,7 @@ public:
 			auto mainNex = nexii[0];
 			buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PLYLON_RADIUS));  // Add pylon and nexus radius
 		}
-		//TODO: Find Nearby Probe
+		auto probe = FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
 		actions->UnitCommand(probe, ABILITY_ID::BUILD_PYLON, buildPos);
 		debug->DebugSphereOut(buildPos, 3, Colors::Teal);
 

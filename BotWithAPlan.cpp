@@ -5,6 +5,7 @@
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
 #include "Goals\Economy\Chrono.h"
+#include "Goals\Economy\Assimilator.h"
 #include "Goals\Army\Stalker.h"
 #include "Goals\Army\Gateway.h"
 #include "Goals\Tech\Cybernetics.h"
@@ -16,14 +17,17 @@ BotWithAPlan::BotWithAPlan()
 	goalPicker = GoalPicker();
 	planner = Planner();
 	EconomyGoals = vector<BaseAction*>();
+	ArmyGoals = vector<BaseAction*>();
 	//TODO: Fill goal and dependency dictionaries
 
 	EconomyGoals.push_back(new PylonGoal());
 	EconomyGoals.push_back(new ProbeGoal());
 	EconomyGoals.push_back(new ChronoGoal());
-	EconomyGoals.push_back(new StalkerGoal());
+	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
 	EconomyGoals.push_back(new CyberneticsGoal());
+
+	ArmyGoals.push_back(new StalkerGoal());
 
 	AvailableActions.push_back(new CyberneticsGoal());
 	AvailableActions.push_back(new StalkerGoal());
@@ -62,22 +66,51 @@ void BotWithAPlan::OnStep() {
 				nextInPlan = plan[plan.size() - 1];
 			}
 		}
-
 	}
 
 	// Exceute Econ State
-	Debug()->DebugTextOut("Econ Goal Picked:" + econGoal->GetName());
-	if (nextInPlan)
-		Debug()->DebugTextOut("Econ Goal Next Step:" + nextInPlan->GetName());
-	auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
+	if (econGoal)
+	{
+		Debug()->DebugTextOut("Econ Picked:" + econGoal->GetName());
+		if (nextInPlan)
+			Debug()->DebugTextOut("Econ Step:" + nextInPlan->GetName());
+		auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
+		if (success)
+		{
+			shouldRecalcuate = true;
+			econGoal = nullptr;
+		}
+		else
+		{
+			Debug()->DebugTextOut("No Econ Goal.");
+		}
+	}
+
+	if (shouldRecalcuate)
+	{
+		armyGoal = goalPicker.GetGoal(ArmyGoals, obs, &state);
+
+		if (armyGoal)
+		{
+			auto state = planner.GetResourceState(obs);
+
+			auto plan = planner.CalculatePlan(state, armyGoal);
+			if (plan.size() > 0)
+			{
+				nextInArmyPlan = plan[plan.size() - 1];
+			}
+		}
+	}
+
+	// Do army State
+	Debug()->DebugTextOut("Army Picked:" + armyGoal->GetName());
+	if (nextInArmyPlan)
+		Debug()->DebugTextOut("Army Next:" + nextInArmyPlan->GetName());
+	auto success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
 	if (success)
 	{
 		shouldRecalcuate = true;
-		econGoal = nullptr;
-	}
-	else
-	{
-		Debug()->DebugTextOut("No Econ Goal Picked.");
+		armyGoal = nullptr;
 	}
 
 	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());

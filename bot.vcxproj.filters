@@ -43,6 +43,7 @@
     </ClCompile>
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
+    <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -105,6 +106,7 @@
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\SpiralStrategy.h" />
+    <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

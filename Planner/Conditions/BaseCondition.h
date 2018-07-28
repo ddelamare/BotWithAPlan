@@ -3,8 +3,8 @@
 #include <string>
 #include <iostream>
 #include <stdarg.h>
-#include "../../Common/ResourceState.h"
-#include "../../Common/Resource.h"
+#include <Common/ResourceState.h>
+#include <Common/Resource.h>
 using namespace std;
 
 class BaseCondition

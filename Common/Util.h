@@ -52,3 +52,20 @@ const Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const Obse
 
 	return target;
 }
+
+const Unit* FindClosetOfType(sc2::UnitTypeID unit, Point3D point, const ObservationInterface* obs, QueryInterface* query)
+{
+	auto units = obs->GetUnits(Unit::Alliance::Self, IsUnit(unit));
+	double distance = DBL_MAX;
+	const Unit* foundUnit = nullptr;
+	for (auto unit : units)
+	{
+		auto dis = query->PathingDistance(unit->pos, point);
+		if (dis < distance)
+		{
+			distance = dis;
+			foundUnit = unit;
+		}
+	}
+	return foundUnit;
+}

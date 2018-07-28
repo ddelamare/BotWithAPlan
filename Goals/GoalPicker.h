@@ -1,5 +1,5 @@
 #pragma	once
-#include "../Planner/Actions/BaseAction.h"
+#include <Planner/Actions/BaseAction.h>
 
 class GoalPicker {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseAction.h"
-#include "../../Common/Resource.h"
-#include "../Results/WorkerResult.h"
+#include <Common/Resource.h>
+#include <Planner/Results/WorkerResult.h>
 class BuildResource : public BaseAction
 {
 public:
