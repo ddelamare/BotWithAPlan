@@ -22,6 +22,7 @@ private:
 	Planner    planner;
 	vector<BaseAction*> EconomyGoals;
 	vector<BaseAction*> ArmyGoals;
+	vector<BaseAction*> TacticsGoals;
 	bool shouldRecalcuate;
 	BaseAction* econGoal;
 	BaseAction* armyGoal;

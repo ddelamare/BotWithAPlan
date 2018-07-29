@@ -162,6 +162,7 @@
     <ClInclude Include="Goals\Economy\Probe.h" />
     <ClInclude Include="Goals\Economy\Pylon.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
+    <ClInclude Include="Goals\Tactics\AllOut.h" />
     <ClInclude Include="Goals\Tech\Cybernetics.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />

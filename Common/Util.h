@@ -60,7 +60,7 @@ const Unit* FindClosetOfType(sc2::UnitTypeID unit, Point3D point, const Observat
 	const Unit* foundUnit = nullptr;
 	for (auto unit : units)
 	{
-		auto dis = query->PathingDistance(unit->pos, point);
+		auto dis = query->PathingDistance(unit, point);
 		if (dis < distance)
 		{
 			distance = dis;

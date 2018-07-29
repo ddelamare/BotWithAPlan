@@ -29,7 +29,7 @@ public:
 		}
 		else if (obs->GetFoodArmy() > 0)
 		{
-			return obs->GetFoodArmy() / (2 * gateways.size());
+			return obs->GetFoodArmy() / (int)(2 * gateways.size());
 		}
 		return 0;
 	}

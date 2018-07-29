@@ -20,4 +20,5 @@ struct GameState
 	Units ScoutingProbes;
 	Units BuildingProbes;
 	Point3D MineralDirection;
+	Point2D EnemyBase;
 };

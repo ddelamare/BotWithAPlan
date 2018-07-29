@@ -1,6 +1,5 @@
 #pragma once
 #include "BuildingStrategy.h"
-
 using namespace sc2;
 class AssimilatorStrategy :
 	public BuildingStrategy

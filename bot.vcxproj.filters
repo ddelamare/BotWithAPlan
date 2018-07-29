@@ -107,6 +107,7 @@
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\SpiralStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
+    <ClInclude Include="Goals\Tactics\AllOut.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

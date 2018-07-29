@@ -9,6 +9,7 @@
 #include "Goals\Army\Stalker.h"
 #include "Goals\Army\Gateway.h"
 #include "Goals\Tech\Cybernetics.h"
+#include "Goals\Tactics\AllOut.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -29,6 +30,8 @@ BotWithAPlan::BotWithAPlan()
 
 	ArmyGoals.push_back(new StalkerGoal());
 
+	TacticsGoals.push_back(new AllOutGoal());
+
 	AvailableActions.push_back(new CyberneticsGoal());
 	AvailableActions.push_back(new StalkerGoal());
 
@@ -41,6 +44,8 @@ void BotWithAPlan::OnGameStart() {
 	LOG(1) << "Bot initialized" << endl;
 	auto nexus = Observation()->GetUnits(IsUnit(UNIT_TYPEID::PROTOSS_NEXUS))[0];
 	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
+	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
+	state.EnemyBase = enemyLocations[0];
 }
 
 void BotWithAPlan::OnStep() {
@@ -80,10 +85,10 @@ void BotWithAPlan::OnStep() {
 			shouldRecalcuate = true;
 			econGoal = nullptr;
 		}
-		else
-		{
-			Debug()->DebugTextOut("No Econ Goal.");
-		}
+	}
+	else
+	{
+		Debug()->DebugTextOut("No Econ Goal.");
 	}
 
 	if (shouldRecalcuate)
@@ -107,10 +112,35 @@ void BotWithAPlan::OnStep() {
 	if (nextInArmyPlan)
 		Debug()->DebugTextOut("Army Next:" + nextInArmyPlan->GetName());
 	auto success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
+
 	if (success)
 	{
 		shouldRecalcuate = true;
 		armyGoal = nullptr;
+	}
+
+	if (shouldRecalcuate)
+	{
+		armyGoal = goalPicker.GetGoal(TacticsGoals, obs, &state);
+
+		if (armyGoal)
+		{
+			auto state = planner.GetResourceState(obs);
+
+			auto plan = planner.CalculatePlan(state, armyGoal);
+			if (plan.size() > 0)
+			{
+				nextInArmyPlan = plan[plan.size() - 1];
+			}
+		}
+	}
+
+	if (armyGoal)
+	{
+		Debug()->DebugTextOut("Tactics Picked:" + armyGoal->GetName());
+		if (nextInArmyPlan)
+			Debug()->DebugTextOut("Tactics Next:" + nextInArmyPlan->GetName());
+		success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
 	}
 
 	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());

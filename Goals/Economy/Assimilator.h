@@ -30,7 +30,19 @@ public:
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
 		
 		auto probe = FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
-		if (DistanceSquared3D(buildPos, Point3D()) > 0)
+		bool alreadyBuilding = false;
+		if (probe->orders.size())
+		{
+			// Make sure the probe isn;t already doing that
+			for (auto order : probe->orders)
+			{
+				if (order.ability_id == ABILITY_ID::BUILD_ASSIMILATOR)
+				{
+					alreadyBuilding = true;
+				}
+			}
+		}
+		if (!alreadyBuilding && DistanceSquared3D(buildPos, Point3D()) > 0)
 		{
 			actions->UnitCommand(probe, ABILITY_ID::BUILD_ASSIMILATOR, buildingStrategy->foundUnit);
 			debug->DebugSphereOut(buildPos, 3, Colors::Purple);
