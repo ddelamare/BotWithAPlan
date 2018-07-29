@@ -147,7 +147,7 @@ void BotWithAPlan::OnStep() {
 	if (idleUnits.size() > 0)
 	{
 		Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0, 0, 1), 10);
-		auto resource = FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
+		auto resource = Util().FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
 		if (resource)
 		{
 			// TODO: Send probe to mine

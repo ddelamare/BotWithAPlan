@@ -140,6 +140,7 @@
     <ClCompile Include="Planner\Planner.cpp" />
     <ClCompile Include="Planner\Results\BaseResult.cpp" />
     <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
+    <ClCompile Include="Common\Strategy\Building\PylonStrategy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Planner\Results\MineralResult.h" />
     <ClInclude Include="Planner\Results\WorkerResult.h" />
     <ClInclude Include="Common\Strategy\Building\SpiralStrategy.h" />
+    <ClInclude Include="Common\Strategy\Building\PylonStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt" />

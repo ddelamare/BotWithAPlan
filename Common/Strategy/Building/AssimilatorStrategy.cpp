@@ -23,7 +23,7 @@ sc2::Point3D AssimilatorStrategy::FindPlacement(const sc2::ObservationInterface 
 	double distance = DBL_MAX;
 	for (auto nexus : nexuses)
 	{
-		auto geysers = obs->GetUnits(Unit::Alliance::Neutral, IsUnit(UNIT_TYPEID::NEUTRAL_VESPENEGEYSER));
+		auto geysers = obs->GetUnits(Unit::Alliance::Neutral, IsVespeneGeyser());
 		for (auto geyser : geysers)
 		{
 			if (query->Placement(this->buildingAction, geyser->pos))

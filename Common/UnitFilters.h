@@ -1,14 +1,19 @@
 #pragma once
 #ifndef UNIT_FILTERS
-#define UNIT_FILTERS
 #include "GameState.h"
 
 using namespace sc2;
 
-bool IsIdle(const Unit& unit)
+struct IsIdle
 {
-	return unit.orders.size() == 0;
-}
+	bool operator()(const Unit& unit) {
+		return unit.orders.size() == 0;
+	}
+	bool is(const Unit& unit)
+	{
+		return unit.orders.size() == 0;
+	}
+};
 
 struct IsAttackable {
 	bool operator()(const Unit& unit) {
@@ -236,7 +241,7 @@ struct IsIdleWorker {
 		case UNIT_TYPEID::PROTOSS_PROBE: 
 		case UNIT_TYPEID::ZERG_DRONE: 
 		case UNIT_TYPEID::TERRAN_SCV: 
-			return IsIdle(unit);
+			return IsIdle().is(unit);
 		default: return false;
 		}
 	}

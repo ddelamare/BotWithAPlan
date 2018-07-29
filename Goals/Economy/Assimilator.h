@@ -29,7 +29,7 @@ public:
 		auto buildingStrategy = new AssimilatorStrategy(ABILITY_ID::BUILD_ASSIMILATOR, true, true);
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
 		
-		auto probe = FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
+		auto probe = Util().FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
 		bool alreadyBuilding = false;
 		if (probe->orders.size())
 		{
