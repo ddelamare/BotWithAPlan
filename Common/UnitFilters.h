@@ -9,10 +9,6 @@ struct IsIdle
 	bool operator()(const Unit& unit) {
 		return unit.orders.size() == 0;
 	}
-	bool is(const Unit& unit)
-	{
-		return unit.orders.size() == 0;
-	}
 };
 
 struct IsAttackable {
@@ -241,12 +237,22 @@ struct IsIdleWorker {
 		case UNIT_TYPEID::PROTOSS_PROBE: 
 		case UNIT_TYPEID::ZERG_DRONE: 
 		case UNIT_TYPEID::TERRAN_SCV: 
-			return IsIdle().is(unit);
+			return IsIdle()(unit);
 		default: return false;
 		}
 	}
 };
 
+struct IsCombatUnit {
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (IsWorker()(unit))
+		{
+			return false;
+		}
+		else return IsArmy()(unit);
+	}
+};
 
 struct UnitsInProgress
 {

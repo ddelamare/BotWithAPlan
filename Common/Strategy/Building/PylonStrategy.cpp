@@ -28,6 +28,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 	}
 	else  // If there are no pylons, build next to nexus
 	{
+		auto mainNex = nexii[0];
 		if (Distance2D(state->MineralDirection, Point2D(0, 0)) == 0) // Check if it's been set
 		{
 			//Calc mineral vector and normalize
@@ -43,14 +44,14 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 			}
 			if (visibleMinerals > 0)
 			{
-				sum.z = 0;
 				sum /= visibleMinerals;
+				sum = sum - mainNex->pos;
+				sum.z = 0;
 				Normalize3D(sum);
 				state->MineralDirection = sum;
 			}
 		}
-		auto mainNex = nexii[0];
-		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS));  // Add pylon and nexus radius
+		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS + 1));  // Add pylon and nexus radius
 	}
  	return buildPos;
 }

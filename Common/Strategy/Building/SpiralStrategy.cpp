@@ -16,9 +16,11 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 	auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 	Point3D buildPos;
 	Point3D offset = Point3D(1, 0, 0);
+	int rotationDir = 1;
 	if (state->MineralDirection.x > state->MineralDirection.y)
 	{
 		offset *= -1;
+		rotationDir = -1;
 	}
 	int maxSpiralCount = 64;
 	const int numDivisions = 8;
@@ -48,8 +50,8 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 			xScalar+= 1;
 		}
 
-		offset.x = sin(radialDiff * i) * xScalar;
-		offset.y = cos(radialDiff * i) * xScalar;
+		offset.x = sin(rotationDir * radialDiff * i) * xScalar;
+		offset.y = cos(rotationDir * radialDiff * i) * xScalar;
 	}
 
 

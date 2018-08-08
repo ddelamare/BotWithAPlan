@@ -16,12 +16,11 @@ int main(int argc, char* argv[]) {
     BotWithAPlan bot;
     coordinator.SetParticipants({
         CreateParticipant((Race)GetAgentRace(), &bot),
-        CreateComputer(Race::Terran)
+        CreateComputer(Race::Terran, sc2::Difficulty::Medium)
     });
 
     coordinator.LaunchStarcraft();
     coordinator.StartGame(sc2::kMapBelShirVestigeLE);
-
     while (coordinator.Update()) {
 		
     }

@@ -80,6 +80,7 @@
     <Link>
       <AdditionalDependencies>sc2api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -95,6 +96,7 @@
       <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>civetweb.lib;libprotobufd.lib;sc2apid.lib;sc2libd.lib;sc2protocold.lib;sc2rendererd.lib;sc2utilsd.lib;SDL2.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;dinput8.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
+      <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,6 +156,7 @@
     <ClInclude Include="Common\Resource.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
+    <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
     <ClInclude Include="Common\UnitFilters.h" />
     <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
@@ -180,6 +183,8 @@
     <ClInclude Include="Planner\Results\WorkerResult.h" />
     <ClInclude Include="Common\Strategy\Building\SpiralStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\PylonStrategy.h" />
+    <ClInclude Include="Goals\Army\StarGate.h" />
+    <ClInclude Include="Goals\Army\VoidRay.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt" />

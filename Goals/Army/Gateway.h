@@ -23,7 +23,7 @@ public:
 		{
 			return 5;
 		}
-		else if (gateways.size() > 7)
+		else if (gateways.size() >= 2)
 		{
 			return 0;
 		}
@@ -37,6 +37,10 @@ public:
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		bool success = false;
+
+		//Is there a probe already on the way?
+		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_GATEWAY, obs);
+		if (alreadyBuilding) return false;							 
 
 		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_GATEWAY, true,true);
 		if (DistanceSquared3D(lastBuildSpot, Point3D()) == 0)

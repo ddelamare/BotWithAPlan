@@ -56,11 +56,11 @@ AvailableActions.push_back(new BaseAction("Build PROTOSS_NEXUS", conds, result))
 result.clear();
 conds.clear();
 
-conds.push_back(new BaseCondition("Build PROTOSS_STARGATE", 6, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1));
-result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STARGATE,1));
-AvailableActions.push_back(new BaseAction("Build PROTOSS_STARGATE", conds, result));
-result.clear();
-conds.clear();
+//conds.push_back(new BaseCondition("Build PROTOSS_STARGATE", 6, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1));
+//result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STARGATE,1));
+//AvailableActions.push_back(new BaseAction("Build PROTOSS_STARGATE", conds, result));
+//result.clear();
+//conds.clear();
 
 conds.push_back(new BaseCondition("Build PROTOSS_FLEETBEACON", 6, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 1));
 result.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON,1));

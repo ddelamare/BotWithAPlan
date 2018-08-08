@@ -4,10 +4,13 @@
 #include <chrono>
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
+#include "Goals\Economy\Expand.h"
 #include "Goals\Economy\Chrono.h"
 #include "Goals\Economy\Assimilator.h"
 #include "Goals\Army\Stalker.h"
 #include "Goals\Army\Gateway.h"
+#include "Goals\Army\StarGate.h"
+#include "Goals\Army\VoidRay.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tactics\AllOut.h"
 #include "Common\Util.h"
@@ -26,14 +29,15 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new ChronoGoal());
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
-	EconomyGoals.push_back(new CyberneticsGoal());
+	EconomyGoals.push_back(new ExpandGoal());
 
 	ArmyGoals.push_back(new StalkerGoal());
 
 	TacticsGoals.push_back(new AllOutGoal());
 
 	AvailableActions.push_back(new CyberneticsGoal());
-	AvailableActions.push_back(new StalkerGoal());
+	AvailableActions.push_back(new StarGateGoal());
+	AvailableActions.push_back(new VoidRayGoal());
 
 	planner.Init();
 	shouldRecalcuate = true;
@@ -162,6 +166,11 @@ void BotWithAPlan::OnStep() {
 
 	auto endTime = Clock::now();
 	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
+	
+	auto nexii = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
+	Point3D offset = Point3D(nexii[0]->radius, nexii[0]->radius, nexii[0]->pos.z + 3);
+	Debug()->DebugSphereOut(nexii[0]->pos + state.MineralDirection, nexii[0]->radius, Colors::Gray);
+	
 	Debug()->SendDebug();
 }
 

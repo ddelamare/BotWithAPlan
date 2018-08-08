@@ -110,6 +110,9 @@
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Goals\Tactics\AllOut.h" />
     <ClInclude Include="Common\Strategy\Building\PylonStrategy.h" />
+    <ClInclude Include="Goals\Army\VoidRay.h" />
+    <ClInclude Include="Goals\Army\StarGate.h" />
+    <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

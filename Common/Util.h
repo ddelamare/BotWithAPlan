@@ -71,4 +71,48 @@ struct Util {
 		}
 		return foundUnit;
 	}
+
+	bool IsAnyWorkerCommitted(ABILITY_ID ability, const ObservationInterface* obs)
+	{
+		auto workers = obs->GetUnits(Unit::Alliance::Self, IsWorker());
+		for (auto worker : workers)
+		{
+			if (worker->orders.size())
+			{
+				for (auto order : worker->orders)
+				{
+					if (order.ability_id == ability) 
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+};
+
+struct Sorters
+{
+	struct sort_by_x {
+		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		{
+			return lhs.x < rhs.x;
+		}
+		bool operator()(const Unit* lhs, const Unit* rhs)
+		{
+			return lhs->pos.x < rhs->pos.x;
+		}
+	};
+	struct sort_by_y {
+		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		{
+			return lhs.y < rhs.y;
+		}
+		bool operator()(const Unit* lhs, const Unit* rhs)
+		{
+			return lhs->pos.y < rhs->pos.y;
+		}
+	};
+
 };

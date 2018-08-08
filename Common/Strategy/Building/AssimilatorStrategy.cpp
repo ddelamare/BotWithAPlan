@@ -28,8 +28,8 @@ sc2::Point3D AssimilatorStrategy::FindPlacement(const sc2::ObservationInterface 
 		{
 			if (query->Placement(this->buildingAction, geyser->pos))
 			{
-				auto dis = query->PathingDistance(geyser->pos, nexus->pos + Point3D(nexus->radius, 0, 0));
-				if (dis < distance)
+				auto dis = Distance3D(geyser->pos, nexus->pos);
+				if (dis < distance && dis > 0)
 				{
 					buildPos = geyser->pos;
 					distance = dis;

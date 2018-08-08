@@ -44,6 +44,9 @@ public:
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		bool madePylon = false;
+		//Is there a probe already on the way?
+		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_PYLON, obs);
+		if (alreadyBuilding) return false;
 
 		auto strat = PylonStrategy(ABILITY_ID::BUILD_PYLON,false,false);
 		Point3D buildPos = strat.FindPlacement(obs, actions, query, debug, state);
