@@ -4,8 +4,11 @@
 #include <math.h>
 #include <Common/Util.h>
 using namespace sc2;
-class ExpandStrategy :	public BuildingStrategy
+class ExpandStrategy : public BuildingStrategy
 {
+	static int avgTries;
+	static int numTries;
+	static int sumTries;
 public:
 	ExpandStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon) : BuildingStrategy(unit, needsClearance, needsPylon)
 	{
@@ -22,50 +25,45 @@ public:
 	{
 		Point3D buildPos;
 
-		// Find mineral patches clsoe to existing nexuses
-		auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
-		if (state->ExpansionLocations.size() == 0)
+		int NEXUS_MAX_TRIES = 5;
+		bool foundSpot = false;
+		for (auto exp : state->ExpansionLocations)
 		{
-			 // Get all minerals and sort by x , then y pos
-			 auto minerals = obs->GetUnits(Unit::Alliance::Neutral, IsMineralField());
-			 int count = 0;
-			 Point3D sum = Point3D();
-			 const int MINERAL_DISTANCE_THRESHOLD = 150;
-			 while (minerals.size() > 0)
-			 {
-				 Point3D origMineral = minerals[0]->pos;
-				 sum = Point3D();
-				 count = 0;
-				 // Yay for O(N^2)!!!
-				 for (int j = 0; j < minerals.size();)
-				 {
-					 auto cluster = std::vector<Point3D>();
-					 auto dis = DistanceSquared3D(origMineral, minerals[j]->pos);
-					 if (dis < MINERAL_DISTANCE_THRESHOLD)
-					 {
-						 sum += minerals[j]->pos;
-						 count++;
-						 // Erase this element
-						 minerals.erase(minerals.begin() + j, minerals.begin() + j + 1);
-					 }
-					 else
-					 {
-						 j++;
-					 }
-				 }
-				 
-				 state->ExpansionLocations.push_back(sum / count);
-			 }
-		}
-		else
-		{
-			for (auto exp : state->ExpansionLocations)
+			auto furtherst = Util().FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
+			auto otherFurthest = Util().FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, furtherst->pos);
+			auto averagePoint = (otherFurthest->pos + furtherst->pos) / 2;
+			//debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
+			//debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);
+			//debug->DebugSphereOut(exp, 2, Colors::White);
+
+			auto direction = averagePoint - exp;
+			direction.z = 0;
+			Normalize3D(direction);
+			for (int i = 0; i < NEXUS_MAX_TRIES; i++)
 			{
-				debug->DebugSphereOut(exp, 5, Colors::Red);
+				auto offset = (i+3) * direction;
+				if (query->Placement(this->buildingAction, exp + offset))
+				{
+					buildPos = exp + offset;
+					foundSpot = true;
+					sumTries += i;
+					numTries += 1;
+					avgTries = sumTries / numTries;
+					break;
+				}
+				else
+				{
+					//debug->DebugSphereOut(exp + offset, 5, Colors::Yellow);
+				}
 			}
+			if (foundSpot) break;
 		}
 
 		return buildPos;
 	}
 };
+
+int ExpandStrategy::avgTries = 0;
+int ExpandStrategy::numTries = 0;
+int ExpandStrategy::sumTries = 0;
 

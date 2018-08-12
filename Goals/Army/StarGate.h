@@ -20,7 +20,7 @@ public:
 		bool success = false;
 
 		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_STARGATE, obs);
-		if (alreadyBuilding) return false;
+		if (alreadyBuilding || !Util().HasEnoughResources(150, 150, obs)) return false;
 
 		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_STARGATE, true, true);

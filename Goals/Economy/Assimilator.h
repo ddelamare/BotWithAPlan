@@ -27,7 +27,7 @@ public:
 		bool builtAssim = false;
 
 		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_ASSIMILATOR, obs);
-		if (alreadyBuilding) return false;
+		if (alreadyBuilding || !Util().HasEnoughResources(100, 0, obs)) return false;
 
 		auto buildingStrategy = new AssimilatorStrategy(ABILITY_ID::BUILD_ASSIMILATOR, true, true);
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);

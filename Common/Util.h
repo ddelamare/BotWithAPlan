@@ -1,6 +1,7 @@
 #pragma once
 #include "sc2api\sc2_api.h"
 #include "UnitFilters.h"
+#include <vector>
 using namespace sc2;
 
 struct Util {
@@ -72,6 +73,40 @@ struct Util {
 		return foundUnit;
 	}
 
+	const Point3D FindClosestPoint(std::vector<Point3D> points, Point3D point)
+	{
+		auto distance = DBL_MAX;
+		Point3D closest;
+		for (auto p : points)
+		{
+			auto dis = DistanceSquared3D(p, point);
+			if (dis < distance)
+			{
+				distance = dis;
+				closest = p;
+			}
+		}
+		return closest;
+	}
+
+	const Unit* FindFurthestInRadius(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query, double radius, Point3D ignorePoint)
+	{
+		auto units = obs->GetUnits(filter);
+		double distance = DBL_MIN;
+		const Unit* foundUnit = nullptr;
+		for (auto unit : units)
+		{
+			if (unit->pos.x == ignorePoint.x && unit->pos.y == ignorePoint.y) continue;
+			auto dis = Distance3D(unit->pos, point);
+			if (dis > distance && dis < radius)
+			{
+				distance = dis;
+				foundUnit = unit;
+			}
+		}
+		return foundUnit;
+	}
+
 	bool IsAnyWorkerCommitted(ABILITY_ID ability, const ObservationInterface* obs)
 	{
 		auto workers = obs->GetUnits(Unit::Alliance::Self, IsWorker());
@@ -87,6 +122,11 @@ struct Util {
 			}
 		}
 		return false;
+	}
+
+	bool HasEnoughResources(int mineralsNeeded, int gasNeeded, const ObservationInterface* obs)
+	{
+		return obs->GetMinerals() >= mineralsNeeded && obs->GetVespene() >= gasNeeded;
 	}
 
 

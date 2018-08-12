@@ -19,11 +19,12 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto gateways = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
+		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		if (!gateways.size())
 		{
 			return 5;
 		}
-		else if (gateways.size() >= 2)
+		else if (gateways.size() >= (2 * nexus.size()))
 		{
 			return 0;
 		}
@@ -40,7 +41,7 @@ public:
 
 		//Is there a probe already on the way?
 		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_GATEWAY, obs);
-		if (alreadyBuilding) return false;							 
+		if (alreadyBuilding || !Util().HasEnoughResources(150, 0, obs)) return false;
 
 		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_GATEWAY, true,true);
 		if (DistanceSquared3D(lastBuildSpot, Point3D()) == 0)

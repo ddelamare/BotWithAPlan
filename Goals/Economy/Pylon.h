@@ -46,7 +46,7 @@ public:
 		bool madePylon = false;
 		//Is there a probe already on the way?
 		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_PYLON, obs);
-		if (alreadyBuilding) return false;
+		if (alreadyBuilding || !Util().HasEnoughResources(100,0,obs)) return false;
 
 		auto strat = PylonStrategy(ABILITY_ID::BUILD_PYLON,false,false);
 		Point3D buildPos = strat.FindPlacement(obs, actions, query, debug, state);

@@ -261,7 +261,7 @@ struct UnitsInProgress
 		unitType = type;
 	}
 	bool operator()(const Unit& unit) {
-		if (unitType != UNIT_TYPEID::INVALID)
+		if (unitType == unit.unit_type)
 		{
 			return unit.build_progress < 1;
 		}

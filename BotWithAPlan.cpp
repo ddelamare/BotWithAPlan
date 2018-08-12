@@ -46,10 +46,47 @@ BotWithAPlan::BotWithAPlan()
 
 void BotWithAPlan::OnGameStart() {
 	LOG(1) << "Bot initialized" << endl;
-	auto nexus = Observation()->GetUnits(IsUnit(UNIT_TYPEID::PROTOSS_NEXUS))[0];
+	auto nexus = Observation()->GetUnits(IsTownHall())[0];
 	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
 	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
 	state.EnemyBase = enemyLocations[0];
+
+	// Get all minerals and sort by x , then y pos
+	auto minerals = Observation()->GetUnits(Unit::Alliance::Neutral, IsMineralField());
+	int count = 0;
+	Point3D sum = Point3D();
+	const int MINERAL_DISTANCE_THRESHOLD = 150;
+	while (minerals.size() > 0)
+	{
+		Point3D origMineral = minerals[0]->pos;
+		sum = Point3D();
+		count = 0;
+		// Yay for O(N^2)!!!
+		for (int j = 0; j < minerals.size();)
+		{
+			auto cluster = std::vector<Point3D>();
+			auto dis = DistanceSquared3D(origMineral, minerals[j]->pos);
+			if (dis < MINERAL_DISTANCE_THRESHOLD)
+			{
+				sum += minerals[j]->pos;
+				count++;
+				// Erase this element
+				minerals.erase(minerals.begin() + j, minerals.begin() + j + 1);
+			}
+			else
+			{
+				j++;
+			}
+		}
+
+		state.ExpansionLocations.push_back(sum / count);
+	}
+	// Remove starting pos as expansion location
+	auto closest_mineral = Util().FindClosestPoint(state.ExpansionLocations, nexus->pos);
+	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
+	closest_mineral = Util().FindClosestPoint(state.ExpansionLocations, Point3D(state.EnemyBase.x, state.EnemyBase.y, 0));
+	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
+
 }
 
 void BotWithAPlan::OnStep() {
@@ -81,7 +118,7 @@ void BotWithAPlan::OnStep() {
 	if (econGoal)
 	{
 		Debug()->DebugTextOut("Econ Picked:" + econGoal->GetName());
-		if (nextInPlan)
+		if (nextInPlan && econGoal != nextInPlan)
 			Debug()->DebugTextOut("Econ Step:" + nextInPlan->GetName());
 		auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
 		if (success)
@@ -113,7 +150,7 @@ void BotWithAPlan::OnStep() {
 
 	// Do army State
 	Debug()->DebugTextOut("Army Picked:" + armyGoal->GetName());
-	if (nextInArmyPlan)
+	if (nextInArmyPlan && nextInArmyPlan != armyGoal)
 		Debug()->DebugTextOut("Army Next:" + nextInArmyPlan->GetName());
 	auto success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
 
@@ -142,7 +179,7 @@ void BotWithAPlan::OnStep() {
 	if (armyGoal)
 	{
 		Debug()->DebugTextOut("Tactics Picked:" + armyGoal->GetName());
-		if (nextInArmyPlan)
+		if (nextInArmyPlan && nextInArmyPlan != armyGoal)
 			Debug()->DebugTextOut("Tactics Next:" + nextInArmyPlan->GetName());
 		success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
 	}
