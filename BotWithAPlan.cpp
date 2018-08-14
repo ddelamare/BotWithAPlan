@@ -7,6 +7,7 @@
 #include "Goals\Economy\Expand.h"
 #include "Goals\Economy\Chrono.h"
 #include "Goals\Economy\Assimilator.h"
+#include "Goals\Army\Zealot.h"
 #include "Goals\Army\Stalker.h"
 #include "Goals\Army\DarkTemplar.h"
 #include "Goals\Army\Gateway.h"
@@ -16,6 +17,7 @@
 #include "Goals\Tech\TwilightCouncil.h"
 #include "Goals\Tech\DarkShrine.h"
 #include "Goals\Tactics\AllOut.h"
+#include "Goals\Upgrades\Chargelots.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -35,10 +37,12 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new ExpandGoal());
 
 	// Build Because we Can
+	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 
 	// Army Composition Goals
+	TacticsGoals.push_back(new ChargelotGoal());
 	TacticsGoals.push_back(new AllOutGoal());
 
 	// Steps the planner will consider to fufill goals

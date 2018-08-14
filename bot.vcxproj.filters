@@ -117,6 +117,8 @@
     <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
     <ClInclude Include="Goals\Tech\DarkShrine.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
+    <ClInclude Include="Goals\Upgrades\Chargelots.h" />
+    <ClInclude Include="Goals\Army\Zealot.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

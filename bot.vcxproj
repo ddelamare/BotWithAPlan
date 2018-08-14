@@ -162,6 +162,7 @@
     <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
+    <ClInclude Include="Goals\Army\Zealot.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
     <ClInclude Include="Goals\Economy\Expand.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Goals\Tech\Cybernetics.h" />
     <ClInclude Include="Goals\Tech\DarkShrine.h" />
     <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
+    <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />
