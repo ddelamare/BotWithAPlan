@@ -2,15 +2,13 @@
 #include <map>
 #include "sc2api\sc2_api.h"
 #include <vector>
+#include <map>
 using namespace sc2;
 
 // Holds data that only needs to be calculated once and then referenced or updated
 
-enum YesNo {
-	Undefinded = 0,
-	Yes,
-	No
-};
+typedef std::map<UNIT_TYPEID, int>	UnitMap;
+
 
 struct GameState
 {
@@ -18,11 +16,13 @@ struct GameState
 		ScoutingProbes = Units();
 		BuildingProbes = Units();
 		ExpansionLocations = std::vector<Point3D>();
+		ObservedUnits = UnitMap();
 	}
 	Units ScoutingProbes;
 	Units BuildingProbes;
 	std::vector<Point3D> ExpansionLocations;
 	Point3D MineralDirection;
 	Point2D EnemyBase;
+	UnitMap ObservedUnits;
 
 };

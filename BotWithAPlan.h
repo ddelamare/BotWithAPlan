@@ -17,6 +17,7 @@ public:
 	void OnStep();
 	void OnBuildingConstructionComplete(const Unit *);
 	void OnUnitCreated(const Unit *);
+	void OnUnitEnterVision(const Unit *);
 private:
 	GoalPicker goalPicker;
 	Planner    planner;

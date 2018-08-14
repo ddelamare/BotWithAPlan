@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BotEvents.cpp" />
     <ClCompile Include="BotWithAPlan.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
     <ClInclude Include="Common\UnitFilters.h" />
     <ClInclude Include="Common\Util.h" />
+    <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
     <ClInclude Include="Goals\Economy\Expand.h" />
@@ -168,6 +170,8 @@
     <ClInclude Include="Goals\GoalPicker.h" />
     <ClInclude Include="Goals\Tactics\AllOut.h" />
     <ClInclude Include="Goals\Tech\Cybernetics.h" />
+    <ClInclude Include="Goals\Tech\DarkShrine.h" />
+    <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />
