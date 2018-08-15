@@ -24,9 +24,9 @@ public:
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		bool madeUpgrade = false;
-		auto twilightCouncil = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
+		auto twilightCouncil = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL));
 		for (auto tc : twilightCouncil) {
-			if (tc->orders.size() == 0)
+			if (tc->orders.size() == 0 && tc->build_progress == 1)
 			{
 				actions->UnitCommand(tc, ABILITY_ID::RESEARCH_CHARGE);
 				madeUpgrade = true;

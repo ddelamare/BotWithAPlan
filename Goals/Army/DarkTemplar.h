@@ -15,9 +15,9 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_RAVEN] > 0)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
 		{
-			score = 5;
+			score = 2;
 		}
 		return score;
 	};
