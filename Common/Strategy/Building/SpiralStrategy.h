@@ -7,7 +7,7 @@ using namespace sc2;
 class SpiralStrategy :
 	public BuildingStrategy
 {
-	double _RadialDistance = 1;
+	double _RadialDistance = 3;
 public:
 	SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon);
 	SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, double radialDistance);

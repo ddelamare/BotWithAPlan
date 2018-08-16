@@ -26,6 +26,7 @@ public:
 		bool madeUpgrade = false;
 		auto twilightCouncil = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL));
 		for (auto tc : twilightCouncil) {
+			//TODO: Check minerals spent by other goals
 			if (tc->orders.size() == 0 && tc->build_progress == 1 && Util::HasEnoughResources(100,100, obs))
 			{
 				actions->UnitCommand(tc, ABILITY_ID::RESEARCH_CHARGE);
