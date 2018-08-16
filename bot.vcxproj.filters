@@ -119,6 +119,8 @@
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />
+    <ClInclude Include="Common\VectorHelpers.h" />
+    <ClInclude Include="Common\UnitHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

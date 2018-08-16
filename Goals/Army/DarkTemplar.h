@@ -5,7 +5,7 @@
 #include <Common/Resource.h>
 #include <Goals/Tech/Cybernetics.h>
 
-class DarkTemplarGoal : public BaseAction, public BaseCondition
+class DarkTemplarGoal : public BaseAction
 {
 public:
 	DarkTemplarGoal() : BaseAction(){
@@ -21,18 +21,10 @@ public:
 		}
 		return score;
 	};
+
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool madeStaker = false;
-		auto gateways = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
-		for (auto gateway : gateways) {
-			if (gateway->orders.size() == 0)
-			{
-				actions->UnitCommand(gateway, ABILITY_ID::TRAIN_DARKTEMPLAR);
-				madeStaker = true;
-			}
-		}
+		return Util::TryBuildUnit(ABILITY_ID::TRAIN_DARKTEMPLAR, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions);
 
-		return madeStaker;
 	}
 };

@@ -3,8 +3,9 @@
 #include <Planner/Actions/BuildResource.h>
 #include "sc2api\sc2_api.h"
 #include <Common/Resource.h>
+#include <Common/UnitHelpers.h>
 
-class ZealotGoal : public BaseAction, public BaseCondition
+class ZealotGoal : public BaseAction
 {
 public:
 	ZealotGoal() : BaseAction() {
@@ -22,16 +23,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool madeZealot = false;
-		auto gateways = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
-		for (auto gateway : gateways) {
-			if (gateway->orders.size() == 0)
-			{
-				actions->UnitCommand(gateway, ABILITY_ID::TRAIN_ZEALOT);
-				madeZealot = true;
-			}
-		}
-
-		return madeZealot;
+		return Util::TryBuildUnit(ABILITY_ID::TRAIN_ZEALOT, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions);
 	}
 };

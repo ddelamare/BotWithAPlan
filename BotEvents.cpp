@@ -58,9 +58,9 @@ void BotWithAPlan::OnGameStart() {
 		state.ExpansionLocations.push_back(sum / count);
 	}
 	// Remove starting pos as expansion location
-	auto closest_mineral = Util().FindClosestPoint(state.ExpansionLocations, nexus->pos);
+	auto closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, nexus->pos);
 	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
-	closest_mineral = Util().FindClosestPoint(state.ExpansionLocations, Point3D(state.EnemyBase.x, state.EnemyBase.y, 0));
+	closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, Point3D(state.EnemyBase.x, state.EnemyBase.y, 0));
 	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
 
 }

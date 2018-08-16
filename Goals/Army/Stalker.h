@@ -4,7 +4,7 @@
 #include "sc2api\sc2_api.h"
 #include <Common/Resource.h>
 
-class StalkerGoal : public BaseAction, public BaseCondition
+class StalkerGoal : public BaseAction
 {
 public:
 	StalkerGoal() : BaseAction() {
@@ -18,16 +18,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool madeStaker = false;
-		auto gateways = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
-		for (auto gateway : gateways) {
-			if (gateway->orders.size() == 0)
-			{
-				actions->UnitCommand(gateway, ABILITY_ID::TRAIN_STALKER);
-				madeStaker = true;
-			}
-		}
-
-		return madeStaker;
+		return Util::TryBuildUnit(ABILITY_ID::TRAIN_STALKER, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions);
 	}
 };

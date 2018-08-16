@@ -159,7 +159,9 @@
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
     <ClInclude Include="Common\UnitFilters.h" />
+    <ClInclude Include="Common\UnitHelpers.h" />
     <ClInclude Include="Common\Util.h" />
+    <ClInclude Include="Common\VectorHelpers.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />

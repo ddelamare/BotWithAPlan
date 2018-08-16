@@ -4,7 +4,7 @@
 #include "sc2api\sc2_api.h"
 #include <Common/Resource.h>
 
-class ChargelotGoal : public BaseAction, public BaseCondition
+class ChargelotGoal : public BaseAction
 {
 	bool hasUpgrade = false;
 public:
@@ -26,7 +26,7 @@ public:
 		bool madeUpgrade = false;
 		auto twilightCouncil = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL));
 		for (auto tc : twilightCouncil) {
-			if (tc->orders.size() == 0 && tc->build_progress == 1 && Util().HasEnoughResources(100,100, obs))
+			if (tc->orders.size() == 0 && tc->build_progress == 1 && Util::HasEnoughResources(100,100, obs))
 			{
 				actions->UnitCommand(tc, ABILITY_ID::RESEARCH_CHARGE);
 				madeUpgrade = true;

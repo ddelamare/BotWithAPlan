@@ -4,16 +4,15 @@
 #include "sc2api\sc2_api.h"
 #include <Common/Resource.h>
 
-class AllOutGoal : public BaseAction, public BaseCondition
+class AllOutGoal : public BaseAction
 {
 public:
-	AllOutGoal() : BaseAction(), BaseCondition() {
+	AllOutGoal() : BaseAction() {
 		this->conditions.push_back(new BaseCondition("Mass Units", 4, sc2::UNIT_TYPEID::PROTOSS_STALKER, 10, sc2::UNIT_TYPEID::PROTOSS_VOIDRAY,5));
-		this->BaseAction::name = "Build Stalker";
+		this->BaseAction::name = "";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto stalkers = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_STALKER));
-		return stalkers.size() > 5;
+		return obs->GetArmyCount() > 5;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

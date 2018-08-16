@@ -157,7 +157,7 @@ void BotWithAPlan::OnStep() {
 	if (idleUnits.size() > 0)
 	{
 		Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0, 0, 1), 10);
-		auto resource = Util().FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
+		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
 		if (resource)
 		{
 			// TODO: Send probe to mine
@@ -167,15 +167,15 @@ void BotWithAPlan::OnStep() {
 		else
 		{
 			// What to do here?
+			if (state.ScoutingProbes.size() == 0)
+			{
+				actions->UnitCommand(idleUnits[0], ABILITY_ID::MOVE, state.EnemyBase);
+			}
 		}
 	}
 
 	auto endTime = Clock::now();
 	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
-	
-	auto nexii = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
-	Point3D offset = Point3D(nexii[0]->radius, nexii[0]->radius, nexii[0]->pos.z + 3);
-	Debug()->DebugSphereOut(nexii[0]->pos + state.MineralDirection, nexii[0]->radius, Colors::Gray);
 	
 	Debug()->SendDebug();
 }

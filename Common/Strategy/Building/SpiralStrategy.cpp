@@ -1,10 +1,12 @@
 #include "SpiralStrategy.h"
 using namespace sc2;
+SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, double radialDistance) : BuildingStrategy(unit, needsClearance, needsPylon)
+{
+	this->_RadialDistance = radialDistance;
+}
 SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon) : BuildingStrategy(unit, needsClearance, needsPylon)
 {
-
 }
-
 
 SpiralStrategy::~SpiralStrategy()
 {
@@ -50,8 +52,8 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 			xScalar+= 1;
 		}
 
-		offset.x = sin(rotationDir * radialDiff * i) * xScalar;
-		offset.y = cos(rotationDir * radialDiff * i) * xScalar;
+		offset.x = sin(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
+		offset.y = cos(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
 	}
 
 

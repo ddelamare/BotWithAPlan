@@ -1,12 +1,13 @@
 #pragma once
 #include "sc2api\sc2_api.h"
 #include "UnitFilters.h"
+#include "VectorHelpers.h"
 #include <vector>
 using namespace sc2;
 
-struct Util {
+namespace Util {
 
-	const Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query)
+	const static Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query)
 	{
 		double distance = DBL_MAX;
 		const Unit* target = 0;
@@ -56,9 +57,26 @@ struct Util {
 		return target;
 	}
 
-	const Unit* FindClosetOfType(sc2::UnitTypeID unit, Point3D point, const ObservationInterface* obs, QueryInterface* query)
+	const static Unit* FindClosestAvailableWorker(Point3D point, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 	{
-		auto units = obs->GetUnits(Unit::Alliance::Self, IsUnit(unit));
+		auto units = obs->GetUnits(Unit::Alliance::Self, IsWorker());
+		double distance = DBL_MAX;
+		const Unit* foundUnit = nullptr;
+		for (auto unit : units)
+		{
+			auto dis = query->PathingDistance(unit, point);
+			if (dis < distance && !VectorHelpers::FoundInVector(state->ScoutingProbes, unit))
+			{
+				distance = dis;
+				foundUnit = unit;
+			}
+		}
+		return foundUnit;
+	}
+
+	const static Unit* FindClosetOfType(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query)
+	{
+		auto units = obs->GetUnits(Unit::Alliance::Self, filter);
 		double distance = DBL_MAX;
 		const Unit* foundUnit = nullptr;
 		for (auto unit : units)
@@ -73,7 +91,7 @@ struct Util {
 		return foundUnit;
 	}
 
-	const Point3D FindClosestPoint(std::vector<Point3D> points, Point3D point)
+	const static Point3D FindClosestPoint(std::vector<Point3D> points, Point3D point)
 	{
 		auto distance = DBL_MAX;
 		Point3D closest;
@@ -89,7 +107,7 @@ struct Util {
 		return closest;
 	}
 
-	const Unit* FindFurthestInRadius(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query, double radius, Point3D ignorePoint)
+	const static Unit* FindFurthestInRadius(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query, double radius, Point3D ignorePoint)
 	{
 		auto units = obs->GetUnits(filter);
 		double distance = DBL_MIN;
@@ -107,7 +125,7 @@ struct Util {
 		return foundUnit;
 	}
 
-	bool IsAnyWorkerCommitted(ABILITY_ID ability, const ObservationInterface* obs)
+	bool static IsAnyWorkerCommitted(ABILITY_ID ability, const ObservationInterface* obs)
 	{
 		auto workers = obs->GetUnits(Unit::Alliance::Self, IsWorker());
 		for (auto worker : workers)
@@ -124,12 +142,10 @@ struct Util {
 		return false;
 	}
 
-	bool HasEnoughResources(int mineralsNeeded, int gasNeeded, const ObservationInterface* obs)
+	bool static HasEnoughResources(int mineralsNeeded, int gasNeeded, const ObservationInterface* obs)
 	{
 		return obs->GetMinerals() >= mineralsNeeded && obs->GetVespene() >= gasNeeded;
 	}
-
-
 };
 
 struct Sorters

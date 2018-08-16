@@ -20,21 +20,7 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool madeExpandsion = false;
-		//Is there a probe already on the way?
-		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_NEXUS, obs);
-		if (alreadyBuilding || !Util().HasEnoughResources(400,0, obs)) return false;
-
-		auto strat = ExpandStrategy(ABILITY_ID::BUILD_NEXUS, false, false);
-		Point3D buildPos = strat.FindPlacement(obs, actions, query, debug, state);
-
-		auto probe = Util().FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
-		if (DistanceSquared3D(buildPos, Point3D()) > 0)
-		{
-			actions->UnitCommand(probe, ABILITY_ID::BUILD_NEXUS, buildPos);
-			debug->DebugSphereOut(buildPos, 3, Colors::Teal);
-		}
-
-		return madeExpandsion;
+		auto strat = new ExpandStrategy(ABILITY_ID::BUILD_NEXUS, false, false);
+		return Util::TryBuildBuilding(ABILITY_ID::BUILD_NEXUS, UNIT_TYPEID::PROTOSS_NEXUS, obs, actions, query, debug, state, strat);
 	}
 };

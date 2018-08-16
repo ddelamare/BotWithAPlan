@@ -24,23 +24,8 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)  override
 	{
-		bool builtAssim = false;
-
-		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_ASSIMILATOR, obs);
-		if (alreadyBuilding || !Util().HasEnoughResources(100, 0, obs)) return false;
-
 		auto buildingStrategy = new AssimilatorStrategy(ABILITY_ID::BUILD_ASSIMILATOR, true, true);
-		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
-		
-		if (DistanceSquared3D(buildPos, Point3D()) > 0)
-		{
-			auto probe = Util().FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
-			actions->UnitCommand(probe, ABILITY_ID::BUILD_ASSIMILATOR, buildingStrategy->foundUnit);
-			debug->DebugSphereOut(buildPos, 3, Colors::Purple);
-			builtAssim = true;
-		}
-
-		return builtAssim;
+		return Util::TryBuildBuilding(ABILITY_ID::BUILD_ASSIMILATOR, UNIT_TYPEID::PROTOSS_ASSIMILATOR, obs, actions, query, debug, state, buildingStrategy);
 	}
 
 };

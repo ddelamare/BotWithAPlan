@@ -37,27 +37,8 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool success = false;
+		return Util::TryBuildBuilding(ABILITY_ID::BUILD_GATEWAY, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions, query, debug, state);
 
-		//Is there a probe already on the way?
-		bool alreadyBuilding = Util().IsAnyWorkerCommitted(ABILITY_ID::BUILD_GATEWAY, obs);
-		if (alreadyBuilding || !Util().HasEnoughResources(150, 0, obs)) return false;
-
-		auto buildingStrategy = new SpiralStrategy(ABILITY_ID::BUILD_GATEWAY, true,true);
-		if (DistanceSquared3D(lastBuildSpot, Point3D()) == 0)
-		{
-			Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
-
-			auto probe = Util().FindClosetOfType(UNIT_TYPEID::PROTOSS_PROBE, buildPos, obs, query);
-			if (DistanceSquared3D(buildPos, Point3D()) > 0)
-			{
-				actions->UnitCommand(probe, ABILITY_ID::BUILD_GATEWAY, buildPos);
-				debug->DebugSphereOut(buildPos, 3, Colors::Purple);
-				lastBuildSpot = Point3D();
-			}
-		}
-
-		return true;
 	}
 
 };
