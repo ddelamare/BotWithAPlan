@@ -12,11 +12,14 @@ int main(int argc, char* argv[]) {
 #if LADDER_MODE
     Coordinator coordinator;
     coordinator.LoadSettings(argc, argv);
-
-    BotWithAPlan bot;
+	coordinator.SetMultithreaded(true);
+	coordinator.SetStepSize(10);
+	BotWithAPlan bot;
+	BotWithAPlan bot2;
     coordinator.SetParticipants({
-        CreateParticipant((Race)GetAgentRace(), &bot),
-        CreateComputer(Race::Terran, sc2::Difficulty::Medium)
+		CreateParticipant((Race)GetAgentRace(), &bot),
+		//CreateParticipant((Race)GetAgentRace(), &bot2),
+        CreateComputer(Race::Terran, sc2::Difficulty::Hard)
     });
 
     coordinator.LaunchStarcraft();

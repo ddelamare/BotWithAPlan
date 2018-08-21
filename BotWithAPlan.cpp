@@ -13,8 +13,12 @@
 #include "Goals\Army\Gateway.h"
 #include "Goals\Army\StarGate.h"
 #include "Goals\Army\VoidRay.h"
+#include "Goals\Army\Robotics.h"
+#include "Goals\Army\Immortal.h"
+#include "Goals\Army\Collossus.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\TwilightCouncil.h"
+#include "Goals\Tech\RoboticsBay.h"
 #include "Goals\Tech\DarkShrine.h"
 #include "Goals\Tactics\AllOut.h"
 #include "Goals\Upgrades\Chargelots.h"
@@ -48,10 +52,14 @@ BotWithAPlan::BotWithAPlan()
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
 	AvailableActions.push_back(new CyberneticsGoal());
+	AvailableActions.push_back(new RoboticsGoal());
+	AvailableActions.push_back(new RoboticsBayGoal());
 	AvailableActions.push_back(new TwilightCouncilGoal());
 	AvailableActions.push_back(new DarkShrineGoal());
 	AvailableActions.push_back(new StarGateGoal());
 	AvailableActions.push_back(new VoidRayGoal());
+	AvailableActions.push_back(new CollossusGoal());
+	AvailableActions.push_back(new ImmortalGoal());
 
 	planner.Init();
 	shouldRecalcuate = true;
@@ -116,12 +124,19 @@ void BotWithAPlan::OnStep() {
 			}
 		}
 	}
-
-	// Do army State
-	Debug()->DebugTextOut("Army Picked:" + armyGoal->GetName());
-	if (nextInArmyPlan && nextInArmyPlan != armyGoal)
-		Debug()->DebugTextOut("Army Next:" + nextInArmyPlan->GetName());
-	auto success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
+	bool success = false;
+	if (armyGoal)
+	{
+		// Do army State
+		Debug()->DebugTextOut("Army Picked:" + armyGoal->GetName());
+		if (nextInArmyPlan && nextInArmyPlan != armyGoal)
+			Debug()->DebugTextOut("Army Next:" + nextInArmyPlan->GetName());
+		success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
+	}
+	else
+	{
+		Debug()->DebugTextOut("No Army Goal");
+	}
 
 	if (success)
 	{

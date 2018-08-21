@@ -31,7 +31,7 @@ public:
 		// If we are below ideal harvesters, give it more weight
 		if (score > 0)
 		{
-			score += 10; 
+			score += 5; 
 		}
 		return score;
 	};

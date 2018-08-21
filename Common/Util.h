@@ -170,5 +170,16 @@ struct Sorters
 			return lhs->pos.y < rhs->pos.y;
 		}
 	};
+	struct sort_by_distance {
+		Point3D referencePoint;
+		sort_by_distance(Point3D point) {
+			referencePoint = point;
+		}
+
+		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		{
+			return Distance3D(lhs, referencePoint) < Distance3D(rhs, referencePoint);
+		}
+	};
 
 };

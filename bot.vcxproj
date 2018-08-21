@@ -96,7 +96,7 @@
       <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>civetweb.lib;libprotobufd.lib;sc2apid.lib;sc2libd.lib;sc2protocold.lib;sc2rendererd.lib;sc2utilsd.lib;SDL2.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;dinput8.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
-      <Profile>true</Profile>
+      <Profile>false</Profile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -162,8 +162,12 @@
     <ClInclude Include="Common\UnitHelpers.h" />
     <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Common\VectorHelpers.h" />
+    <ClInclude Include="Goals\Army\Collossus.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
+    <ClInclude Include="Goals\Army\Immortal.h" />
+    <ClInclude Include="Goals\Army\Robotics.h" />
+    <ClInclude Include="Goals\Tech\RoboticsBay.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
     <ClInclude Include="Goals\Economy\Expand.h" />

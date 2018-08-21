@@ -254,6 +254,17 @@ struct IsCombatUnit {
 	}
 };
 
+struct IsVisible {
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (unit.Visible != Unit::DisplayType::Visible)
+		{
+			return false;
+		}
+		else return IsArmy()(unit);
+	}
+};
+
 struct UnitsInProgress
 {
 	UnitsInProgress(UNIT_TYPEID type)

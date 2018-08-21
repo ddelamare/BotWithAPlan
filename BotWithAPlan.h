@@ -18,6 +18,7 @@ public:
 	void OnBuildingConstructionComplete(const Unit *);
 	void OnUnitCreated(const Unit *);
 	void OnUnitEnterVision(const Unit *);
+	void BotWithAPlan::OnUnitDestroyed(const Unit* unit);
 private:
 	GoalPicker goalPicker;
 	Planner    planner;

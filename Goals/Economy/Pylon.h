@@ -20,7 +20,6 @@ public:
 		int foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
 		//Add food from building pylons
-		auto pylonsInProgressw = obs->GetBuffData();
 		auto pylonsInProgress = obs->GetUnits(Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_PYLON));
 		foodLeft += pylonsInProgress.size() * 8;
 

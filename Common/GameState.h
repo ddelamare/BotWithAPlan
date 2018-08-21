@@ -17,6 +17,7 @@ struct GameState
 		BuildingProbes = Units();
 		ExpansionLocations = std::vector<Point3D>();
 		ObservedUnits = UnitMap();
+		CurrentUnits = UnitMap();
 	}
 	Units ScoutingProbes;
 	Units BuildingProbes;
@@ -24,5 +25,6 @@ struct GameState
 	Point3D MineralDirection;
 	Point2D EnemyBase;
 	UnitMap ObservedUnits;
+	UnitMap CurrentUnits;
 
 };
