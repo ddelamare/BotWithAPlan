@@ -14,9 +14,27 @@ public:
 		name = "Expand";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto probes = obs->GetFoodWorkers() / 22; // Times max probes per expo
-		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-		return probes / nexus.size();
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		int assignedHarvesters = 0;
+		int idealHarvesters = 0;
+		for (auto th : townhalls)
+		{
+			assignedHarvesters += th->assigned_harvesters;
+			idealHarvesters += th->ideal_harvesters;
+		}
+		
+		if (townhalls.size())
+		{
+			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
+			if (differance >= 2)
+				return 3; // If we are near probe capacity, we need to expand
+			else if (differance > -5)
+				return 1; // If we are nearing probe capacity we might expand
+			else
+				return 0;
+		}
+		else										 
+			return 0;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

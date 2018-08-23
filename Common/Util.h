@@ -125,16 +125,30 @@ namespace Util {
 		return foundUnit;
 	}
 
-	bool static IsAnyWorkerCommitted(ABILITY_ID ability, const ObservationInterface* obs)
+	const static Units FindNearbyUnits(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query, double radius)
 	{
-		auto workers = obs->GetUnits(Unit::Alliance::Self, IsWorker());
-		for (auto worker : workers)
+		auto units = obs->GetUnits(filter);
+		auto unitsNearby = Units();
+		for (auto unit : units)
 		{
-			if (worker->orders.size())
+			auto dis = Distance3D(unit->pos, point);
+			if (dis < radius)
 			{
-				for (auto order : worker->orders)
+				unitsNearby.push_back(unit);
+			}
+		}
+		return unitsNearby;
+	}
+
+	bool static DoesAnyUnitHaveOrder(Units units, ABILITY_ID ability)
+	{
+		for (auto unit : units)
+		{
+			if (unit->orders.size())
+			{
+				for (auto order : unit->orders)
 				{
-					if (order.ability_id == ability) 
+					if (order.ability_id == ability)
 						return true;
 				}
 			}
@@ -142,9 +156,27 @@ namespace Util {
 		return false;
 	}
 
+
+	bool static DoesAnyUnitHaveOrder(Filter filter, ABILITY_ID ability, const ObservationInterface* obs)
+	{
+		auto units = obs->GetUnits(Unit::Alliance::Self, filter);
+		return DoesAnyUnitHaveOrder(units, ability);
+	}
+
+	bool static IsAnyWorkerCommitted(ABILITY_ID ability, const ObservationInterface* obs)
+	{
+		return DoesAnyUnitHaveOrder(IsWorker(), ability, obs);
+	}
+
+
 	bool static HasEnoughResources(int mineralsNeeded, int gasNeeded, const ObservationInterface* obs)
 	{
 		return obs->GetMinerals() >= mineralsNeeded && obs->GetVespene() >= gasNeeded;
+	}
+
+	Point3D static ToPoint3D(Point2D point)
+	{
+		return Point3D(point.x, point.y, 0);
 	}
 };
 
@@ -178,7 +210,12 @@ struct Sorters
 
 		bool operator()(Point3D const & lhs, Point3D const & rhs)
 		{
-			return Distance3D(lhs, referencePoint) < Distance3D(rhs, referencePoint);
+			return Distance2D(lhs, referencePoint) < Distance2D(rhs, referencePoint);
+		}
+
+		bool operator()(Unit const * lhs, Unit const * rhs)
+		{
+			return Distance2D(lhs->pos, referencePoint) < Distance2D(rhs->pos, referencePoint);
 		}
 	};
 

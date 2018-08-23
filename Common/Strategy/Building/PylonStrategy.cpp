@@ -26,7 +26,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 		return spiralizer.FindPlacement(obs, actions, query, debug, state);
 
 	}
-	else  // If there are no pylons, build next to nexus
+	else if(nexii.size())  // If there are no pylons, build next to nexus
 	{
 		auto mainNex = nexii[0];
 		if (Distance2D(state->MineralDirection, Point2D(0, 0)) == 0) // Check if it's been set

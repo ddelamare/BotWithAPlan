@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
 #if LADDER_MODE
     Coordinator coordinator;
     coordinator.LoadSettings(argc, argv);
-	coordinator.SetMultithreaded(true);
-	coordinator.SetStepSize(10);
+	coordinator.SetMultithreaded(false);
+	coordinator.SetStepSize(50);
 	BotWithAPlan bot;
 	BotWithAPlan bot2;
     coordinator.SetParticipants({
@@ -25,7 +25,6 @@ int main(int argc, char* argv[]) {
     coordinator.LaunchStarcraft();
     coordinator.StartGame(sc2::kMapBelShirVestigeLE);
     while (coordinator.Update()) {
-		
     }
 #else
 

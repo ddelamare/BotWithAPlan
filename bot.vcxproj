@@ -167,6 +167,9 @@
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Army\Immortal.h" />
     <ClInclude Include="Goals\Army\Robotics.h" />
+    <ClInclude Include="Goals\Tactics\PickOffExpo.h" />
+    <ClInclude Include="Goals\Tactics\ScoutSweep.h" />
+    <ClInclude Include="Goals\Tech\Forge.h" />
     <ClInclude Include="Goals\Tech\RoboticsBay.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
@@ -180,6 +183,7 @@
     <ClInclude Include="Goals\Tech\DarkShrine.h" />
     <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
+    <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />

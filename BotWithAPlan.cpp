@@ -17,11 +17,15 @@
 #include "Goals\Army\Immortal.h"
 #include "Goals\Army\Collossus.h"
 #include "Goals\Tech\Cybernetics.h"
+#include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
 #include "Goals\Tech\RoboticsBay.h"
 #include "Goals\Tech\DarkShrine.h"
 #include "Goals\Tactics\AllOut.h"
+#include "Goals\Tactics\ScoutSweep.h"
+#include "Goals\Tactics\PickOffExpo.h"
 #include "Goals\Upgrades\Chargelots.h"
+#include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -43,22 +47,27 @@ BotWithAPlan::BotWithAPlan()
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
+	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 
 	// Army Composition Goals
 	TacticsGoals.push_back(new ChargelotGoal());
+	TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
 	TacticsGoals.push_back(new AllOutGoal());
+	TacticsGoals.push_back(new ScoutSweepGoal());
+	TacticsGoals.push_back(new PickOffExpoGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
 	AvailableActions.push_back(new CyberneticsGoal());
+	AvailableActions.push_back(new ForgeGoal());
 	AvailableActions.push_back(new RoboticsGoal());
 	AvailableActions.push_back(new RoboticsBayGoal());
 	AvailableActions.push_back(new TwilightCouncilGoal());
 	AvailableActions.push_back(new DarkShrineGoal());
 	AvailableActions.push_back(new StarGateGoal());
 	AvailableActions.push_back(new VoidRayGoal());
-	AvailableActions.push_back(new CollossusGoal());
+	AvailableActions.push_back(new ColossusGoal());
 	AvailableActions.push_back(new ImmortalGoal());
 
 	planner.Init();
@@ -73,17 +82,72 @@ void BotWithAPlan::OnStep() {
 	auto query = Query();
 	auto actions = Actions();
 
+	ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ");
+	ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army");
+	ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics");
+
+	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
+	if (idleUnits.size() > 0)
+	{
+		//Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0, 0, 1), 10);
+		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
+		if (resource)
+		{
+			//Debug()->DebugSphereOut(resource->pos + Point3D(0, 0, 1), 3, Colors::Yellow);
+			actions->UnitCommand(idleUnits[0], ABILITY_ID::HARVEST_GATHER, resource);
+		}
+		else
+		{
+			// Send to scout
+			if (state.ScoutingProbes.size() == 0)
+			{
+				actions->UnitCommand(idleUnits[0], ABILITY_ID::MOVE, state.EnemyBase);
+				state.ScoutingProbes.push_back(idleUnits[0]);
+			}
+		}
+	}
+	//
+	auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+	for (auto th : townhalls)
+	{
+		if (th->assigned_harvesters > th->ideal_harvesters)
+		{
+			// Tell all extra workers to stop so they can be reassigned
+			//TODO: only reassign if another town hall needs workers
+			auto overWorkers = Util::FindNearbyUnits(IsWorker(), th->pos, obs, query, 15);
+			actions->UnitCommand(overWorkers, ABILITY_ID::STOP);
+		}
+	}
+
+	// Clear out scouting probes if they're not scouting
+	for (auto worker : state.ScoutingProbes)
+	{
+		if (IsIdle()(*worker))
+		{
+			VectorHelpers::RemoveFromVector(state.ScoutingProbes, worker);
+		}
+
+	}
+
+
+	auto endTime = Clock::now();
+	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
+	
+	Debug()->SendDebug();
+}
+
+void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name)
+{
+	BaseAction* goal = nullptr;
 	if (shouldRecalcuate)
 	{
-		//shouldRecalcuate = false;
+		goal = goalPicker.GetGoal(goals, obs, &state);
 
-		econGoal = goalPicker.GetGoal(EconomyGoals, obs, &state);
-     
-		if (econGoal)
+		if (goal)
 		{
 			auto state = planner.GetResourceState(obs);
 
-			auto plan = planner.CalculatePlan(state, econGoal);
+			auto plan = planner.CalculatePlan(state, goal);
 			if (plan.size() > 0)
 			{
 				nextInPlan = plan[plan.size() - 1];
@@ -91,108 +155,23 @@ void BotWithAPlan::OnStep() {
 		}
 	}
 
-	// Exceute Econ State
-	if (econGoal)
+	// Exceute Goal State
+	if (goal)
 	{
-		Debug()->DebugTextOut("Econ Picked:" + econGoal->GetName());
-		if (nextInPlan && econGoal != nextInPlan)
-			Debug()->DebugTextOut("Econ Step:" + nextInPlan->GetName());
+		Debug()->DebugTextOut(name + " Goal Picked:" + goal->GetName());
+		if (nextInPlan && goal != nextInPlan)
+			Debug()->DebugTextOut(name + " Goal Step:" + nextInPlan->GetName());
 		auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
 		if (success)
 		{
 			shouldRecalcuate = true;
-			econGoal = nullptr;
+			goal = nullptr;
 		}
 	}
 	else
 	{
-		Debug()->DebugTextOut("No Econ Goal.");
+		Debug()->DebugTextOut("No " + name + " Goal.");
 	}
-
-	if (shouldRecalcuate)
-	{
-		armyGoal = goalPicker.GetGoal(ArmyGoals, obs, &state);
-
-		if (armyGoal)
-		{
-			auto state = planner.GetResourceState(obs);
-
-			auto plan = planner.CalculatePlan(state, armyGoal);
-			if (plan.size() > 0)
-			{
-				nextInArmyPlan = plan[plan.size() - 1];
-			}
-		}
-	}
-	bool success = false;
-	if (armyGoal)
-	{
-		// Do army State
-		Debug()->DebugTextOut("Army Picked:" + armyGoal->GetName());
-		if (nextInArmyPlan && nextInArmyPlan != armyGoal)
-			Debug()->DebugTextOut("Army Next:" + nextInArmyPlan->GetName());
-		success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
-	}
-	else
-	{
-		Debug()->DebugTextOut("No Army Goal");
-	}
-
-	if (success)
-	{
-		shouldRecalcuate = true;
-		armyGoal = nullptr;
-	}
-
-	if (shouldRecalcuate)
-	{
-		armyGoal = goalPicker.GetGoal(TacticsGoals, obs, &state);
-
-		if (armyGoal)
-		{
-			auto state = planner.GetResourceState(obs);
-
-			auto plan = planner.CalculatePlan(state, armyGoal);
-			if (plan.size() > 0)
-			{
-				nextInArmyPlan = plan[plan.size() - 1];
-			}
-		}
-	}
-
-	if (armyGoal)
-	{
-		Debug()->DebugTextOut("Tactics Picked:" + armyGoal->GetName());
-		if (nextInArmyPlan && nextInArmyPlan != armyGoal)
-			Debug()->DebugTextOut("Tactics Next:" + nextInArmyPlan->GetName());
-		success = nextInArmyPlan->Excecute(obs, actions, query, Debug(), &state);
-	}
-
-	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
-	if (idleUnits.size() > 0)
-	{
-		Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0, 0, 1), 10);
-		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
-		if (resource)
-		{
-			// TODO: Send probe to mine
-			Debug()->DebugSphereOut(resource->pos + Point3D(0, 0, 1), 3, Colors::Yellow);
-			actions->UnitCommand(idleUnits[0], ABILITY_ID::HARVEST_GATHER, resource);
-		}
-		else
-		{
-			// What to do here?
-			if (state.ScoutingProbes.size() == 0)
-			{
-				actions->UnitCommand(idleUnits[0], ABILITY_ID::MOVE, state.EnemyBase);
-			}
-		}
-	}
-
-	auto endTime = Clock::now();
-	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
-	
-	Debug()->SendDebug();
 }
 
 

@@ -20,13 +20,15 @@ public:
 	void OnUnitEnterVision(const Unit *);
 	void BotWithAPlan::OnUnitDestroyed(const Unit* unit);
 private:
+	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name);
+
 	GoalPicker goalPicker;
 	Planner    planner;
 	vector<BaseAction*> EconomyGoals;
 	vector<BaseAction*> ArmyGoals;
 	vector<BaseAction*> TacticsGoals;
 	bool shouldRecalcuate;
-	BaseAction* econGoal;
+	BaseAction* goal;
 	BaseAction* armyGoal;
 	BaseAction* nextInPlan;
 	BaseAction* nextInArmyPlan;

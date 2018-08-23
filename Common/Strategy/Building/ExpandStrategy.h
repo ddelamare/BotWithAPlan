@@ -31,7 +31,15 @@ public:
 		{
 			auto furtherst = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
 			auto otherFurthest = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, furtherst->pos);
-			auto averagePoint = (otherFurthest->pos + furtherst->pos) / 2;
+			Point3D averagePoint = Point3D();
+			if (furtherst && otherFurthest)
+			{
+				averagePoint = (otherFurthest->pos + furtherst->pos) / 2;
+			}
+			else
+			{
+				return averagePoint;
+			}
 			//debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
 			//debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);
 			//debug->DebugSphereOut(exp, 2, Colors::White);
