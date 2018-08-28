@@ -265,6 +265,18 @@ struct IsVisible {
 	}
 };
 
+struct IsEnemyArmy
+{
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (unit.alliance != Unit::Alliance::Enemy)
+		{
+			return false;
+		}
+		else return !IsWorker()(unit) && IsArmy()(unit);
+	}
+};
+	
 struct UnitsInProgress
 {
 	UnitsInProgress(UNIT_TYPEID type)

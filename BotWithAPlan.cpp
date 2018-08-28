@@ -26,6 +26,8 @@
 #include "Goals\Tactics\PickOffExpo.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
+#include "Goals\Upgrades\Blink.h"
+#include "Common\Strategy\Attacks\BlinkStalker.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -52,6 +54,7 @@ BotWithAPlan::BotWithAPlan()
 
 	// Tactics and Upgrade Goals
 	TacticsGoals.push_back(new ChargelotGoal());
+	TacticsGoals.push_back(new BlinkGoal());
 	TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
@@ -142,6 +145,9 @@ void BotWithAPlan::OnStep() {
 
 	}
 
+	// Blink micro
+	auto bsMicro = BlinkStalker(obs, query);
+	bsMicro.Execute(obs, actions, query, Debug(), &state);
 
 	auto endTime = Clock::now();
 	for (auto message : debugMessages)

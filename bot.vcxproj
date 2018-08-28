@@ -155,6 +155,7 @@
     <ClInclude Include="Common\ItemDependencies.h" />
     <ClInclude Include="Common\GameState.h" />
     <ClInclude Include="Common\Resource.h" />
+    <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Goals\Tech\Cybernetics.h" />
     <ClInclude Include="Goals\Tech\DarkShrine.h" />
     <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
+    <ClInclude Include="Goals\Upgrades\Blink.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />

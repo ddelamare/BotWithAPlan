@@ -25,7 +25,7 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 		rotationDir = -1;
 	}
 	int maxSpiralCount = 64;
-	const int numDivisions = 8;
+	const int numDivisions = 6;
 	const double radialDiff = 2 * M_PI / numDivisions;
 	double xScalar = 0;
 	bool foundSpot = false;

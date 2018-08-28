@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
 			Coordinator coordinator;
 			coordinator.LoadSettings(argc, argv);
 			coordinator.SetMultithreaded(true);
-			coordinator.SetStepSize(25);
+			coordinator.SetStepSize(5);
 			BotWithAPlan bot;
 			BotWithAPlan bot2;
 			coordinator.SetParticipants({
