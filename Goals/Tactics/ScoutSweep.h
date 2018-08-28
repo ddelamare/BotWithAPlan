@@ -7,6 +7,7 @@
 
 class ScoutSweepGoal : public BaseAction
 {
+	int rotation = 0;
 public:
 	ScoutSweepGoal() : BaseAction() {
 		this->BaseAction::name = "Scout Sweep";
@@ -24,8 +25,9 @@ public:
 			// Send it to every expo
 			for (int i = state->ExpansionLocations.size() - 1; i >= 0; i--)
 			{
-				actions->UnitCommand(idleWorkers[0], ABILITY_ID::SMART, state->ExpansionLocations[i], true);
+				actions->UnitCommand(idleWorkers[0], ABILITY_ID::SMART, state->ExpansionLocations[(i + rotation) % state->ExpansionLocations.size()], true);
 			}
+			rotation++;
 		}
 
 		return queuedScouting;

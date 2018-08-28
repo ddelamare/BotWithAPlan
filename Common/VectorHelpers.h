@@ -7,10 +7,10 @@ namespace VectorHelpers
 		return std::find(list.begin(), list.end(), elem) != list.end();
 	}
 
-	template <typename T> static void RemoveFromVector(std::vector<T> list, T elem)
+	template <typename T> static void RemoveFromVector(std::vector<T>* list, T elem)
 	{
-		auto item = std::find(list.begin(), list.end(), elem);
-		if (item != list.end())
-			list.erase(item);
+		auto item = std::find(list->begin(), list->end(), elem);
+		if (item != list->end())
+			list->erase(item);
 	}
 }

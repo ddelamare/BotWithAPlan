@@ -27,9 +27,9 @@ public:
 		{
 			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
 			if (differance >= 2)
-				return 3; // If we are near probe capacity, we need to expand
+				return 2; // If we are near probe capacity, we need to expand
 			else if (differance > -5)
-				return 1; // If we are nearing probe capacity we might expand
+				return .8; // If we are nearing probe capacity we might expand
 			else
 				return 0;
 		}

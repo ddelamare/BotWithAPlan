@@ -155,6 +155,7 @@
     <ClInclude Include="Common\ItemDependencies.h" />
     <ClInclude Include="Common\GameState.h" />
     <ClInclude Include="Common\Resource.h" />
+    <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Common\VectorHelpers.h" />
     <ClInclude Include="Goals\Army\Collossus.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
+    <ClInclude Include="Goals\Army\Disrupter.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Army\Immortal.h" />
     <ClInclude Include="Goals\Army\Robotics.h" />

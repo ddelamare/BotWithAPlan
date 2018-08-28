@@ -50,7 +50,7 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 
-	// Army Composition Goals
+	// Tactics and Upgrade Goals
 	TacticsGoals.push_back(new ChargelotGoal());
 	TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
 	TacticsGoals.push_back(new AllOutGoal());
@@ -73,6 +73,8 @@ BotWithAPlan::BotWithAPlan()
 	planner.Init();
 	shouldRecalcuate = true;
 
+	Lost = false;
+	StepCounter = STEPS_PER_GOAL;
 }
 
 void BotWithAPlan::OnStep() {
@@ -82,32 +84,19 @@ void BotWithAPlan::OnStep() {
 	auto query = Query();
 	auto actions = Actions();
 
-	ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ");
-	ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army");
-	ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics");
-
-	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
-	if (idleUnits.size() > 0)
+	if (StepCounter == STEPS_PER_GOAL)
 	{
-		//Debug()->DebugSphereOut(idleUnits[0]->pos + Point3D(0, 0, 1), 10);
-		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[0], obs, query);
-		if (resource)
-		{
-			//Debug()->DebugSphereOut(resource->pos + Point3D(0, 0, 1), 3, Colors::Yellow);
-			actions->UnitCommand(idleUnits[0], ABILITY_ID::HARVEST_GATHER, resource);
-		}
-		else
-		{
-			// Send to scout
-			if (state.ScoutingProbes.size() == 0)
-			{
-				actions->UnitCommand(idleUnits[0], ABILITY_ID::MOVE, state.EnemyBase);
-				state.ScoutingProbes.push_back(idleUnits[0]);
-			}
-		}
+		debugMessages.clear();
+		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages);
+		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages);
+		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages);
+		StepCounter = 0;
 	}
+	StepCounter++;
+
 	//
 	auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+	if (townhalls.size() == 0) Lost = true;
 	for (auto th : townhalls)
 	{
 		if (th->assigned_harvesters > th->ideal_harvesters)
@@ -115,28 +104,56 @@ void BotWithAPlan::OnStep() {
 			// Tell all extra workers to stop so they can be reassigned
 			//TODO: only reassign if another town hall needs workers
 			auto overWorkers = Util::FindNearbyUnits(IsWorker(), th->pos, obs, query, 15);
-			actions->UnitCommand(overWorkers, ABILITY_ID::STOP);
+			int diff = th->assigned_harvesters - th->ideal_harvesters;
+			if (overWorkers.size() < diff) continue; // If no workers in area continue
+			auto unitsToStop = Units(overWorkers.begin(), overWorkers.begin() + diff);
+			actions->UnitCommand(unitsToStop, ABILITY_ID::STOP);
 		}
 	}
+
+	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
+	for (int i = 0; i < idleUnits.size() ;i++)
+	{
+		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[i], obs, query);
+		if (resource)
+		{
+			actions->UnitCommand(idleUnits[i], ABILITY_ID::HARVEST_GATHER, resource);
+		}
+		else
+		{
+			// Send to scout
+			if (state.ScoutingProbes.size() == 0)
+			{
+				actions->UnitCommand(idleUnits[i], ABILITY_ID::MOVE, state.EnemyBase);
+				state.ScoutingProbes.push_back(idleUnits[i]);
+			}
+			break;
+		}
+	}
+
 
 	// Clear out scouting probes if they're not scouting
 	for (auto worker : state.ScoutingProbes)
 	{
 		if (IsIdle()(*worker))
 		{
-			VectorHelpers::RemoveFromVector(state.ScoutingProbes, worker);
+			VectorHelpers::RemoveFromVector(&state.ScoutingProbes, worker);
 		}
 
 	}
 
 
 	auto endTime = Clock::now();
+	for (auto message : debugMessages)
+	{
+		Debug()->DebugTextOut(message);
+	}
 	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
 	
 	Debug()->SendDebug();
 }
 
-void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name)
+void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages)
 {
 	BaseAction* goal = nullptr;
 	if (shouldRecalcuate)
@@ -158,9 +175,9 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 	// Exceute Goal State
 	if (goal)
 	{
-		Debug()->DebugTextOut(name + " Goal Picked:" + goal->GetName());
+		messages->push_back(name + " Goal Picked:" + goal->GetName());
 		if (nextInPlan && goal != nextInPlan)
-			Debug()->DebugTextOut(name + " Goal Step:" + nextInPlan->GetName());
+			messages->push_back(name + " Goal Step:" + nextInPlan->GetName());
 		auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
 		if (success)
 		{
@@ -170,7 +187,7 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 	}
 	else
 	{
-		Debug()->DebugTextOut("No " + name + " Goal.");
+		messages->push_back("No " + name + " Goal.");
 	}
 }
 

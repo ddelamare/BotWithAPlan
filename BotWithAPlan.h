@@ -19,8 +19,9 @@ public:
 	void OnUnitCreated(const Unit *);
 	void OnUnitEnterVision(const Unit *);
 	void BotWithAPlan::OnUnitDestroyed(const Unit* unit);
+	bool Lost;
 private:
-	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name);
+	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages);
 
 	GoalPicker goalPicker;
 	Planner    planner;
@@ -33,6 +34,9 @@ private:
 	BaseAction* nextInPlan;
 	BaseAction* nextInArmyPlan;
 	GameState  state;
+	int StepCounter = 0;
+	const int STEPS_PER_GOAL = 2;
+	vector<string> debugMessages;
 };
 
 

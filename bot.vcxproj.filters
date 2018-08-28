@@ -129,6 +129,8 @@
     <ClInclude Include="Goals\Tech\Forge.h" />
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
     <ClInclude Include="Goals\Tactics\PickOffExpo.h" />
+    <ClInclude Include="Goals\Army\Disrupter.h" />
+    <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

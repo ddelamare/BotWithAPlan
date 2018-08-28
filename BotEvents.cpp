@@ -22,7 +22,7 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 	state.CurrentUnits[unit->unit_type]--;
 	if (VectorHelpers::FoundInVector(state.ScoutingProbes, unit))
 	{
-		VectorHelpers::RemoveFromVector(state.ScoutingProbes, unit);
+		VectorHelpers::RemoveFromVector(&state.ScoutingProbes, unit);
 	}
 }
 

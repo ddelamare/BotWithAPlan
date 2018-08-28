@@ -30,15 +30,16 @@ public:
 		for (auto exp : state->ExpansionLocations)
 		{
 			auto furtherst = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
+			if (!furtherst) return buildPos;
 			auto otherFurthest = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, furtherst->pos);
-			Point3D averagePoint = Point3D();
+			Point3D averagePoint;
 			if (furtherst && otherFurthest)
 			{
 				averagePoint = (otherFurthest->pos + furtherst->pos) / 2;
 			}
 			else
 			{
-				return averagePoint;
+				return buildPos;
 			}
 			//debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
 			//debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);

@@ -19,6 +19,7 @@ public:
 		{
 			score += DistanceSquared2D(expo->pos, state->EnemyBase);
 		}
+		if (obs->GetArmyCount() < 10) return 0;
 		score = score / 100;
 		return score;
 	};
@@ -29,6 +30,9 @@ public:
 		auto point = Util::ToPoint3D(state->EnemyBase);
 		std::sort(enemyExpos.begin(), enemyExpos.end(), Sorters::sort_by_distance(point));
 		auto attackPoint = enemyExpos.back();
+
+		// Make a cluster of units
+		// TODO: Cluster Units to prevent a stream of units from going there and dying
 
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
 		actions->UnitCommand(army, ABILITY_ID::ATTACK, attackPoint->pos);
