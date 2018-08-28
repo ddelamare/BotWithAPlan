@@ -31,7 +31,7 @@ void BlinkStalker::Execute(const sc2::ObservationInterface *obs, sc2::ActionInte
 			{
 				auto vectorAway = VectorHelpers::GetAveragePoint(enemyUnits);
 				// Subtract start minus end to get a vector away from the center
-				vectorAway = vectorAway - unit->pos;
+				vectorAway = (unit->pos * 2) - vectorAway;
 				debug->DebugSphereOut(vectorAway, 2, Colors::Red);
 				actions->UnitCommand(unit, ABILITY_ID::EFFECT_BLINK, vectorAway);
 			}
