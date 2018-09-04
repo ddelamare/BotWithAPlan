@@ -7,6 +7,10 @@
 #include "sc2api/sc2_api.h"
 #include "Common\GameState.h"
 #include <iostream>
+#include "sc2api/sc2_api.h"
+#include "sc2lib/sc2_lib.h"
+#include "sc2utils/sc2_manage_process.h"
+#include "sc2utils/sc2_arg_parser.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
 
@@ -35,7 +39,7 @@ private:
 	BaseAction* nextInArmyPlan;
 	GameState  state;
 	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 2;
+	const int STEPS_PER_GOAL = 5;
 	vector<string> debugMessages;
 };
 

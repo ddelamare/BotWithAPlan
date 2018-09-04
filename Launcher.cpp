@@ -3,14 +3,19 @@
 #include <iostream>
 #include "BotWithAPlan.h"
 #include <Common\Util.h>
+#include "LadderInterface.h"
 using namespace sc2;
 
 // 
-#define LADDER_MODE 1	  
+#define LADDER_MODE 1
+#define DEBUG_MODE 1	  
 int main(int argc, char* argv[]) {
 	InitResources();
-	GenerateDependencyList();
 #if LADDER_MODE
+	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
+
+	return 0;
+#elif DEBUG_MODE
 	auto races = new Race[3]{ Race::Terran, Race::Zerg, Race::Protoss };
 	auto wins = map<Race, Point2D>();
 	int NUM_TRIALS = 10;
@@ -25,8 +30,8 @@ int main(int argc, char* argv[]) {
 			coordinator.SetMultithreaded(true);
 			coordinator.SetStepSize(5);
 			BotWithAPlan bot;
-			BotWithAPlan bot2;
 			coordinator.SetParticipants({
+				//CreateParticipant(Race::Protoss, nullptr),
 				CreateParticipant((Race)GetAgentRace(), &bot),
 				//CreateParticipant((Race)GetAgentRace(), &bot2),
 				CreateComputer(race, sc2::Difficulty::Hard) 
@@ -35,7 +40,7 @@ int main(int argc, char* argv[]) {
 			coordinator.LaunchStarcraft();
 			coordinator.StartGame(sc2::kMapBelShirVestigeLE);
 			while (coordinator.Update()) {
-				if (bot.Lost || bot2.Lost) break;
+				if (bot.Lost) break;
 			}
 			if (bot.Lost)
 			{
@@ -52,6 +57,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 #else
+	GenerateDependencyList();
 
 	auto planner = new Planner();
 	auto state = ResourceState();

@@ -21,7 +21,15 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	auto disruptors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR));
 	for (auto unit : disruptors)
 	{
-	     
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, query, 10);
+
+		if (enemyUnits.size())
+		{
+            auto targetPoint = VectorHelpers::GetAveragePoint(enemyUnits);
+            // Subtract start minus end to get a vector away from the center
+            debug->DebugSphereOut(targetPoint, 2, Colors::Red);
+            actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, targetPoint);
+		}
 	}
 
 }

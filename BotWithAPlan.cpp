@@ -16,6 +16,7 @@
 #include "Goals\Army\Robotics.h"
 #include "Goals\Army\Immortal.h"
 #include "Goals\Army\Collossus.h"
+#include "Goals\Army\Disrupter.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
@@ -28,6 +29,7 @@
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\Blink.h"
 #include "Common\Strategy\Attacks\BlinkStalker.h"
+#include "Common\Strategy\Attacks\DisruptorAttack.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -51,6 +53,7 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
+	ArmyGoals.push_back(new DisruptorGoal());
 
 	// Tactics and Upgrade Goals
 	TacticsGoals.push_back(new ChargelotGoal());
@@ -148,6 +151,9 @@ void BotWithAPlan::OnStep() {
 	// Blink micro
 	auto bsMicro = BlinkStalker(obs, query);
 	bsMicro.Execute(obs, actions, query, Debug(), &state);
+	auto disruptorMicro = DisruptorAttack(obs, query);
+	disruptorMicro.Execute(obs, actions, query, Debug(), &state);
+
 
 	auto endTime = Clock::now();
 	for (auto message : debugMessages)

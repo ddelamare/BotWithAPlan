@@ -14,7 +14,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		// Counters mass marine. 
-		return obs->GetMinerals() > 3000;
+		return obs->GetMinerals() > 1000;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
