@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../include;C:\Users\ddelam\Documents\Git\BotWithAPlan\project</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\project;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -119,7 +119,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\project;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -188,6 +188,7 @@
     <ClInclude Include="Goals\Upgrades\Blink.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
+    <ClInclude Include="LadderInterface.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />

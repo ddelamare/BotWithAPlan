@@ -19,7 +19,7 @@ public:
 	{
 		bool madeStaker = false;
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-		auto visibleBuildings = obs->GetUnits(Unit::Alliance::Enemy, IsVisible());
+		auto visibleBuildings = obs->GetUnits(Unit::Alliance::Enemy, IsVisibleArmy());
 		auto enemyStuff = obs->GetUnits(Unit::Alliance::Enemy);
 		auto attackPoint = state->EnemyBase;
 		if (visibleBuildings.size())

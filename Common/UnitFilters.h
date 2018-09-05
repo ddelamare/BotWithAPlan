@@ -254,7 +254,7 @@ struct IsCombatUnit {
 	}
 };
 
-struct IsVisible {
+struct IsVisibleArmy {
 	bool operator()(const sc2::Unit & unit)
 	{
 		if (unit.Visible != Unit::DisplayType::Visible)
