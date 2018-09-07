@@ -64,9 +64,6 @@
     <ClInclude Include="Planner\Conditions\BaseCondition.h">
       <Filter>Planner\Conditions</Filter>
     </ClInclude>
-    <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h">
-      <Filter>Planner\Conditions</Filter>
-    </ClInclude>
     <ClInclude Include="Planner\Actions\BaseAction.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
@@ -134,6 +131,11 @@
     <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Goals\Upgrades\Blink.h" />
     <ClInclude Include="LadderInterface.h" />
+    <ClInclude Include="Planner\Conditions\HaveBigArmy.h">
+      <Filter>Planner\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h" />
+    <ClInclude Include="Goals\Tactics\JustDoIt.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

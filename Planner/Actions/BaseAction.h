@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
-#include <Planner/Results/BaseResult.h>
-#include <Planner/Conditions/BaseCondition.h>
-#include <Common/ResourceState.h>
-#include <Common/GameState.h>
+#include "Planner/Results/BaseResult.h"
+#include "Planner/Conditions/BaseCondition.h"
+#include "Common/ResourceState.h"
+#include "Common/GameState.h"
 
 #include "sc2api\sc2_api.h"
 using namespace std;

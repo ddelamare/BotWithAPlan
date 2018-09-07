@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include <Common/ItemDependencies.h>
+#include "Common/ItemDependencies.h"
 #include "Actions\WinAction.h"
 #include "sc2api\sc2_api.h"
+#include "Common/ItemDependencies.h"
 using namespace std;
 
 class Planner

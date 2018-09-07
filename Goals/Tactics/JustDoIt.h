@@ -1,18 +1,19 @@
 #pragma once
 #include "Planner/Actions/BaseAction.h"
-#include "Planner/Actions/BuildResource.h"
+#include "Planner/Conditions/HaveBigArmy.h"		 
 #include "sc2api\sc2_api.h"
+#include "Planner/Actions/BuildResource.h"
 #include "Common/Resource.h"
 
-class AllOutGoal : public BaseAction
+class JustDoitGoal : public BaseAction
 {
 public:
-	AllOutGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Mass Units", 6, sc2::UNIT_TYPEID::PROTOSS_STALKER, 10, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 2, sc2::UNIT_TYPEID::PROTOSS_VOIDRAY, 5));
-		this->BaseAction::name = "All In";
+	JustDoitGoal() : BaseAction() {
+		this->conditions.push_back(new HaveBigArmy(75));
+		this->BaseAction::name = "Just Do It";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return obs->GetArmyCount() > 1;
+		return 2 * (obs->GetFoodArmy() > 75);
 	};
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

@@ -1,10 +1,10 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Planner/Actions/BuildResource.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
-#include <Common/Resource.h>
-#include <Common/Util.h>
-#include <Common/UnitHelpers.h>
+#include "Common/Resource.h"
+#include "Common/Util.h"
+#include "Common/UnitHelpers.h"
 class RoboticsGoal : public BaseAction
 {
 public:

@@ -1,19 +1,22 @@
-#include <sc2api/sc2_api.h>
+#include "sc2api/sc2_api.h"
 #include <iostream>
 #include "sc2lib/sc2_lib.h"
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_arg_parser.h"
 #include "LadderInterface.h"
 #include "BotWithAPlan.h"
-#include <Common\Util.h>
+#include "Common\Util.h"
 using namespace sc2;
 
 // 
 #define LADDER_MODE 0
 #define DEBUG_MODE 1	  
 int main(int argc, char* argv[]) {
-	InitResources();
 #if LADDER_MODE
+	for (int i = 0; i < argc; i++)
+	{
+		LOG(4) << argv[i] << endl;
+	}
 	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
 
 	return 0;
@@ -30,7 +33,7 @@ int main(int argc, char* argv[]) {
 			Coordinator coordinator;
 			coordinator.LoadSettings(argc, argv);
 			coordinator.SetMultithreaded(true);
-			coordinator.SetStepSize(5);
+			coordinator.SetStepSize(25);
 			BotWithAPlan bot;
 			coordinator.SetParticipants({
 				//CreateParticipant(Race::Protoss, nullptr),
@@ -59,6 +62,8 @@ int main(int argc, char* argv[]) {
 		}
 	}
 #else
+	InitResources();
+
 	GenerateDependencyList();
 
 	auto planner = new Planner();

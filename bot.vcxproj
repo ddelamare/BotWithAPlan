@@ -23,6 +23,7 @@
     <ProjectGuid>{59A1A504-22E3-4655-AFE7-0F5ADE0C9FA3}</ProjectGuid>
     <RootNamespace>bot</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>BotWithAPlan</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -75,7 +76,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)/../include;$(MSBuildProjectDirectory);$(MSBuildProjectDirectory)/../project;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>sc2api.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -106,10 +108,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)/../include;$(MSBuildProjectDirectory);$(MSBuildProjectDirectory)/../project;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -170,6 +175,7 @@
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Army\Immortal.h" />
     <ClInclude Include="Goals\Army\Robotics.h" />
+    <ClInclude Include="Goals\Tactics\JustDoIt.h" />
     <ClInclude Include="Goals\Tactics\PickOffExpo.h" />
     <ClInclude Include="Goals\Tactics\ScoutSweep.h" />
     <ClInclude Include="Goals\Tech\Forge.h" />
@@ -196,6 +202,7 @@
     <ClInclude Include="Planner\Actions\GatherMineralsAction.h" />
     <ClInclude Include="Planner\Actions\WinAction.h" />
     <ClInclude Include="Planner\Conditions\BaseCondition.h" />
+    <ClInclude Include="Planner\Conditions\HaveBigArmy.h" />
     <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h" />
     <ClInclude Include="Planner\GameState.h" />
     <ClInclude Include="Planner\Planner.h" />

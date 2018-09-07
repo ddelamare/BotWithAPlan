@@ -22,6 +22,7 @@ ResourceState Planner::GetResourceState(const sc2::ObservationInterface* obs)
 	{
 		state.AddResource(unit->unit_type, 1);
 	}
+	state.ArmyCount = obs->GetFoodArmy();
 	return state;
 }
 
@@ -50,7 +51,7 @@ ResourceState Planner::CalculateTargetResourceState(ResourceState state, BaseAct
 	for (auto cond : neededConditions)
 	{
 		LOG(2) << "\t" << cond->GetName() << endl;
-		auto needed = cond->NeededResources(&state);
+		auto needed = cond->UnmetResources(&state);
 		for (auto res : needed)
 		{
 			goalState.resources[res.first] += res.second;

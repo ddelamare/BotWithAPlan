@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseAction.h"
-#include <Conditions/HaveWorkersCondition.h>
-#include <Results/MineralResult.h>
+#include "Planner/Conditions/HaveWorkersCondition.h"
+#include "Planner\Results\MineralResult.h"
 class GatherMineralsAction : public BaseAction
 {
 public:

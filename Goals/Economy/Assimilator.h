@@ -1,7 +1,7 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Common/Strategy/Building/AssimilatorStrategy.h>
-#include <Common/Util.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Common/Strategy/Building/AssimilatorStrategy.h"
+#include "Common/Util.h"
 class AssimilatorGoal : public BaseAction
 {
 public:

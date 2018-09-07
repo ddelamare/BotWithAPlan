@@ -3,8 +3,8 @@
 #include <string>
 #include <iostream>
 #include <stdarg.h>
-#include <Common/ResourceState.h>
-#include <Common/Resource.h>
+#include "Common/ResourceState.h"
+#include "Common/Resource.h"
 using namespace std;
 
 class BaseCondition
@@ -36,7 +36,7 @@ public:
 	}
 	virtual bool IsMet(ResourceState*);
 	ResourceMap GetRequiredResources();
-	ResourceMap NeededResources(ResourceState* state);
+	ResourceMap UnmetResources(ResourceState* state);
 
 	string GetName() 
 	{

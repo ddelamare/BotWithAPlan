@@ -1,13 +1,13 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Planner/Actions/BuildResource.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
-#include <Common/Resource.h>
+#include "Common/Resource.h"
 
 class GroundWeaponsUpgradeGoal : public BaseAction
 {
 public:
-	int idx = 0;
+	uint32_t idx = 0;
 	vector<UPGRADE_ID> upgrades;
 	vector<ABILITY_ID> abilities;
 	GroundWeaponsUpgradeGoal() : BaseAction() {
@@ -30,7 +30,7 @@ public:
 		if (hasUpgrade) idx++; // Move on to the next
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_FORGE), abilities[idx], obs))
 			return 0;
-		if (obs->GetGameLoop() > 4000 * (idx + 1))
+		if (obs->GetGameLoop() > 4000u * (idx + 1))
 		{
 			score = 6;
 		}

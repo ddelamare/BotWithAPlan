@@ -1,8 +1,8 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Planner/Actions/BuildResource.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
-#include <Common/Resource.h>
+#include "Common/Resource.h"
 
 class ImmortalGoal : public BaseAction
 {
@@ -13,7 +13,20 @@ public:
 		this->BaseAction::name = "Build Immortal";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 0;
+		double score = 1;
+		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT)).size();
+		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+		score = Util::FeedbackFunction(percent, .2, 2.0);
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
+		{
+			score *= 3;
+		}
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_THOR] > 0)
+		{
+			score *= 1.5;
+		}
+		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

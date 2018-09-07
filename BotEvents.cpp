@@ -20,9 +20,9 @@ void::BotWithAPlan::OnUnitCreated(const Unit* unit)
 //!< \param unit The destroyed unit.
 void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 	state.CurrentUnits[unit->unit_type]--;
-	if (VectorHelpers::FoundInVector(state.ScoutingProbes, unit))
+	if (VectorHelpers::FoundInVector(state.ScoutingUnits, unit))
 	{
-		VectorHelpers::RemoveFromVector(&state.ScoutingProbes, unit);
+		VectorHelpers::RemoveFromVector(&state.ScoutingUnits, unit);
 	}
 }
 

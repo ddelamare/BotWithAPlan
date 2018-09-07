@@ -1,11 +1,11 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Planner/Actions/BuildResource.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
-#include <Common/Resource.h>
-#include <Common\Util.h>
-#include <Common\Strategy\Building\PylonStrategy.h>
-#include <Common\UnitHelpers.h>
+#include "Common/Resource.h"
+#include "Common\Util.h"
+#include "Common\Strategy\Building\PylonStrategy.h"
+#include "Common\UnitHelpers.h"
 
 using namespace sc2;
 class PylonGoal : public BaseAction
@@ -17,7 +17,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 16.0f;
-		int foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
+		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
 		//Add food from building pylons
 		auto pylonsInProgress = obs->GetUnits(Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_PYLON));

@@ -23,6 +23,7 @@
 #include "Goals\Tech\RoboticsBay.h"
 #include "Goals\Tech\DarkShrine.h"
 #include "Goals\Tactics\AllOut.h"
+#include "Goals\Tactics\JustDoIt.h"
 #include "Goals\Tactics\ScoutSweep.h"
 #include "Goals\Tactics\PickOffExpo.h"
 #include "Goals\Upgrades\Chargelots.h"
@@ -52,6 +53,7 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new ColossusGoal());
+	ArmyGoals.push_back(new ImmortalGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
 
@@ -62,6 +64,7 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
+	TacticsGoals.push_back(new JustDoitGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
@@ -128,10 +131,10 @@ void BotWithAPlan::OnStep() {
 		else
 		{
 			// Send to scout
-			if (state.ScoutingProbes.size() == 0)
+			if (state.ScoutingUnits.size() == 0)
 			{
 				actions->UnitCommand(idleUnits[i], ABILITY_ID::MOVE, state.EnemyBase);
-				state.ScoutingProbes.push_back(idleUnits[i]);
+				state.ScoutingUnits.push_back(idleUnits[i]);
 			}
 			break;
 		}
@@ -139,11 +142,11 @@ void BotWithAPlan::OnStep() {
 
 
 	// Clear out scouting probes if they're not scouting
-	for (auto worker : state.ScoutingProbes)
+	for (auto worker : state.ScoutingUnits)
 	{
 		if (IsIdle()(*worker))
 		{
-			VectorHelpers::RemoveFromVector(&state.ScoutingProbes, worker);
+			VectorHelpers::RemoveFromVector(&state.ScoutingUnits, worker);
 		}
 
 	}

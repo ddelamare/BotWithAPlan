@@ -13,14 +13,14 @@ typedef std::map<UNIT_TYPEID, int>	UnitMap;
 struct GameState
 {
 	GameState() {
-		ScoutingProbes = Units();
-		BuildingProbes = Units();
+		ScoutingUnits = Units();
+		BuildingWorkers = Units();
 		ExpansionLocations = std::vector<Point3D>();
 		ObservedUnits = UnitMap();
 		CurrentUnits = UnitMap();
 	}
-	Units ScoutingProbes;
-	Units BuildingProbes;
+	Units ScoutingUnits;
+	Units BuildingWorkers;
 	std::vector<Point3D> ExpansionLocations;
 	Point3D MineralDirection;
 	Point2D EnemyBase;

@@ -3,7 +3,7 @@
 #include "UnitFilters.h"
 #include "VectorHelpers.h"
 #include <vector>
-#include <Common/Strategy/Building/SpiralStrategy.h>
+#include "Common/Strategy/Building/SpiralStrategy.h"
 namespace Util {
 
 	bool static TryBuildUnit(AbilityID train_unit_ability, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions)

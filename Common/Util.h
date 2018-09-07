@@ -7,6 +7,13 @@ using namespace sc2;
 
 namespace Util {
 
+	// Basically this function outputs a lower value as current percent increases over target percent and when percent is 0, returns score when zero
+	const static double FeedbackFunction(double currentPercent,double targetPercent, double multiplier)
+	{
+		// equivalent to 1/((currentPercent / targetPercent) + (1/scoreWhenZero));
+		return targetPercent / (currentPercent + ((1/multiplier) * targetPercent));
+	}
+
 	const static Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query)
 	{
 		double distance = DBL_MAX;
@@ -65,7 +72,7 @@ namespace Util {
 		for (auto unit : units)
 		{
 			auto dis = query->PathingDistance(unit, point);
-			if (dis < distance && !VectorHelpers::FoundInVector(state->ScoutingProbes, unit))
+			if (dis < distance && !VectorHelpers::FoundInVector(state->ScoutingUnits, unit))
 			{
 				distance = dis;
 				foundUnit = unit;

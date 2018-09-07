@@ -1,9 +1,9 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Planner/Actions/BuildResource.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
-#include <Common/Resource.h>
-#include <Common/UnitHelpers.h>
+#include "Common/Resource.h"
+#include "Common/UnitHelpers.h"
 
 class ZealotGoal : public BaseAction
 {
@@ -15,11 +15,13 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 1;
-		if (obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT)).size() > 5) return 0;
+		int zealotFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT)).size();
+		auto percent = (double) zealotFood / (1+ obs->GetFoodArmy()); // Get percent zealots
+		score = Util::FeedbackFunction(percent, .35, 2.0);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
 		{
-			score = 3;
+			score *= 2;
 		}
 		return score;
 	};

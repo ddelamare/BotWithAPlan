@@ -39,7 +39,7 @@ private:
 	BaseAction* nextInArmyPlan;
 	GameState  state;
 	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 5;
+	const int STEPS_PER_GOAL = 1;
 	vector<string> debugMessages;
 };
 

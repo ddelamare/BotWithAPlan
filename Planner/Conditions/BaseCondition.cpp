@@ -8,7 +8,7 @@ bool BaseCondition::IsMet(ResourceState* state)
 
 bool BaseCondition::HasAllResources(ResourceState* state)
 {
-	return NeededResources(state).size() == 0;
+	return UnmetResources(state).size() == 0;
 }
 
 // A Static list of resources need to satisfy this condition
@@ -17,7 +17,7 @@ ResourceMap BaseCondition::GetRequiredResources()
 	return requiredResources;
 }
 
-ResourceMap BaseCondition::NeededResources(ResourceState* state)
+ResourceMap BaseCondition::UnmetResources(ResourceState* state)
 {
 	auto unmet = ResourceMap();
 	for (auto res : GetRequiredResources())

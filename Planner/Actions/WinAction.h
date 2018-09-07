@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseAction.h"
-#include <Planner/Conditions/HaveWorkersCondition.h>
+#include "Planner/Conditions/HaveWorkersCondition.h"
 class WinAction : public BaseAction
 {
 public:

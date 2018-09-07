@@ -1,9 +1,9 @@
 #pragma once
-#include <Planner/Actions/BaseAction.h>
-#include <Planner/Actions/BuildResource.h>
+#include "Planner/Actions/BaseAction.h"
+#include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
-#include <Common/Resource.h>
-#include <Goals/Tech/Cybernetics.h>
+#include "Common/Resource.h"
+#include "Goals/Tech/Cybernetics.h"
 
 class DarkTemplarGoal : public BaseAction
 {
@@ -17,7 +17,9 @@ public:
 		double score = 0;
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
 		{
-			score = 2;
+			int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR)).size();
+			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+			score = Util::FeedbackFunction(percent, .2, 2.0);
 		}
 		return score;
 	};
