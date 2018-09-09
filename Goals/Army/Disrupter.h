@@ -14,7 +14,16 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		// Counters mass marine. 
-		return obs->GetMinerals() > 1000;
+		double score = 1;
+		int unitFood = 3 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR)).size();
+		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+		score = Util::FeedbackFunction(percent, .2, 1.0);
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
+		{
+			score *= 1.5;
+		}
+		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

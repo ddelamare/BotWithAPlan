@@ -14,8 +14,10 @@ public:
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, 1));
 		this->BaseAction::name = "Build Robo";
 	}
-	double virtual CalculateScore(const sc2::ObservationInterface *obs) {
-		return 0;
+	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
+		auto robos = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY));
+		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		return nexus.size() / (robos.size() + 2);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

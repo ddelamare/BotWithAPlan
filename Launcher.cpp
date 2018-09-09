@@ -7,10 +7,10 @@
 #include "BotWithAPlan.h"
 #include "Common\Util.h"
 using namespace sc2;
+const char* kAcidPlant = "Ladder/(2)AcidPlantLE.SC2Map";
 
 // 
-#define LADDER_MODE 0
-#define DEBUG_MODE 1	  
+  
 int main(int argc, char* argv[]) {
 #if LADDER_MODE
 	for (int i = 0; i < argc; i++)
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 			Coordinator coordinator;
 			coordinator.LoadSettings(argc, argv);
 			coordinator.SetMultithreaded(true);
-			coordinator.SetStepSize(25);
+			coordinator.SetStepSize(10);
 			BotWithAPlan bot;
 			coordinator.SetParticipants({
 				//CreateParticipant(Race::Protoss, nullptr),
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 				});
 
 			coordinator.LaunchStarcraft();
-			coordinator.StartGame(sc2::kMapBelShirVestigeLE);
+			coordinator.StartGame(kMapBelShirVestigeLE);
 			while (coordinator.Update()) {
 				if (bot.Lost) break;
 			}

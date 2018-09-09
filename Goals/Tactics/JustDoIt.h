@@ -9,11 +9,11 @@ class JustDoitGoal : public BaseAction
 {
 public:
 	JustDoitGoal() : BaseAction() {
-		this->conditions.push_back(new HaveBigArmy(75));
+		this->conditions.push_back(new HaveBigArmy(50));
 		this->BaseAction::name = "Just Do It";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 2 * (obs->GetFoodArmy() > 75);
+		return 2 * (obs->GetFoodArmy() > 50);
 	};
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

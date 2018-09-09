@@ -18,6 +18,7 @@ struct GameState
 		ExpansionLocations = std::vector<Point3D>();
 		ObservedUnits = UnitMap();
 		CurrentUnits = UnitMap();
+		MaxEnemyUnits = UnitMap();
 	}
 	Units ScoutingUnits;
 	Units BuildingWorkers;
@@ -26,5 +27,6 @@ struct GameState
 	Point2D EnemyBase;
 	UnitMap ObservedUnits;
 	UnitMap CurrentUnits;
+	UnitMap MaxEnemyUnits;
 
 };

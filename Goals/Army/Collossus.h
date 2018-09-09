@@ -13,7 +13,23 @@ public:
 		this->BaseAction::name = "Build Collossus";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return obs->GetMinerals() > 3000;
+		// Counters mass marine. 
+		double score = 1;
+		int unitFood = 6 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_COLOSSUS)).size();
+		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+		score = Util::FeedbackFunction(percent, .3, 1.0);
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
+		{
+			score *= 1.5;
+		}
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_CORRUPTOR] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0)
+		{
+			score /= 2.5;
+		}
+
+		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

@@ -26,6 +26,7 @@ public:
 			for (int i = state->ExpansionLocations.size() - 1; i >= 0; i--)
 			{
 				actions->UnitCommand(idleWorkers[0], ABILITY_ID::SMART, state->ExpansionLocations[(i + rotation) % state->ExpansionLocations.size()], true);
+				state->ScoutingUnits.push_back(idleWorkers[0]);
 			}
 			rotation++;
 		}

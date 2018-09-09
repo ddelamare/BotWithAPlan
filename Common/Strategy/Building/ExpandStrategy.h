@@ -41,9 +41,9 @@ public:
 			{
 				return buildPos;
 			}
-			//debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
-			//debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);
-			//debug->DebugSphereOut(exp, 2, Colors::White);
+			debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
+			debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);
+			debug->DebugSphereOut(exp, 2, Colors::White);
 
 			auto direction = averagePoint - exp;
 			direction.z = 0;
@@ -62,7 +62,7 @@ public:
 				}
 				else
 				{
-					//debug->DebugSphereOut(exp + offset, 5, Colors::Yellow);
+					debug->DebugSphereOut(exp + offset, 5, Colors::Yellow);
 				}
 			}
 			if (foundSpot) break;

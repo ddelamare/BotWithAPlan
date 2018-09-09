@@ -136,12 +136,18 @@
     </ClInclude>
     <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h" />
     <ClInclude Include="Goals\Tactics\JustDoIt.h" />
+    <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
+    <ClInclude Include="Goals\Army\Archon.h" />
+    <ClInclude Include="Goals\Tech\TemplarArchives.h" />
+    <ClInclude Include="Goals\Upgrades\PsiStorm.h" />
+    <ClInclude Include="Common\Strategy\Attacks\Templar.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
       <Filter>Templates</Filter>
     </None>
     <None Include="Goals\Army\Stalker.h" />
+    <None Include="Goals\Army\HighTemplar.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt">

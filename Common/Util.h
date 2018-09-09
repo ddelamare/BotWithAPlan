@@ -10,8 +10,13 @@ namespace Util {
 	// Basically this function outputs a lower value as current percent increases over target percent and when percent is 0, returns score when zero
 	const static double FeedbackFunction(double currentPercent,double targetPercent, double multiplier)
 	{
-		// equivalent to 1/((currentPercent / targetPercent) + (1/scoreWhenZero));
-		return targetPercent / (currentPercent + ((1/multiplier) * targetPercent));
+		// equivalent to 1/((currentPercent / targetPercent) + (1/multiplier));
+		return targetPercent / (currentPercent + (targetPercent / multiplier));
+	}
+
+	const static double ExponentialIncrease(double x, double dampener)
+	{
+		return x * x * dampener;
 	}
 
 	const static Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query)
@@ -122,6 +127,7 @@ namespace Util {
 		for (auto unit : units)
 		{
 			if (unit->pos.x == ignorePoint.x && unit->pos.y == ignorePoint.y) continue;
+			if (Distance3D(ignorePoint, unit->pos) < 3) continue;
 			auto dis = Distance3D(unit->pos, point);
 			if (dis > distance && dis < radius)
 			{
@@ -223,6 +229,25 @@ struct Sorters
 		bool operator()(Unit const * lhs, Unit const * rhs)
 		{
 			return Distance2D(lhs->pos, referencePoint) < Distance2D(rhs->pos, referencePoint);
+		}
+	};
+
+	struct sort_by_pathing_distance {
+		Point3D referencePoint;
+		QueryInterface* q;
+		sort_by_pathing_distance(Point3D point, QueryInterface* query) {
+			referencePoint = point;
+			q = query;
+		}
+
+		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		{
+			return q->PathingDistance(lhs, referencePoint) < q->PathingDistance(rhs, referencePoint);
+		}
+
+		bool operator()(Unit const * lhs, Unit const * rhs)
+		{
+			return q->PathingDistance(lhs->pos, referencePoint) < q->PathingDistance(rhs->pos, referencePoint);
 		}
 	};
 

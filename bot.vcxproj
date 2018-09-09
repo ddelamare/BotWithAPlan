@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
+    <None Include="Goals\Army\HighTemplar.h" />
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="Common\Resource.h" />
     <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
+    <ClInclude Include="Common\Strategy\Attacks\Templar.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="Common\UnitHelpers.h" />
     <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Common\VectorHelpers.h" />
+    <ClInclude Include="Goals\Army\Archon.h" />
     <ClInclude Include="Goals\Army\Collossus.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Disrupter.h" />
@@ -190,10 +193,13 @@
     <ClInclude Include="Goals\Tactics\AllOut.h" />
     <ClInclude Include="Goals\Tech\Cybernetics.h" />
     <ClInclude Include="Goals\Tech\DarkShrine.h" />
+    <ClInclude Include="Goals\Tech\TemplarArchives.h" />
     <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
     <ClInclude Include="Goals\Upgrades\Blink.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
+    <ClInclude Include="Goals\Upgrades\PsiStorm.h" />
+    <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
     <ClInclude Include="LadderInterface.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />

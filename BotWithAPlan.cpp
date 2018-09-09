@@ -17,11 +17,14 @@
 #include "Goals\Army\Immortal.h"
 #include "Goals\Army\Collossus.h"
 #include "Goals\Army\Disrupter.h"
+#include "Goals\Army\HighTemplar.h"
+#include "Goals\Army\Archon.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
 #include "Goals\Tech\RoboticsBay.h"
 #include "Goals\Tech\DarkShrine.h"
+#include "Goals\Tech\TemplarArchives.h"
 #include "Goals\Tactics\AllOut.h"
 #include "Goals\Tactics\JustDoIt.h"
 #include "Goals\Tactics\ScoutSweep.h"
@@ -29,8 +32,11 @@
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\Blink.h"
+#include "Goals\Upgrades\ThermalLance.h"
+#include "Goals\Upgrades\PsiStorm.h"
 #include "Common\Strategy\Attacks\BlinkStalker.h"
 #include "Common\Strategy\Attacks\DisruptorAttack.h"
+#include "Common\Strategy\Attacks\Templar.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -47,6 +53,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new ChronoGoal());
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
+	EconomyGoals.push_back(new RoboticsGoal());
 	EconomyGoals.push_back(new ExpandGoal());
 
 	// Build Because we Can
@@ -56,10 +63,14 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new ImmortalGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
+	ArmyGoals.push_back(new HighTemplarGoal());
+	ArmyGoals.push_back(new ArchonGoal());
 
 	// Tactics and Upgrade Goals
 	TacticsGoals.push_back(new ChargelotGoal());
 	TacticsGoals.push_back(new BlinkGoal());
+	TacticsGoals.push_back(new PsiStormGoal());
+	TacticsGoals.push_back(new ThermalLanceGoal());
 	TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
@@ -78,6 +89,8 @@ BotWithAPlan::BotWithAPlan()
 	AvailableActions.push_back(new VoidRayGoal());
 	AvailableActions.push_back(new ColossusGoal());
 	AvailableActions.push_back(new ImmortalGoal());
+	AvailableActions.push_back(new HighTemplarGoal());
+	AvailableActions.push_back(new TemplarArchivesGoal());
 
 	planner.Init();
 	shouldRecalcuate = true;
@@ -92,6 +105,20 @@ void BotWithAPlan::OnStep() {
 	auto obs = Observation();
 	auto query = Query();
 	auto actions = Actions();
+
+	// Store the number of each unit they have
+	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsArmy());
+	UnitMap cUnits;
+	for (auto unit : enemyUnits)
+	{
+		cUnits[unit->unit_type]++;
+	}
+	for (auto type : cUnits)
+	{
+		state.MaxEnemyUnits[type.first] = max(state.MaxEnemyUnits[type.first], type.second);
+		LOG(4) << (int)type.first << " " << state.MaxEnemyUnits[type.first];
+	}
+	
 
 	if (StepCounter == STEPS_PER_GOAL)
 	{
@@ -156,6 +183,13 @@ void BotWithAPlan::OnStep() {
 	bsMicro.Execute(obs, actions, query, Debug(), &state);
 	auto disruptorMicro = DisruptorAttack(obs, query);
 	disruptorMicro.Execute(obs, actions, query, Debug(), &state);
+	auto tMicro = TemplarMicro(obs, query);
+	tMicro.Execute(obs, actions, query, Debug(), &state);
+
+	for (int i = 0; i < state.ExpansionLocations.size(); i++)
+	{
+		Debug()->DebugTextOut(std::to_string(i + 1), state.ExpansionLocations[i]);
+	}
 
 
 	auto endTime = Clock::now();
@@ -164,8 +198,9 @@ void BotWithAPlan::OnStep() {
 		Debug()->DebugTextOut(message);
 	}
 	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
-	
+#if DEBUG_MODE	
 	Debug()->SendDebug();
+#endif
 }
 
 void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages)
@@ -190,15 +225,16 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 	// Exceute Goal State
 	if (goal)
 	{
-		messages->push_back(name + " Goal Picked:" + goal->GetName());
+		auto msg = name + " GP:" + goal->GetName();
 		if (nextInPlan && goal != nextInPlan)
-			messages->push_back(name + " Goal Step:" + nextInPlan->GetName());
+			msg +=" GS:" + nextInPlan->GetName();
 		auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
 		if (success)
 		{
 			shouldRecalcuate = true;
 			goal = nullptr;
 		}
+		messages->push_back(msg);
 	}
 	else
 	{

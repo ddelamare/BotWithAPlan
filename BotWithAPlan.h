@@ -13,7 +13,8 @@
 #include "sc2utils/sc2_arg_parser.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
-
+#define LADDER_MODE 0
+#define DEBUG_MODE 1	
 class BotWithAPlan : public Agent {
 public:
 	BotWithAPlan();
