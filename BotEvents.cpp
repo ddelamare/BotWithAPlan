@@ -88,3 +88,10 @@ void BotWithAPlan::OnGameStart() {
 	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(nexus->pos));
 }
 
+void BotWithAPlan::OnGameEnd()
+{
+	  // If we have no town halls, we probably lost
+	auto th = Observation()->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+	this->Lost |= (th.size() == 0);
+}
+

@@ -24,6 +24,7 @@ public:
 	void OnUnitCreated(const Unit *);
 	void OnUnitEnterVision(const Unit *);
 	void BotWithAPlan::OnUnitDestroyed(const Unit* unit);
+	void OnGameEnd();
 	bool Lost;
 private:
 	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages);

@@ -19,6 +19,8 @@
 #include "Goals\Army\Disrupter.h"
 #include "Goals\Army\HighTemplar.h"
 #include "Goals\Army\Archon.h"
+#include "Goals\Army\Adept.h"
+#include "Goals\Army\Observer.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
@@ -32,6 +34,7 @@
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\Blink.h"
+#include "Goals\Upgrades\Glaives.h"
 #include "Goals\Upgrades\ThermalLance.h"
 #include "Goals\Upgrades\PsiStorm.h"
 #include "Common\Strategy\Attacks\BlinkStalker.h"
@@ -59,12 +62,15 @@ BotWithAPlan::BotWithAPlan()
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
+	ArmyGoals.push_back(new AdeptGoal());
 	ArmyGoals.push_back(new ColossusGoal());
+	ArmyGoals.push_back(new VoidRayGoal());
 	ArmyGoals.push_back(new ImmortalGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
 	ArmyGoals.push_back(new HighTemplarGoal());
 	ArmyGoals.push_back(new ArchonGoal());
+	ArmyGoals.push_back(new ObserverGoal());
 
 	// Tactics and Upgrade Goals
 	TacticsGoals.push_back(new ChargelotGoal());
@@ -72,6 +78,7 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new PsiStormGoal());
 	TacticsGoals.push_back(new ThermalLanceGoal());
 	TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
+	TacticsGoals.push_back(new GlaivesGoal());
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
@@ -119,6 +126,15 @@ void BotWithAPlan::OnStep() {
 		LOG(4) << (int)type.first << " " << state.MaxEnemyUnits[type.first];
 	}
 	
+	// Clear out scouting probes if they're not scouting
+	for (auto worker : state.ScoutingUnits)
+	{
+		if (IsIdle()(*worker))
+		{
+			VectorHelpers::RemoveFromVector(&state.ScoutingUnits, worker);
+		}
+
+	}
 
 	if (StepCounter == STEPS_PER_GOAL)
 	{
@@ -165,17 +181,6 @@ void BotWithAPlan::OnStep() {
 			}
 			break;
 		}
-	}
-
-
-	// Clear out scouting probes if they're not scouting
-	for (auto worker : state.ScoutingUnits)
-	{
-		if (IsIdle()(*worker))
-		{
-			VectorHelpers::RemoveFromVector(&state.ScoutingUnits, worker);
-		}
-
 	}
 
 	// Blink micro

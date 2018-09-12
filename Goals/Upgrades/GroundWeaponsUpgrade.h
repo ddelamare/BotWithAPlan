@@ -12,11 +12,11 @@ public:
 	vector<ABILITY_ID> abilities;
 	GroundWeaponsUpgradeGoal() : BaseAction() {
 		upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL1);
-		//upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL2);
-		//upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL3);
+		upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL2);
+		upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL3);
 		abilities.push_back(sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDWEAPONSLEVEL1);
-		//abilities.push_back(sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDWEAPONSLEVEL2);
-		//abilities.push_back(sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDWEAPONSLEVEL3);
+		abilities.push_back(sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDWEAPONSLEVEL2);
+		abilities.push_back(sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDWEAPONSLEVEL3);
 		
 		this->conditions.push_back(new BaseCondition("Build Forge", 2, sc2::UNIT_TYPEID::PROTOSS_FORGE, 1));
 		this->results.push_back(new BaseResult((sc2::UNIT_TYPEID)sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDWEAPONSLEVEL1, 1));
@@ -30,7 +30,8 @@ public:
 		if (hasUpgrade) idx++; // Move on to the next
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_FORGE), abilities[idx], obs))
 			return 0;
-		if (obs->GetGameLoop() > 4000u * (idx + 1))
+		if (idx > 0 && Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_FORGE), abilities[idx], obs)) return 0;
+		if (obs->GetGameLoop() > 6000u * (idx + 1))
 		{
 			score = 6;
 		}

@@ -26,6 +26,10 @@ public:
 		{
 			score *= 1.2;
 		}
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_STALKER] > 8)
+		{
+			score *= 1.4;
+		}
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

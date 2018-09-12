@@ -141,6 +141,9 @@
     <ClInclude Include="Goals\Tech\TemplarArchives.h" />
     <ClInclude Include="Goals\Upgrades\PsiStorm.h" />
     <ClInclude Include="Common\Strategy\Attacks\Templar.h" />
+    <ClInclude Include="Goals\Army\Adept.h" />
+    <ClInclude Include="Goals\Upgrades\Glaives.h" />
+    <ClInclude Include="Goals\Army\Observer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

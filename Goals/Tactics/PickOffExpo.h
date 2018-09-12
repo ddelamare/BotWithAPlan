@@ -14,13 +14,13 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		// See how many expos we see
 		double score = 0;
+		if (obs->GetFoodArmy() < 25) return 0;
 		auto enemyExpos = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall());
 		for (auto expo : enemyExpos)
 		{
-			score += DistanceSquared2D(expo->pos, state->EnemyBase);
+			score += Distance2D(expo->pos, state->EnemyBase);
 		}
-		if (obs->GetArmyCount() < 10) return 0;
-		score = score / 100;
+		score = score / 10;
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

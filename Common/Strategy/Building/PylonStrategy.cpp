@@ -51,7 +51,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 				state->MineralDirection = sum;
 			}
 		}
-		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS + 1));  // Add pylon and nexus radius
+		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS + 3));  // Add pylon and nexus radius
 	}
  	return buildPos;
 }

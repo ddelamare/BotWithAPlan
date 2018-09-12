@@ -8,7 +8,7 @@ class ChargelotGoal : public BaseAction
 {
 public:
 	ChargelotGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Build Twilight", 4, sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL, 1));
+		this->conditions.push_back(new BaseCondition("Build Twilight", 2, sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL, 1));
 		this->results.push_back(new BaseResult((sc2::UNIT_TYPEID)sc2::ABILITY_ID::EFFECT_CHARGE, 1));
 		this->BaseAction::name = "Research Charge";
 	}

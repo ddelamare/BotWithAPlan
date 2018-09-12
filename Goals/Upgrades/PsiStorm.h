@@ -8,9 +8,9 @@ class PsiStormGoal : public BaseAction
 {
 public:
 	PsiStormGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Build RoboBay", 4, sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE, 1));
+		this->conditions.push_back(new BaseCondition("Build Archive", 2, sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE, 1));
 		this->results.push_back(new BaseResult((sc2::UNIT_TYPEID)sc2::ABILITY_ID::EFFECT_PSISTORM, 1));
-		this->BaseAction::name = "Research Blink";
+		this->BaseAction::name = "Psi Storm";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
