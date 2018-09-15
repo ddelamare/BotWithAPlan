@@ -58,33 +58,35 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new ChronoGoal());
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
-	EconomyGoals.push_back(new RoboticsGoal());
-	EconomyGoals.push_back(new ExpandGoal());
+	//EconomyGoals.push_back(new RoboticsGoal());
+	//EconomyGoals.push_back(new ExpandGoal());
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new AdeptGoal());
-	ArmyGoals.push_back(new ColossusGoal());
+	//ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new VoidRayGoal());
-	ArmyGoals.push_back(new ImmortalGoal());
-	ArmyGoals.push_back(new DarkTemplarGoal());
-	ArmyGoals.push_back(new DisruptorGoal());
-	ArmyGoals.push_back(new HighTemplarGoal());
-	ArmyGoals.push_back(new ArchonGoal());
-	ArmyGoals.push_back(new ObserverGoal());
+	//ArmyGoals.push_back(new ImmortalGoal());
+	//ArmyGoals.push_back(new DarkTemplarGoal());
+	//ArmyGoals.push_back(new DisruptorGoal());
+	//ArmyGoals.push_back(new HighTemplarGoal());
+	//ArmyGoals.push_back(new ArchonGoal());
+	//ArmyGoals.push_back(new ObserverGoal());
+	//ArmyGoals.push_back(new PhoenixGoal());
 
 	// Tactics and Upgrade Goals
-	TacticsGoals.push_back(new ChargelotGoal());
-	TacticsGoals.push_back(new BlinkGoal());
-	TacticsGoals.push_back(new PsiStormGoal());
-	TacticsGoals.push_back(new ThermalLanceGoal());
-	TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
-	TacticsGoals.push_back(new GlaivesGoal());
+	//TacticsGoals.push_back(new ChargelotGoal());
+	//TacticsGoals.push_back(new BlinkGoal());
+	//TacticsGoals.push_back(new PsiStormGoal());
+	//TacticsGoals.push_back(new ThermalLanceGoal());
+	//TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
+	//TacticsGoals.push_back(new GlaivesGoal());
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
-	TacticsGoals.push_back(new JustDoitGoal());
+	//TacticsGoals.push_back(new JustDoitGoal());
+	TacticsGoals.push_back(new RushGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());

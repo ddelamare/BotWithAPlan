@@ -85,7 +85,8 @@ void BotWithAPlan::OnGameStart() {
 	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
     
 	// Sort expansions by distance to home base
-	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(nexus->pos));
+	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.EnemyBase));
+	std::reverse(state.ExpansionLocations.begin(), state.ExpansionLocations.end());
 }
 
 void BotWithAPlan::OnGameEnd()

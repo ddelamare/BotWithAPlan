@@ -8,6 +8,7 @@
 #include "Common\Util.h"
 using namespace sc2;
 const char* kAcidPlant = "Ladder/(2)AcidPlantLE.SC2Map";
+const char* kDreamCatcher = "Ladder/(2)DreamCatcherLE.SC2Map";
 
 // 
   
@@ -33,17 +34,17 @@ int main(int argc, char* argv[]) {
 			Coordinator coordinator;
 			coordinator.LoadSettings(argc, argv);
 			coordinator.SetMultithreaded(true);
-			coordinator.SetStepSize(10);
+			coordinator.SetStepSize(25);
 			BotWithAPlan bot;
 			coordinator.SetParticipants({
 				//CreateParticipant(Race::Protoss, nullptr),
 				CreateParticipant((Race)GetAgentRace(), &bot),
 				//CreateParticipant((Race)GetAgentRace(), &bot2),
-				CreateComputer(race, sc2::Difficulty::Hard) 
+				CreateComputer(race, sc2::Difficulty::CheatVision)
 				});
 
 			coordinator.LaunchStarcraft();
-			coordinator.StartGame(kMapBelShirVestigeLE);
+			coordinator.StartGame(kDreamCatcher);
 			while (coordinator.Update()) {
 				if (bot.Lost) break;
 			}
