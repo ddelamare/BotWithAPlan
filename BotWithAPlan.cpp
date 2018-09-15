@@ -42,6 +42,7 @@
 #include "Common\Strategy\Attacks\BlinkStalker.h"
 #include "Common\Strategy\Attacks\DisruptorAttack.h"
 #include "Common\Strategy\Attacks\Templar.h"
+#include "Common\Strategy\Attacks\VoidRay.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -59,7 +60,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
 	//EconomyGoals.push_back(new RoboticsGoal());
-	//EconomyGoals.push_back(new ExpandGoal());
+	EconomyGoals.push_back(new ExpandGoal(9000));
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
@@ -194,6 +195,8 @@ void BotWithAPlan::OnStep() {
 	disruptorMicro.Execute(obs, actions, query, Debug(), &state);
 	auto tMicro = TemplarMicro(obs, query);
 	tMicro.Execute(obs, actions, query, Debug(), &state);
+	auto vMicro = VoidRayAttack(obs, query);
+	vMicro.Execute(obs, actions, query, Debug(), &state);
 
 	for (int i = 0; i < state.ExpansionLocations.size(); i++)
 	{

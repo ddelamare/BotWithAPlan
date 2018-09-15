@@ -164,6 +164,7 @@
     <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
     <ClInclude Include="Common\Strategy\Attacks\Templar.h" />
+    <ClInclude Include="Common\Strategy\Attacks\VoidRay.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />

@@ -146,6 +146,7 @@
     <ClInclude Include="Goals\Army\Observer.h" />
     <ClInclude Include="Goals\Army\Phoenix.h" />
     <ClInclude Include="Goals\Tactics\Rush.h" />
+    <ClInclude Include="Common\Strategy\Attacks\VoidRay.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
