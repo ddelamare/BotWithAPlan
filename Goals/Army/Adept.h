@@ -16,7 +16,7 @@ public:
 		double score = 0;
 		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ADEPT)).size();
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent DT
-		score = Util::FeedbackFunction(percent, .75, 3);
+		score = Util::FeedbackFunction(percent, .25, 3);
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

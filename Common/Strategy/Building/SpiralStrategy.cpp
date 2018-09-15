@@ -29,10 +29,12 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 	const double radialDiff = 2 * M_PI / numDivisions;
 	double xScalar = 0;
 	bool foundSpot = false;
-	for (int i = 0; i < maxSpiralCount; i++)
+	for (auto pylon : pylons)
 	{
-		for (auto pylon : pylons)
+		xScalar = 0;
+		for (int i = 0; i < maxSpiralCount; i++)
 		{
+
 			if (query->Placement(this->buildingAction, pylon->pos + offset))
 			{
 				buildPos = pylon->pos + offset;
@@ -43,17 +45,17 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 			{
 				debug->DebugSphereOut(pylon->pos + offset, 3, Colors::Yellow);
 			}
-		}
-		if (foundSpot) break;
+			if (foundSpot) break;
 
-		//Expand Spiral
-		if (i % numDivisions == 0)
-		{
-			xScalar+= 1;
-		}
+			//Expand Spiral
+			if (i % numDivisions == 0)
+			{
+				xScalar += 1;
+			}
 
-		offset.x = sin(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
-		offset.y = cos(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
+			offset.x = sin(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
+			offset.y = cos(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
+		}
 	}
 
 

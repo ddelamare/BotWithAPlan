@@ -46,9 +46,6 @@ private:
 };
 
 
-
-
-
 // Bot Ladder hooks
 void DllExport *CreateNewAgent();
 int DllExport GetAgentRace();

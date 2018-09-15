@@ -32,8 +32,8 @@ public:
 			return 0;
 		if (idx > 0 && Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_FORGE), abilities[idx], obs)) return 0;
 		if (obs->GetGameLoop() > 6000u * (idx + 1))
-		{
-			score = 6;
+		{												   
+			score = obs->GetGameLoop() / (6000u * (idx + 1));
 		}
 		return score;
 	};

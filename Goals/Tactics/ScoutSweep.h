@@ -8,13 +8,15 @@
 class ScoutSweepGoal : public BaseAction
 {
 	int rotation = 0;
+	long timeSinceLastExec = 0;
 public:
 	ScoutSweepGoal() : BaseAction() {
 		this->BaseAction::name = "Scout Sweep";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		if (state->ScoutingUnits.size()) return 0;
-		return 2 + ( obs->GetIdleWorkerCount() > 1);
+		timeSinceLastExec++;
+		//if (state->ScoutingUnits.size()) return 0;
+		return 1 + ( obs->GetIdleWorkerCount() > 1) + (timeSinceLastExec / 100.0);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
@@ -30,6 +32,8 @@ public:
 			}
 			rotation++;
 		}
+		timeSinceLastExec = 0;
+
 
 		return queuedScouting;
 	}

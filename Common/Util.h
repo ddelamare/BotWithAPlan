@@ -216,8 +216,11 @@ struct Sorters
 		}
 	};
 	struct sort_by_distance {
-		Point3D referencePoint;
+		Point2D referencePoint;
 		sort_by_distance(Point3D point) {
+			referencePoint = point;
+		}
+		sort_by_distance(Point2D point) {
 			referencePoint = point;
 		}
 
