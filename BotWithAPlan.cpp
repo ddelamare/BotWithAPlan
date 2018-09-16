@@ -22,12 +22,16 @@
 #include "Goals\Army\Adept.h"
 #include "Goals\Army\Observer.h"
 #include "Goals\Army\Phoenix.h"
+#include "Goals\Army\Sentry.h"
+#include "Goals\Army\Carrier.h"
+#include "Goals\Army\Tempest.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
 #include "Goals\Tech\RoboticsBay.h"
 #include "Goals\Tech\DarkShrine.h"
 #include "Goals\Tech\TemplarArchives.h"
+#include "Goals\Tech\FleetBeacon.h"
 #include "Goals\Tactics\AllOut.h"
 #include "Goals\Tactics\JustDoIt.h"
 #include "Goals\Tactics\ScoutSweep.h"
@@ -39,6 +43,7 @@
 #include "Goals\Upgrades\Glaives.h"
 #include "Goals\Upgrades\ThermalLance.h"
 #include "Goals\Upgrades\PsiStorm.h"
+#include "Goals\Upgrades\WarpGate.h"
 #include "Common\Strategy\Attacks\BlinkStalker.h"
 #include "Common\Strategy\Attacks\DisruptorAttack.h"
 #include "Common\Strategy\Attacks\Templar.h"
@@ -59,35 +64,42 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new ChronoGoal());
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
-	//EconomyGoals.push_back(new RoboticsGoal());
-	EconomyGoals.push_back(new ExpandGoal(9000));
+	EconomyGoals.push_back(new RoboticsGoal());
+	EconomyGoals.push_back(new StarGateGoal());
+	EconomyGoals.push_back(new ExpandGoal(0));
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new AdeptGoal());
-	//ArmyGoals.push_back(new ColossusGoal());
+	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new VoidRayGoal());
-	//ArmyGoals.push_back(new ImmortalGoal());
-	//ArmyGoals.push_back(new DarkTemplarGoal());
-	//ArmyGoals.push_back(new DisruptorGoal());
-	//ArmyGoals.push_back(new HighTemplarGoal());
-	//ArmyGoals.push_back(new ArchonGoal());
-	//ArmyGoals.push_back(new ObserverGoal());
-	//ArmyGoals.push_back(new PhoenixGoal());
+	ArmyGoals.push_back(new ImmortalGoal());
+	ArmyGoals.push_back(new DarkTemplarGoal());
+	ArmyGoals.push_back(new DisruptorGoal());
+	ArmyGoals.push_back(new HighTemplarGoal());
+	ArmyGoals.push_back(new ArchonGoal());
+	ArmyGoals.push_back(new ObserverGoal());
+	ArmyGoals.push_back(new PhoenixGoal());
+	ArmyGoals.push_back(new SentryGoal());
+	ArmyGoals.push_back(new CarrierGoal());
+	ArmyGoals.push_back(new TempestGoal());
 
 	// Tactics and Upgrade Goals
-	//TacticsGoals.push_back(new ChargelotGoal());
-	//TacticsGoals.push_back(new BlinkGoal());
-	//TacticsGoals.push_back(new PsiStormGoal());
-	//TacticsGoals.push_back(new ThermalLanceGoal());
-	//TacticsGoals.push_back(new GroundWeaponsUpgradeGoal());
-	//TacticsGoals.push_back(new GlaivesGoal());
-	TacticsGoals.push_back(new AllOutGoal());
-	TacticsGoals.push_back(new ScoutSweepGoal());
-	TacticsGoals.push_back(new PickOffExpoGoal());
-	//TacticsGoals.push_back(new JustDoitGoal());
-	TacticsGoals.push_back(new RushGoal());
+
+	//TacticsGoals.push_back(new AllOutGoal());
+	//TacticsGoals.push_back(new ScoutSweepGoal());
+	//TacticsGoals.push_back(new PickOffExpoGoal());
+	TacticsGoals.push_back(new JustDoitGoal());
+	//TacticsGoals.push_back(new RushGoal());
+
+	UpgradeGoals.push_back(new ChargelotGoal());
+	UpgradeGoals.push_back(new BlinkGoal());
+	UpgradeGoals.push_back(new PsiStormGoal());
+	UpgradeGoals.push_back(new ThermalLanceGoal());
+	UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
+	UpgradeGoals.push_back(new GlaivesGoal());
+	UpgradeGoals.push_back(new WarpGateGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
@@ -103,6 +115,7 @@ BotWithAPlan::BotWithAPlan()
 	AvailableActions.push_back(new ImmortalGoal());
 	AvailableActions.push_back(new HighTemplarGoal());
 	AvailableActions.push_back(new TemplarArchivesGoal());
+	AvailableActions.push_back(new FleetBeaconGoal());
 
 	planner.Init();
 	shouldRecalcuate = true;
@@ -147,6 +160,7 @@ void BotWithAPlan::OnStep() {
 		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages);
 		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages);
 		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages);
+		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages);
 		StepCounter = 0;
 	}
 	StepCounter++;
@@ -198,11 +212,14 @@ void BotWithAPlan::OnStep() {
 	auto vMicro = VoidRayAttack(obs, query);
 	vMicro.Execute(obs, actions, query, Debug(), &state);
 
+	// Morph all gateways to warpgates
+	auto gateways = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
+	actions->UnitCommand(gateways, ABILITY_ID::MORPH_WARPGATE);
+
 	for (int i = 0; i < state.ExpansionLocations.size(); i++)
 	{
 		Debug()->DebugTextOut(std::to_string(i + 1), state.ExpansionLocations[i]);
 	}
-
 
 	auto endTime = Clock::now();
 	for (auto message : debugMessages)

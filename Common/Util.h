@@ -191,6 +191,18 @@ namespace Util {
 	{
 		return Point3D(point.x, point.y, 0);
 	}
+
+	std::string static GetStringFromRace(const sc2::Race & race)
+	{
+		switch (race)
+		{
+		case sc2::Race::Protoss: return "Protoss";
+		case sc2::Race::Terran:  return "Terran";
+		case sc2::Race::Zerg:	return "Zerg";
+		default: return "Random";
+		}
+	}
+
 };
 
 struct Sorters

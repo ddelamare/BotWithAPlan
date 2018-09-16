@@ -10,6 +10,7 @@ class DarkTemplarGoal : public BaseAction
 public:
 	DarkTemplarGoal() : BaseAction(){
 		this->conditions.push_back(new BaseCondition("Build Dark Shrine", 2, sc2::UNIT_TYPEID::PROTOSS_DARKSHRINE, 1));
+		this->conditions.push_back(new HaveGateWayTrainer());
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_DARKTEMPLAR, 1));
 		this->BaseAction::name = "Build Dark Templar";
 	}
@@ -26,7 +27,6 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_DARKTEMPLAR, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions);
-
+		return Util::TryWarpUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR, obs, actions, query, debug, state);
 	}
 };

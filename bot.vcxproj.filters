@@ -147,6 +147,13 @@
     <ClInclude Include="Goals\Army\Phoenix.h" />
     <ClInclude Include="Goals\Tactics\Rush.h" />
     <ClInclude Include="Common\Strategy\Attacks\VoidRay.h" />
+    <ClInclude Include="Goals\Army\WarpPrism.h" />
+    <ClInclude Include="Planner\Conditions\HaveGatewayTrainer.h" />
+    <ClInclude Include="Goals\Upgrades\WarpGate.h" />
+    <ClInclude Include="Goals\Army\Sentry.h" />
+    <ClInclude Include="Goals\Tech\FleetBeacon.h" />
+    <ClInclude Include="Goals\Army\Carrier.h" />
+    <ClInclude Include="Goals\Army\Tempest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

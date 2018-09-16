@@ -174,6 +174,7 @@
     <ClInclude Include="Common\VectorHelpers.h" />
     <ClInclude Include="Goals\Army\Adept.h" />
     <ClInclude Include="Goals\Army\Archon.h" />
+    <ClInclude Include="Goals\Army\Carrier.h" />
     <ClInclude Include="Goals\Army\Collossus.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Disrupter.h" />
@@ -182,10 +183,14 @@
     <ClInclude Include="Goals\Army\Observer.h" />
     <ClInclude Include="Goals\Army\Phoenix.h" />
     <ClInclude Include="Goals\Army\Robotics.h" />
+    <ClInclude Include="Goals\Army\Sentry.h" />
+    <ClInclude Include="Goals\Army\Tempest.h" />
+    <ClInclude Include="Goals\Army\WarpPrism.h" />
     <ClInclude Include="Goals\Tactics\JustDoIt.h" />
     <ClInclude Include="Goals\Tactics\PickOffExpo.h" />
     <ClInclude Include="Goals\Tactics\Rush.h" />
     <ClInclude Include="Goals\Tactics\ScoutSweep.h" />
+    <ClInclude Include="Goals\Tech\FleetBeacon.h" />
     <ClInclude Include="Goals\Tech\Forge.h" />
     <ClInclude Include="Goals\Tech\RoboticsBay.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />
@@ -206,6 +211,7 @@
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
     <ClInclude Include="Goals\Upgrades\PsiStorm.h" />
     <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
+    <ClInclude Include="Goals\Upgrades\WarpGate.h" />
     <ClInclude Include="LadderInterface.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
@@ -215,6 +221,7 @@
     <ClInclude Include="Planner\Actions\WinAction.h" />
     <ClInclude Include="Planner\Conditions\BaseCondition.h" />
     <ClInclude Include="Planner\Conditions\HaveBigArmy.h" />
+    <ClInclude Include="Planner\Conditions\HaveGatewayTrainer.h" />
     <ClInclude Include="Planner\Conditions\HaveWorkersCondition.h" />
     <ClInclude Include="Planner\GameState.h" />
     <ClInclude Include="Planner\Planner.h" />

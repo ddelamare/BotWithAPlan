@@ -12,6 +12,8 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		units.clear();
 		double score = 0.0f;
+		auto probes = obs->GetUnits(IsWorker());
+		if (probes.size() >= 72) return 0; // Cap max number of probes/active bases
 		auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
 		for (auto nexus : nexuses)
 		{

@@ -35,7 +35,7 @@ public:
 		va_end(vl);
 	}
 	virtual bool IsMet(ResourceState*);
-	ResourceMap GetRequiredResources();
+	virtual ResourceMap GetRequiredResources(ResourceState* state);
 	ResourceMap UnmetResources(ResourceState* state);
 
 	string GetName() 

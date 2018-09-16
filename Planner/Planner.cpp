@@ -55,7 +55,7 @@ ResourceState Planner::CalculateTargetResourceState(ResourceState state, BaseAct
 		for (auto res : needed)
 		{
 			goalState.resources[res.first] += res.second;
-			if (state.resources[res.first] >= cond->GetRequiredResources()[res.first])
+			if (state.resources[res.first] >= cond->GetRequiredResources(&state)[res.first])
 			{
 				LOG(2) << "\t- Has Resource " << (int)res.first << endl;
 			}
@@ -139,7 +139,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	}
 	else
 	{
-		LOG(2) << "\t****NO ACTIONS FOUND****\n";
+		LOG(1) << "\t****NO ACTIONS FOUND****\n";
 		return plan;
 	}
 

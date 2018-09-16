@@ -22,7 +22,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 	if (pylons.size())
 	{
 		//TODO: BUild next to nexuses without pylons
-		auto spiralizer = SpiralStrategy(buildingAction, useClearance, needsPower, 8);
+		auto spiralizer = SpiralStrategy(buildingAction, useClearance, needsPower, 6);
 		return spiralizer.FindPlacement(obs, actions, query, debug, state);
 
 	}
@@ -51,7 +51,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 				state->MineralDirection = sum;
 			}
 		}
-		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS + 3));  // Add pylon and nexus radius
+		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS + 2));  // Add pylon and nexus radius
 	}
  	return buildPos;
 }

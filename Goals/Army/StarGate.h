@@ -15,7 +15,9 @@ public:
 		this->BaseAction::name = "Build StarGate";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state)  {
-		return 0;
+		auto stargates = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_STARGATE));
+		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		return (nexus.size()) / (stargates.size() + 2);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

@@ -9,7 +9,8 @@ class HighTemplarGoal : public BaseAction
 {
 public:
 	HighTemplarGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Build Archives", 4, sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE, 1, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1));
+		this->conditions.push_back(new BaseCondition("Build Archives", 2, sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE, 1));
+		this->conditions.push_back(new HaveGateWayTrainer());
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_HIGHTEMPLAR, 1));
 		this->BaseAction::name = "Build High Templar";
 	}
@@ -26,6 +27,6 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_HIGHTEMPLAR, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions);
+		return Util::TryWarpUnit(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR, obs, actions,query,debug,state);
 	}
 };

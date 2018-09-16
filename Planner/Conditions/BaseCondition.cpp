@@ -12,7 +12,7 @@ bool BaseCondition::HasAllResources(ResourceState* state)
 }
 
 // A Static list of resources need to satisfy this condition
-ResourceMap BaseCondition::GetRequiredResources()
+ResourceMap BaseCondition::GetRequiredResources(ResourceState* state)
 {
 	return requiredResources;
 }
@@ -20,11 +20,11 @@ ResourceMap BaseCondition::GetRequiredResources()
 ResourceMap BaseCondition::UnmetResources(ResourceState* state)
 {
 	auto unmet = ResourceMap();
-	for (auto res : GetRequiredResources())
+	for (auto res : GetRequiredResources(state))
 	{
-		if (state->resources[res.first] < GetRequiredResources()[res.first])
+		if (state->resources[res.first] < GetRequiredResources(state)[res.first])
 		{
-			unmet[res.first] = GetRequiredResources()[res.first] - state->resources[res.first];
+			unmet[res.first] = GetRequiredResources(state)[res.first] - state->resources[res.first];
 		}
 	}
 	return unmet;

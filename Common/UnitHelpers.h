@@ -21,6 +21,58 @@ namespace Util {
 		return madeUnit;
 	}
 
+	bool static TryBuildUnit(sc2::UNIT_TYPEID unit_type, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions, QueryInterface* query)
+	{
+		bool madeUnit = false;
+		UnitTypes unitTypes = obs->GetUnitTypeData();
+		UnitTypeData unittype = unitTypes[(int)unit_type];
+		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(buildingType));
+		for (auto building : buildings) {
+			if (building->orders.size() == 0)
+			{
+				actions->UnitCommand(building, unittype.ability_id);
+				madeUnit = true;
+			}
+		}
+
+		return madeUnit;
+	}
+
+	bool static TryWarpUnit(sc2::UNIT_TYPEID unit_type, const ObservationInterface* obs, sc2::ActionInterface* actions, QueryInterface* query, DebugInterface* debug, GameState* state)
+	{
+		// All the abilities for the warp version of train are exactly 497 from the ability of the regular train
+		const int WARPCONVERSION_DIFFERENCE = 497;
+		bool madeUnit = false;
+		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_WARPGATE));
+		UnitTypes unitTypes = obs->GetUnitTypeData();
+		UnitTypeData unittype = unitTypes[(int)unit_type];
+		auto warpAbility = (ABILITY_ID) ((int)unittype.ability_id + WARPCONVERSION_DIFFERENCE);
+		for (auto building : buildings) {
+			auto abilities = query->GetAbilitiesForUnit(building).abilities;
+
+			bool hasability = false;
+			for (auto abi : abilities)
+			{
+				if (abi.ability_id == warpAbility)
+				{
+					hasability = true;
+					break;
+				}
+			}
+
+			if (hasability)
+			{
+				SpiralStrategy strat(warpAbility, false, false, .5);
+				actions->UnitCommand(building, warpAbility, strat.FindPlacement(obs,actions,query,debug, state));
+				madeUnit = true;
+			}
+		}
+		if (!madeUnit)
+			return TryBuildUnit(unit_type, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions, query);
+
+		return madeUnit;
+	}
+
 	bool static TryBuildBuilding(AbilityID build_ability, UNIT_TYPEID unitType, const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state, BuildingStrategy* buildingStrategy)
 	{
 		bool success = false;

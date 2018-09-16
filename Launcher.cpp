@@ -23,43 +23,59 @@ int main(int argc, char* argv[]) {
 	return 0;
 #elif DEBUG_MODE
 	auto races = new Race[3]{ Race::Terran, Race::Zerg, Race::Protoss };
-	auto wins = map<Race, Point2D>();
-	int NUM_TRIALS = 10;
-	for (int i = 0; i < NUM_TRIALS; i++)
+	std::map<std::string, sc2::Point2D> mapScore;
+	std::map<sc2::Race, sc2::Point2D> raceScore;
+	std::vector<std::string> maps = { "16-BitLE.SC2Map", "LostAndFoundLE.SC2Map", "DarknessSanctuaryLE.SC2Map", "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" };
+	while (true)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int i = 0; i < maps.size(); i++)
 		{
-			auto race = races[j];
-
-			Coordinator coordinator;
-			coordinator.LoadSettings(argc, argv);
-			coordinator.SetMultithreaded(true);
-			coordinator.SetStepSize(25);
-			BotWithAPlan bot;
-			coordinator.SetParticipants({
-				//CreateParticipant(Race::Protoss, nullptr),
-				CreateParticipant((Race)GetAgentRace(), &bot),
-				//CreateParticipant((Race)GetAgentRace(), &bot2),
-				CreateComputer(race, sc2::Difficulty::CheatVision)
-				});
-
-			coordinator.LaunchStarcraft();
-			coordinator.StartGame(kDreamCatcher);
-			while (coordinator.Update()) {
-				if (bot.Lost) break;
-			}
-			if (bot.Lost)
+			auto map = "Ladder/" + maps[i];
+			for (int j = 0; j < 3; j++)
 			{
-				wins[race] += Point2D(1, 0);
+				auto race = races[j];
+
+				Coordinator coordinator;
+				coordinator.LoadSettings(argc, argv);
+				coordinator.SetMultithreaded(true);
+				coordinator.SetStepSize(10);
+				BotWithAPlan bot;
+				coordinator.SetParticipants({
+					//CreateParticipant(Race::Protoss, nullptr),
+					CreateParticipant((Race)GetAgentRace(), &bot),
+					//CreateParticipant((Race)GetAgentRace(), &bot2),
+					CreateComputer(race, sc2::Difficulty::Hard)
+					});
+
+				coordinator.LaunchStarcraft();
+				coordinator.StartGame(map);
+				while (coordinator.Update()) {
+					if (bot.Lost) break;
+				}
+				if (bot.Observation() && bot.Observation()->GetResults().size() > 0 && bot.Observation()->GetResults().front().result == sc2::GameResult::Win)
+				{
+					mapScore[map] += sc2::Point2D(1, 0);
+					raceScore[race] += sc2::Point2D(1, 0);
+				}
+				else
+				{
+					mapScore[map] += sc2::Point2D(0, 1);
+					raceScore[race] += sc2::Point2D(0, 1);
+				}
+				std::cout << std::endl;
+				for (const auto & rs : raceScore)
+				{
+					std::cout << Util::GetStringFromRace(rs.first) << " = " << rs.second.x << " : " << rs.second.y << " (" << roundf(rs.second.x / (rs.second.x + rs.second.y) * 100.0f) / 100.0f << "%)" << std::endl;
+				}
+				std::cout << std::endl;
+				for (const auto & ms : mapScore)
+				{
+					std::cout << ms.first << " = " << ms.second.x << " : " << ms.second.y << " (" << roundf(ms.second.x / (ms.second.x + ms.second.y) * 100.0f) / 100.0f << "%)" << std::endl;
+				}
+				std::cout << std::endl << std::endl;
+				coordinator.LeaveGame();
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 			}
-			else
-			{
-				wins[race] += Point2D(0, 1);
-			}
-			coordinator.LeaveGame();
-			std::cout << "Game:" << (i*NUM_TRIALS) + j + 1 << " Wins vs Terran: " << (wins[Race::Terran].y) << "/" << (wins[Race::Terran].x + wins[Race::Terran].y) << endl;
-			std::cout << "Game:" << (i*NUM_TRIALS) + j + 1 << " Wins vs Zerg: " << (wins[Race::Zerg].y) << "/" << (wins[Race::Zerg].x + wins[Race::Zerg].y) << endl;
-			std::cout << "Game:" << (i*NUM_TRIALS) + j + 1 << " Wins vs Protoss: " << (wins[Race::Protoss].y) << "/" << (wins[Race::Protoss].x + wins[Race::Protoss].y) << endl;
 		}
 	}
 #else

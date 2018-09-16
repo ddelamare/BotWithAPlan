@@ -4,12 +4,14 @@
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
 #include "Common/UnitHelpers.h"
+#include "Planner/Conditions/HaveGatewayTrainer.h"
+
 
 class ZealotGoal : public BaseAction
 {
 public:
 	ZealotGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Build Gateway", 2, sc2::UNIT_TYPEID::PROTOSS_GATEWAY, 1));
+		this->conditions.push_back(new HaveGateWayTrainer());
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ZEALOT, 1));
 		this->BaseAction::name = "Build Zealot";
 	}
@@ -27,6 +29,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_ZEALOT, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions);
+		return Util::TryWarpUnit(UNIT_TYPEID::PROTOSS_ZEALOT, obs, actions, query, debug, state);
 	}
 };
