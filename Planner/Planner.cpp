@@ -139,7 +139,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	}
 	else
 	{
-		LOG(1) << "\t****NO ACTIONS FOUND****\n";
+		LOG(2) << "\t****NO ACTIONS FOUND****\n";
 		return plan;
 	}
 

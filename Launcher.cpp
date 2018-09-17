@@ -22,10 +22,10 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 #elif DEBUG_MODE
-	auto races = new Race[3]{ Race::Terran, Race::Zerg, Race::Protoss };
+	auto races = new Race[3]{ Race::Zerg, Race::Terran,  Race::Protoss };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
-	std::vector<std::string> maps = { "16-BitLE.SC2Map", "LostAndFoundLE.SC2Map", "DarknessSanctuaryLE.SC2Map", "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" };
+	std::vector<std::string> maps = { "DarknessSanctuaryLE.SC2Map", "16-BitLE.SC2Map", "LostAndFoundLE.SC2Map",  "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" };
 	while (true)
 	{
 		for (int i = 0; i < maps.size(); i++)
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::Hard)
+					CreateComputer(race, sc2::Difficulty::CheatVision)
 					});
 
 				coordinator.LaunchStarcraft();
@@ -65,12 +65,12 @@ int main(int argc, char* argv[]) {
 				std::cout << std::endl;
 				for (const auto & rs : raceScore)
 				{
-					std::cout << Util::GetStringFromRace(rs.first) << " = " << rs.second.x << " : " << rs.second.y << " (" << roundf(rs.second.x / (rs.second.x + rs.second.y) * 100.0f) / 100.0f << "%)" << std::endl;
+					std::cout << Util::GetStringFromRace(rs.first) << " = " << rs.second.x << " : " << rs.second.y << " (" << roundf(rs.second.x / (rs.second.x + rs.second.y) * 100.0f) << "%)" << std::endl;
 				}
 				std::cout << std::endl;
 				for (const auto & ms : mapScore)
 				{
-					std::cout << ms.first << " = " << ms.second.x << " : " << ms.second.y << " (" << roundf(ms.second.x / (ms.second.x + ms.second.y) * 100.0f) / 100.0f << "%)" << std::endl;
+					std::cout << ms.first << " = " << ms.second.x << " : " << ms.second.y << " (" << roundf(ms.second.x / (ms.second.x + ms.second.y) * 100.0f)<< "%)" << std::endl;
 				}
 				std::cout << std::endl << std::endl;
 				coordinator.LeaveGame();
