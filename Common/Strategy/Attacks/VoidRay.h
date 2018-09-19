@@ -21,7 +21,7 @@ void VoidRayAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionInt
 	auto voidRays = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_VOIDRAY));
 	for (auto vr : voidRays)
 	{
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), vr->pos, obs, query, unitInfo.sight_range);
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), vr->pos, obs, unitInfo.sight_range);
 		Units armoredUnits;
 		for (auto unit : enemyUnits)
 		{

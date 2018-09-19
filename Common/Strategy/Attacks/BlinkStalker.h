@@ -26,7 +26,7 @@ void BlinkStalker::Execute(const sc2::ObservationInterface *obs, sc2::ActionInte
 		if (unit->shield <= this->STALKER_SHIELD_THRESH)
 		{
 			// Find nearby units and blink away
-			auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, query, 10);
+			auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, 10);
 			if (enemyUnits.size())
 			{
 				auto vectorAway = VectorHelpers::GetAveragePoint(enemyUnits);

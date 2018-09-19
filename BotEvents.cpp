@@ -48,6 +48,7 @@ void BotWithAPlan::OnGameStart() {
 	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
 	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
 	state.EnemyBase = enemyLocations[0];
+	state.StartingLocation = nexus->pos;
 
 	// Get all minerals and sort by x , then y pos
 	auto minerals = Observation()->GetUnits(Unit::Alliance::Neutral, IsMineralField());

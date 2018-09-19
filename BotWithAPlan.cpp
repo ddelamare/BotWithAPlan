@@ -37,6 +37,8 @@
 #include "Goals\Tactics\ScoutSweep.h"
 #include "Goals\Tactics\PickOffExpo.h"
 #include "Goals\Tactics\Rush.h"
+#include "Goals\Tactics\AttackProxy.h"
+#include "Goals\Tactics\DefendWithWorkers.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\Blink.h"
@@ -87,10 +89,12 @@ BotWithAPlan::BotWithAPlan()
 
 	// Tactics and Upgrade Goals
 
-	//TacticsGoals.push_back(new AllOutGoal());
-	//TacticsGoals.push_back(new ScoutSweepGoal());
-	//TacticsGoals.push_back(new PickOffExpoGoal());
+	TacticsGoals.push_back(new AllOutGoal());
+	TacticsGoals.push_back(new ScoutSweepGoal());
+	TacticsGoals.push_back(new PickOffExpoGoal());
 	TacticsGoals.push_back(new JustDoitGoal());
+	TacticsGoals.push_back(new AttackProxyGoal());
+	TacticsGoals.push_back(new DefendWithUnitsGoal());
 	//TacticsGoals.push_back(new RushGoal());
 
 	UpgradeGoals.push_back(new ChargelotGoal());
@@ -99,7 +103,7 @@ BotWithAPlan::BotWithAPlan()
 	UpgradeGoals.push_back(new ThermalLanceGoal());
 	UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
 	UpgradeGoals.push_back(new GlaivesGoal());
-	UpgradeGoals.push_back(new WarpGateGoal());
+	//UpgradeGoals.push_back(new WarpGateGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
@@ -174,7 +178,7 @@ void BotWithAPlan::OnStep() {
 		{
 			// Tell all extra workers to stop so they can be reassigned
 			//TODO: only reassign if another town hall needs workers
-			auto overWorkers = Util::FindNearbyUnits(IsWorker(), th->pos, obs, query, 15);
+			auto overWorkers = Util::FindNearbyUnits(IsWorker(), th->pos, obs, 15);
 			int diff = th->assigned_harvesters - th->ideal_harvesters;
 			if (overWorkers.size() < diff) continue; // If no workers in area continue
 			auto unitsToStop = Units(overWorkers.begin(), overWorkers.begin() + diff);

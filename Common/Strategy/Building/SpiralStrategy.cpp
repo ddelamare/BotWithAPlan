@@ -29,23 +29,14 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 	const double radialDiff = 2 * M_PI / numDivisions;
 	double xScalar = 0;
 	bool foundSpot = false;
+	std::vector<QueryInterface::PlacementQuery> queries;
 	for (auto pylon : pylons)
 	{
+		queries.clear();
 		xScalar = 0;
 		for (int i = 0; i < maxSpiralCount; i++)
 		{
-
-			if (query->Placement(this->buildingAction, pylon->pos + offset))
-			{
-				buildPos = pylon->pos + offset;
-				foundSpot = true;
-				break;
-			}
-			else
-			{
-				debug->DebugSphereOut(pylon->pos + offset, 3, Colors::Yellow);
-			}
-			if (foundSpot) break;
+			queries.push_back(QueryInterface::PlacementQuery(this->buildingAction, pylon->pos + offset));
 
 			//Expand Spiral
 			if (i % numDivisions == 0)
@@ -56,9 +47,23 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 			offset.x = sin(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
 			offset.y = cos(rotationDir * radialDiff * i) * xScalar * this->_RadialDistance;
 		}
+		// Batch do queries
+		auto queryResults = query->Placement(queries);
+		for (int i = 0; i < queryResults.size(); i++)
+		{
+			if (queryResults[i])
+			{
+				buildPos = Util::ToPoint3D(queries[i].target_pos);
+				foundSpot = true;
+				break;
+			}
+			else
+			{
+				debug->DebugSphereOut(Util::ToPoint3D(queries[i].target_pos), 3, Colors::Yellow);
+			}
+			if (foundSpot) break;
+		}
 	}
-
-
 
 	return buildPos;
 }

@@ -26,13 +26,13 @@ public:
 		{
 			return 5;
 		}
-		else if (totalGates >= ((2 * nexus.size())))
+		else if (totalGates >= ((3 * nexus.size())))
 		{
 			return 0;
 		}
 		else if (obs->GetFoodArmy() > 0)
 		{
-			return obs->GetFoodArmy() / (int)(2 * totalGates);
+			return obs->GetFoodArmy() / (int)(3 * totalGates);
 		}
 		return 0;
 	}

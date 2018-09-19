@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	auto races = new Race[3]{ Race::Terran, Race::Zerg, Race::Protoss };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
-	std::vector<std::string> maps = { "16-BitLE.SC2Map", "LostAndFoundLE.SC2Map", "DarknessSanctuaryLE.SC2Map", "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" };
+	std::vector<std::string> maps = { "BlueShiftLE.SC2Map","16-BitLE.SC2Map", "LostAndFoundLE.SC2Map", "DarknessSanctuaryLE.SC2Map", "AcidPlantLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" };
 	while (true)
 	{
 		for (int i = 0; i < maps.size(); i++)
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::Hard)
+					CreateComputer(race, sc2::Difficulty::Easy)
 					});
 
 				coordinator.LaunchStarcraft();

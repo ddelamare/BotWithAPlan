@@ -154,6 +154,8 @@
     <ClInclude Include="Goals\Tech\FleetBeacon.h" />
     <ClInclude Include="Goals\Army\Carrier.h" />
     <ClInclude Include="Goals\Army\Tempest.h" />
+    <ClInclude Include="Goals\Tactics\AttackProxy.h" />
+    <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
@@ -161,6 +163,7 @@
     </None>
     <None Include="Goals\Army\Stalker.h" />
     <None Include="Goals\Army\HighTemplar.h" />
+    <None Include="Common\Managers\ArmyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt">
