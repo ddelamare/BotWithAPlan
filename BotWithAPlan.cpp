@@ -66,44 +66,44 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new ChronoGoal());
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
+	EconomyGoals.push_back(new RoboticsGoal());
 	EconomyGoals.push_back(new StarGateGoal());
-	//EconomyGoals.push_back(new RoboticsGoal());
-	EconomyGoals.push_back(new ExpandGoal(6000));
+	EconomyGoals.push_back(new ExpandGoal(0));
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
-	//ArmyGoals.push_back(new StalkerGoal());
-	//ArmyGoals.push_back(new AdeptGoal());
-	//ArmyGoals.push_back(new ColossusGoal());
+	ArmyGoals.push_back(new StalkerGoal());
+	ArmyGoals.push_back(new AdeptGoal());
+	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new VoidRayGoal());
-	//ArmyGoals.push_back(new ImmortalGoal());
-	//ArmyGoals.push_back(new DarkTemplarGoal());
-	//ArmyGoals.push_back(new DisruptorGoal());
-	//ArmyGoals.push_back(new HighTemplarGoal());
-	//ArmyGoals.push_back(new ArchonGoal());
-	//ArmyGoals.push_back(new ObserverGoal());
-	//ArmyGoals.push_back(new PhoenixGoal());
-	//ArmyGoals.push_back(new SentryGoal());
-	//ArmyGoals.push_back(new CarrierGoal());
-	//ArmyGoals.push_back(new TempestGoal());
+	ArmyGoals.push_back(new ImmortalGoal());
+	ArmyGoals.push_back(new DarkTemplarGoal());
+	ArmyGoals.push_back(new DisruptorGoal());
+	ArmyGoals.push_back(new HighTemplarGoal());
+	ArmyGoals.push_back(new ArchonGoal());
+	ArmyGoals.push_back(new ObserverGoal());
+	ArmyGoals.push_back(new PhoenixGoal());
+	ArmyGoals.push_back(new SentryGoal());
+	ArmyGoals.push_back(new CarrierGoal());
+	ArmyGoals.push_back(new TempestGoal());
 
 	// Tactics and Upgrade Goals
+
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
 	TacticsGoals.push_back(new JustDoitGoal());
-	TacticsGoals.push_back(new RushGoal());
 	TacticsGoals.push_back(new AttackProxyGoal());
 	TacticsGoals.push_back(new DefendWithUnitsGoal());
+	//TacticsGoals.push_back(new RushGoal());
 
-	//UpgradeGoals.push_back(new ChargelotGoal());
+	UpgradeGoals.push_back(new ChargelotGoal());
 	UpgradeGoals.push_back(new BlinkGoal());
-	//UpgradeGoals.push_back(new PsiStormGoal());
-	//UpgradeGoals.push_back(new ThermalLanceGoal());
-	//UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
-	//UpgradeGoals.push_back(new GlaivesGoal());
+	UpgradeGoals.push_back(new PsiStormGoal());
+	UpgradeGoals.push_back(new ThermalLanceGoal());
+	UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
+	UpgradeGoals.push_back(new GlaivesGoal());
 	//UpgradeGoals.push_back(new WarpGateGoal());
-
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
@@ -284,7 +284,7 @@ void *CreateNewAgent()
 
 const char *GetAgentName()
 {
-	return "Void*";
+	return "BotWithAPlan";
 }
 
 int GetAgentRace()
