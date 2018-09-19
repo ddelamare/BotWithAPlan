@@ -32,7 +32,7 @@ public:
 		}
 		else if (obs->GetFoodArmy() > 0)
 		{
-			return obs->GetFoodArmy() / (int)(2 * totalGates);
+			return obs->GetFoodArmy() / (int)(3 * totalGates);
 		}
 		return 0;
 	}

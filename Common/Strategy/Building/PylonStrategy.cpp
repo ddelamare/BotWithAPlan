@@ -17,7 +17,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 
 	auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 	auto nexii = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
-	auto minerals = obs->GetUnits(Unit::Alliance::Neutral, IsMineralField());
+	auto minerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state->StartingLocation), obs, 15);
 	Point3D buildPos;
 	if (pylons.size())
 	{

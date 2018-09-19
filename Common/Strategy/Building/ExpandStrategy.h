@@ -6,9 +6,6 @@
 using namespace sc2;
 class ExpandStrategy : public BuildingStrategy
 {
-	static int avgTries;
-	static int numTries;
-	static int sumTries;
 public:
 	ExpandStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon) : BuildingStrategy(unit, needsClearance, needsPylon)
 	{
@@ -20,13 +17,52 @@ public:
 	{
 	}
 
+	sc2::Point3D GetFirstMatchingPlacement(Point3D startingPoint, Point3D direction,QueryInterface* query, DebugInterface* debug, int skipCount, int maxTries)
+	{
+		std::vector<QueryInterface::PlacementQuery> queries;
+		// All buildings are placed at the exactly center of a square 
+		auto roundedPoint = Point3D(round(startingPoint.x) + .5 , round(startingPoint.y) + .5 , 0);
+		if (direction.x > 0) direction.x = 1;
+		else if (direction.x < 0) direction.x = -1;
+		if (direction.y > 0) direction.y = 1;
+		else if (direction.y < 0) direction.y = -1;
+		bool foundSpot = false;
+		Point3D buildPos;
+		for (int i = 0; i < maxTries; i++)
+		{
+			for (int j = 0; j < maxTries; j++)
+			{
+				auto offset = Point3D((i * direction.x), (j * direction.y), 0);
+				debug->DebugSphereOut((roundedPoint + offset), 3, Colors::Yellow);
+				queries.push_back(QueryInterface::PlacementQuery(this->buildingAction, roundedPoint + offset));
+			}
+		}
+		std::sort(queries.begin(), queries.end(), Sorters::sort_by_distance(roundedPoint));
+		// Batch do queries
+		auto queryResults = query->Placement(queries);
+		for (int i = 0; i < queryResults.size(); i++)
+		{
+			if (queryResults[i])
+			{
+				buildPos = Util::ToPoint3D(queries[i].target_pos);
+				foundSpot = true;
+				break;
+			}
+			else
+			{
+				debug->DebugSphereOut(Util::ToPoint3D(queries[i].target_pos), 3, Colors::Yellow);
+			}
+			if (foundSpot) break;
+		}
+		return buildPos;
+	}
 
 	sc2::Point3D FindPlacement(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		Point3D buildPos;
 
-		int NEXUS_MAX_TRIES = 5;
-		bool foundSpot = false;
+		int NEXUS_MAX_TRIES = 7;
+
 		for (auto exp : state->ExpansionLocations)
 		{
 			auto furtherst = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
@@ -48,31 +84,15 @@ public:
 			auto direction = averagePoint - exp;
 			direction.z = 0;
 			Normalize3D(direction);
-			for (int i = 0; i < NEXUS_MAX_TRIES; i++)
-			{
-				auto offset = (i+3) * direction;
-				if (query->Placement(this->buildingAction, exp + offset))
-				{
-					buildPos = exp + offset;
-					foundSpot = true;
-					sumTries += i;
-					numTries += 1;
-					avgTries = sumTries / numTries;
-					break;
-				}
-				else
-				{
-					debug->DebugSphereOut(exp + offset, 5, Colors::Yellow);
-				}
-			}
-			if (foundSpot) break;
+			// Check for placement along the center vector
+			buildPos = GetFirstMatchingPlacement(exp, direction, query, debug, 3, NEXUS_MAX_TRIES);
+
+			if (buildPos.x != 0 || buildPos.y != 0)
+				return buildPos;
 		}
+
 
 		return buildPos;
 	}
 };
-
-int ExpandStrategy::avgTries = 0;
-int ExpandStrategy::numTries = 0;
-int ExpandStrategy::sumTries = 0;
 

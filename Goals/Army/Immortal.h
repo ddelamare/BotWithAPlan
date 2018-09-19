@@ -26,7 +26,7 @@ public:
 		{
 			score *= 1.2;
 		}
-		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_STALKER] > 8)
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_STALKER] > 8 || state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON] > 0)
 		{
 			score *= 1.4;
 		}

@@ -47,7 +47,14 @@ void BotWithAPlan::OnGameStart() {
 	auto nexus = Observation()->GetUnits(IsTownHall())[0];
 	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
 	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
-	state.EnemyBase = enemyLocations[0];
+	if (enemyLocations.size() == 1)
+		state.EnemyBase = enemyLocations[0];
+	else if (enemyLocations.size() == 4)
+		state.EnemyBase = enemyLocations[0];
+	else
+		state.EnemyBase = enemyLocations[0];
+
+	state.StartingLocation = nexus->pos;
 
 	// Get all minerals and sort by x , then y pos
 	auto minerals = Observation()->GetUnits(Unit::Alliance::Neutral, IsMineralField());
@@ -85,8 +92,7 @@ void BotWithAPlan::OnGameStart() {
 	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
     
 	// Sort expansions by distance to home base
-	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.EnemyBase));
-	std::reverse(state.ExpansionLocations.begin(), state.ExpansionLocations.end());
+	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.StartingLocation));
 }
 
 void BotWithAPlan::OnGameEnd()

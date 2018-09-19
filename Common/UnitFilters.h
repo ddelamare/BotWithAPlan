@@ -211,10 +211,16 @@ struct IsMineralField {
 	bool operator() (const Unit& unit)
 	{
 		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::NEUTRAL_BATTLESTATIONMINERALFIELD:
+		case UNIT_TYPEID::NEUTRAL_BATTLESTATIONMINERALFIELD750:
 		case UNIT_TYPEID::NEUTRAL_LABMINERALFIELD:
 		case UNIT_TYPEID::NEUTRAL_LABMINERALFIELD750:
 		case UNIT_TYPEID::NEUTRAL_MINERALFIELD:
 		case UNIT_TYPEID::NEUTRAL_MINERALFIELD750:
+		case UNIT_TYPEID::NEUTRAL_PURIFIERMINERALFIELD:
+		case UNIT_TYPEID::NEUTRAL_PURIFIERMINERALFIELD750:
+		case UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD:
+		case UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD750:
 		case UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD:
 		case UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD750:
 				return true;
@@ -268,6 +274,18 @@ struct IsVisibleArmy {
 	}
 };
 
+struct IsEnemy
+{
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (unit.alliance == Unit::Alliance::Enemy)
+		{
+			return true;
+		}
+		return false;
+	}
+};
+
 struct IsEnemyArmy
 {
 	bool operator()(const sc2::Unit & unit)
@@ -280,6 +298,18 @@ struct IsEnemyArmy
 	}
 };
 	
+struct IsEnemyBuilding
+{
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (unit.alliance != Unit::Alliance::Enemy)
+		{
+			return false;
+		}
+		else return IsBuilding()(unit);
+	}
+};
+
 struct UnitsInProgress
 {
 	UnitsInProgress(UNIT_TYPEID type)

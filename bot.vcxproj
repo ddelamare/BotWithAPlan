@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
+    <None Include="Common\Managers\ArmyManager.h" />
     <None Include="Goals\Army\HighTemplar.h" />
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
@@ -186,6 +187,8 @@
     <ClInclude Include="Goals\Army\Sentry.h" />
     <ClInclude Include="Goals\Army\Tempest.h" />
     <ClInclude Include="Goals\Army\WarpPrism.h" />
+    <ClInclude Include="Goals\Tactics\AttackProxy.h" />
+    <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
     <ClInclude Include="Goals\Tactics\JustDoIt.h" />
     <ClInclude Include="Goals\Tactics\PickOffExpo.h" />
     <ClInclude Include="Goals\Tactics\Rush.h" />

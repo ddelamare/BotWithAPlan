@@ -138,9 +138,24 @@ namespace Util {
 		return foundUnit;
 	}
 
-	const static Units FindNearbyUnits(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query, double radius)
+	const static Units FindNearbyUnits(Filter filter, Point3D point, const ObservationInterface* obs, double radius)
 	{
 		auto units = obs->GetUnits(filter);
+		auto unitsNearby = Units();
+		for (auto unit : units)
+		{
+			auto dis = Distance3D(unit->pos, point);
+			if (dis < radius)
+			{
+				unitsNearby.push_back(unit);
+			}
+		}
+		return unitsNearby;
+	}
+
+	const static Units FindNearbyUnits(sc2::Unit::Alliance alliance, Filter filter, Point3D point, const ObservationInterface* obs, double radius)
+	{
+		auto units = obs->GetUnits(alliance,filter);
 		auto unitsNearby = Units();
 		for (auto unit : units)
 		{
@@ -244,6 +259,11 @@ struct Sorters
 		bool operator()(Unit const * lhs, Unit const * rhs)
 		{
 			return Distance2D(lhs->pos, referencePoint) < Distance2D(rhs->pos, referencePoint);
+		}
+
+		bool operator()(QueryInterface::PlacementQuery const lhs, QueryInterface::PlacementQuery const rhs)
+		{
+			return Distance2D(lhs.target_pos, referencePoint) < Distance2D(rhs.target_pos, referencePoint);
 		}
 	};
 

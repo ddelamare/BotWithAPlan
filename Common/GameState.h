@@ -25,6 +25,7 @@ struct GameState
 	std::vector<Point3D> ExpansionLocations;
 	Point3D MineralDirection;
 	Point2D EnemyBase;
+	Point2D StartingLocation;
 	UnitMap ObservedUnits;
 	UnitMap CurrentUnits;
 	UnitMap MaxEnemyUnits;

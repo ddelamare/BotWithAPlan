@@ -2,6 +2,7 @@
 #include "BuildingStrategy.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <vector>
 using namespace sc2;
 
 class SpiralStrategy :

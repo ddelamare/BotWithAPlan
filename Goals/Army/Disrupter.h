@@ -17,9 +17,9 @@ public:
 		double score = 1;
 		int unitFood = 3 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR)).size();
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
-		score = Util::FeedbackFunction(percent, .2, 1.0);
+		score = Util::FeedbackFunction(percent, .35, 1.0);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 || state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6)
 		{
 			score *= 1.5;
 		}
