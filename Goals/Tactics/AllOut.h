@@ -3,6 +3,7 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
+#include "Common\Managers\ArmyManager.h"
 
 class AllOutGoal : public BaseAction
 {
@@ -30,7 +31,7 @@ public:
 		{
 			attackPoint = enemyStuff[0]->pos;
 		}
-		actions->UnitCommand(army, ABILITY_ID::ATTACK, attackPoint);
+		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
 
 		return madeStaker;
 	}

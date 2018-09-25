@@ -29,7 +29,7 @@ void BlinkStalker::Execute(const sc2::ObservationInterface *obs, sc2::ActionInte
 			auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, 10);
 			if (enemyUnits.size())
 			{
-				auto vectorAway = VectorHelpers::GetAveragePoint(enemyUnits);
+				auto vectorAway = Util::GetAveragePoint(enemyUnits);
 				// Subtract start minus end to get a vector away from the center
 				vectorAway = (unit->pos * 2) - vectorAway;
 				debug->DebugSphereOut(vectorAway, 2, Colors::Red);

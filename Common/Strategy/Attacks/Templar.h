@@ -49,7 +49,7 @@ void TemplarMicro::Execute(const sc2::ObservationInterface *obs, sc2::ActionInte
 			}
 			if (enemyUnits.size())
 			{
-				auto targetPoint = VectorHelpers::GetAveragePoint(enemyUnits);
+				auto targetPoint = Util::GetAveragePoint(enemyUnits);
 				actions->UnitCommand(unit, ABILITY_ID::EFFECT_PSISTORM, targetPoint);
 				break;
 			}

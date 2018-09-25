@@ -4,6 +4,7 @@
 #include "Goals\GoalPicker.h"
 #include "Common\Resource.h"
 #include "Common\ItemDependencies.h"
+#include "Common\Managers\ArmyManager.h"
 #include "sc2api/sc2_api.h"
 #include "Common\GameState.h"
 #include <iostream>
@@ -13,8 +14,8 @@
 #include "sc2utils/sc2_arg_parser.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
-#define LADDER_MODE 1
-#define DEBUG_MODE 0	
+#define LADDER_MODE 0
+#define DEBUG_MODE 1	
 class BotWithAPlan : public Agent {
 public:
 	BotWithAPlan();
@@ -29,22 +30,19 @@ public:
 
 	bool Lost;
 private:
-	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages);
+	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry);
 
 	GoalPicker goalPicker;
 	Planner    planner;
+	ArmyManager armyManager;
 	vector<BaseAction*> EconomyGoals;
 	vector<BaseAction*> ArmyGoals;
 	vector<BaseAction*> TacticsGoals;
 	vector<BaseAction*> UpgradeGoals;
 	bool shouldRecalcuate;
-	BaseAction* goal;
-	BaseAction* armyGoal;
-	BaseAction* nextInPlan;
-	BaseAction* nextInArmyPlan;
 	GameState  state;
 	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 1;
+	const int STEPS_PER_GOAL = 25;
 	vector<string> debugMessages;
 };
 

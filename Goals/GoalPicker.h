@@ -18,4 +18,17 @@ public:
 		}
 		return selected;
 	}
+
+	static vector<tuple<double, BaseAction*>> GetGoals(vector<BaseAction*> goals, const sc2::ObservationInterface *obs, GameState* state)
+	{
+		auto actions = vector<tuple<double, BaseAction*>>();
+		for (auto goal : goals)
+		{
+			auto score = goal->CalculateScore(obs, state);
+			actions.push_back(make_tuple(score, goal));
+		}
+		sort(actions.begin(), actions.end());
+		reverse(actions.begin(), actions.end());
+		return actions;
+	}
 };

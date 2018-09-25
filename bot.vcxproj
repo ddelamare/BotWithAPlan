@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="BotEvents.cpp" />
     <ClCompile Include="BotWithAPlan.cpp" />
+    <ClCompile Include="Common\Managers\ArmyManager.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
@@ -157,6 +158,7 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\Entity\BattleGroup.h" />
     <ClInclude Include="BotWithAPlan.h" />
     <ClInclude Include="Common\ResourceState.h" />
     <ClInclude Include="Common\ItemDependencies.h" />

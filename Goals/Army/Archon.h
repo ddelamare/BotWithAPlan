@@ -24,6 +24,10 @@ public:
 			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 			score = Util::FeedbackFunction(percent, .35, 2.5);
 		}
+		if (obs->GetMinerals() < 500 && obs->GetVespene() > 2000)
+		{
+			score *= 3;
+		}
 		return score;
 	};
 

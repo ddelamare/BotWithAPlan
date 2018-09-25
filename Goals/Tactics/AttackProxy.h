@@ -28,8 +28,8 @@ public:
 		bool attacked = false;
 		auto enemyBuildings = Util::FindNearbyUnits(IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 40);
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-		auto targetPoint = VectorHelpers::GetAveragePoint(enemyBuildings);
-		actions->UnitCommand(army, ABILITY_ID::ATTACK, targetPoint);
+		auto targetPoint = Util::GetAveragePoint(enemyBuildings);
+		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], targetPoint);
 		return false;
 	}
 };

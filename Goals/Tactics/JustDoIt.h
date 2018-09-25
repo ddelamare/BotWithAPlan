@@ -31,7 +31,8 @@ public:
 		{
 			attackPoint = enemyStuff[0]->pos;
 		}
-		actions->UnitCommand(army, ABILITY_ID::ATTACK, attackPoint);
+		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
+		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[0], BattleMode::Attack);
 
 		return madeStaker;
 	}

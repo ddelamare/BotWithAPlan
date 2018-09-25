@@ -16,6 +16,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto robos = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY));
+		if (!robos.size()) return 0; // Don;t build it unless we need it
 		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		return (nexus.size() + 1) / (robos.size() + 2);
 	};

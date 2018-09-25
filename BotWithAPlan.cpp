@@ -2,6 +2,7 @@
 #include "sc2api/sc2_api.h"
 #include "Common\UnitFilters.h"
 #include <chrono>
+#include <tuple>
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
 #include "Goals\Economy\Expand.h"
@@ -59,7 +60,7 @@ BotWithAPlan::BotWithAPlan()
 	planner = Planner();
 	EconomyGoals = vector<BaseAction*>();
 	ArmyGoals = vector<BaseAction*>();
-
+	state.ArmyManager = &armyManager;
 	// Keep that sweet mineral coming
 	EconomyGoals.push_back(new PylonGoal());
 	EconomyGoals.push_back(new ProbeGoal());
@@ -68,7 +69,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new GatewayGoal());
 	EconomyGoals.push_back(new RoboticsGoal());
 	EconomyGoals.push_back(new StarGateGoal());
-	EconomyGoals.push_back(new ExpandGoal(0));
+	EconomyGoals.push_back(new ExpandGoal());
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
@@ -161,10 +162,10 @@ void BotWithAPlan::OnStep() {
 	if (StepCounter == STEPS_PER_GOAL)
 	{
 		debugMessages.clear();
-		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages);
-		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages);
-		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages);
-		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages);
+		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages, true);
+		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages, true);
+		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages, false);
+		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages, false);
 		StepCounter = 0;
 	}
 	StepCounter++;
@@ -189,6 +190,9 @@ void BotWithAPlan::OnStep() {
 	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
 	for (int i = 0; i < idleUnits.size() ;i++)
 	{
+		// Don't reassign scouts
+		if (VectorHelpers::FoundInVector(state.ScoutingUnits, idleUnits[i])) continue;
+
 		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[i], obs, query);
 		if (resource)
 		{
@@ -205,6 +209,8 @@ void BotWithAPlan::OnStep() {
 			break;
 		}
 	}
+
+	armyManager.ManageGroups(obs,query,actions,&state,Debug());
 
 	// Blink micro
 	auto bsMicro = BlinkStalker(obs, query);
@@ -236,42 +242,46 @@ void BotWithAPlan::OnStep() {
 #endif
 }
 
-void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages)
+void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry)
 {
 	BaseAction* goal = nullptr;
-	if (shouldRecalcuate)
+	BaseAction* nextInPlan = nullptr;
+	auto actionList = goalPicker.GetGoals(goals, obs, &state);
+	bool allowDependencies = true;
+	for (int i = 0; i < actionList.size(); i++)
 	{
-		goal = goalPicker.GetGoal(goals, obs, &state);
+		if (get<0>(actionList[i]) <= 0) break; // Don't do goals with score 0;
 
-		if (goal)
+		auto goal = std::get<1>(actionList[i]);
+		auto resState = planner.GetResourceState(obs);
+
+		auto plan = planner.CalculatePlan(resState, goal);
+		if (plan.size() == 1)
 		{
-			auto state = planner.GetResourceState(obs);
+			nextInPlan = plan[0];
+		}
+		else if (allowDependencies)
+		{
+			nextInPlan = plan[plan.size() - 1];
+		}
 
-			auto plan = planner.CalculatePlan(state, goal);
-			if (plan.size() > 0)
+		if (goal && nextInPlan)
+		{
+			auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
+			if (success)
 			{
-				nextInPlan = plan[plan.size() - 1];
+				auto msg = name + " GP:" + goal->GetName();
+				if (nextInPlan && goal != nextInPlan)
+					msg += " GS:" + nextInPlan->GetName();
+				messages->push_back(msg);
+				goal = nullptr;
+				break;
 			}
 		}
-	}
 
-	// Exceute Goal State
-	if (goal)
-	{
-		auto msg = name + " GP:" + goal->GetName();
-		if (nextInPlan && goal != nextInPlan)
-			msg +=" GS:" + nextInPlan->GetName();
-		auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
-		if (success)
-		{
-			shouldRecalcuate = true;
-			goal = nullptr;
-		}
-		messages->push_back(msg);
-	}
-	else
-	{
-		messages->push_back("No " + name + " Goal.");
+		if (!withRetry) break; // If we aren't retrying, break out
+		// Only allow the top choice to build it's dependencies. Otherwise we build one of everything
+		allowDependencies = false;
 	}
 }
 

@@ -36,8 +36,10 @@ void BotWithAPlan::OnUnitEnterVision(const Unit* unit)
 		if (Distance3D(unit->pos, th->pos) < 25)
 		{
 			// RALLY THE TROOPS!
-			auto army = Observation()->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-			Actions()->UnitCommand(army, ABILITY_ID::ATTACK, unit->pos);
+			//auto army = Observation()->GetUnits(Unit::Alliance::Self, IsCombatUnit());
+			//Actions()->UnitCommand(army, ABILITY_ID::ATTACK, unit->pos);
+			//armyManager.SetMode(armyManager.battleGroups[0], BattleMode::Defend);
+			armyManager.SetTarget(&armyManager.battleGroups[0], unit->pos);
 		}
 	}
 }

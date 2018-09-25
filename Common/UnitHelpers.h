@@ -6,6 +6,18 @@
 #include "Common/Strategy/Building/SpiralStrategy.h"
 namespace Util {
 
+	static Point3D GetAveragePoint(Units units)
+	{
+		auto vectorToCenter = Point3D();
+
+		for (auto u : units)
+		{
+			vectorToCenter += u->pos;
+		}
+		// Get average enemy location
+		return vectorToCenter / units.size();
+	}
+
 	bool static TryBuildUnit(AbilityID train_unit_ability, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions)
 	{
 		bool madeUnit = false;
@@ -98,9 +110,10 @@ namespace Util {
 				actions->UnitCommand(worker, build_ability, buildPos);
 			}
 			debug->DebugSphereOut(buildPos, 3, Colors::Purple);
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	bool static TryBuildBuilding(AbilityID build_ability, UNIT_TYPEID unitType, const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

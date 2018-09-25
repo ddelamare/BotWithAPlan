@@ -25,17 +25,15 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		bool queuedScouting = false;
+		bool queuedScouting = true;
 		auto enemyExpos = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall());
 		auto point = Util::ToPoint3D(state->EnemyBase);
 		std::sort(enemyExpos.begin(), enemyExpos.end(), Sorters::sort_by_distance(point));
 		auto attackPoint = enemyExpos.back();
 
 		// Make a cluster of units
-		// TODO: Cluster Units to prevent a stream of units from going there and dying
-
-		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-		actions->UnitCommand(army, ABILITY_ID::ATTACK, attackPoint->pos);
+		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint->pos);
+		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[0], BattleMode::Attack);
 
 		return queuedScouting;
 	}

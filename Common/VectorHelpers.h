@@ -14,16 +14,4 @@ namespace VectorHelpers
 		if (item != list->end())
 			list->erase(item);
 	}
-
-	static Point3D GetAveragePoint(Units units)
-	{
-		auto vectorToCenter = Point3D();
-
-		for (auto u : units)
-		{
-			vectorToCenter += u->pos;
-		}
-		// Get average enemy location
-		return vectorToCenter / units.size();
-	}
 }

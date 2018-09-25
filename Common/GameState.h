@@ -2,13 +2,12 @@
 #include <map>
 #include "sc2api\sc2_api.h"
 #include <vector>
-#include <map>
 using namespace sc2;
 
 // Holds data that only needs to be calculated once and then referenced or updated
 
 typedef std::map<UNIT_TYPEID, int>	UnitMap;
-
+class ArmyManager;
 
 struct GameState
 {
@@ -29,5 +28,7 @@ struct GameState
 	UnitMap ObservedUnits;
 	UnitMap CurrentUnits;
 	UnitMap MaxEnemyUnits;
+	ArmyManager* ArmyManager;
+
 
 };

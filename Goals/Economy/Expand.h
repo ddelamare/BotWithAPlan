@@ -8,15 +8,12 @@
 
 class ExpandGoal : public BaseAction
 {
-	int dontExpandBeforeTick = 0;
 public:
-	ExpandGoal(int delay) : BaseAction() {
+	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
-		dontExpandBeforeTick = delay;
 		name = "Expand";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		if (obs->GetGameLoop() < dontExpandBeforeTick) return 0;
 		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		int assignedHarvesters = 0;
 		int idealHarvesters = 0;
@@ -29,8 +26,8 @@ public:
 		if (townhalls.size())
 		{
 			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
-			if (differance >= 4)
-				return 1.2; // If we are near probe capacity, we need to expand
+			if (differance >= 2)
+				return 1.5; // If we are near probe capacity, we need to expand
 			else if (differance > -5)
 				return .8; // If we are nearing probe capacity we might expand
 			else

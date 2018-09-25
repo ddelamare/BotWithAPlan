@@ -46,6 +46,7 @@
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\PylonStrategy.cpp" />
     <ClCompile Include="BotEvents.cpp" />
+    <ClCompile Include="Common\Managers\ArmyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -156,6 +157,7 @@
     <ClInclude Include="Goals\Army\Tempest.h" />
     <ClInclude Include="Goals\Tactics\AttackProxy.h" />
     <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
+    <ClInclude Include="Common\Entity\BattleGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

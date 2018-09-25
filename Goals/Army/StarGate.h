@@ -16,6 +16,8 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state)  {
 		auto stargates = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_STARGATE));
+		// Don;t build it unless we need it
+		if (!stargates.size()) return 0;
 		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		return (nexus.size() + 1) / (stargates.size() + 2);
 	};
