@@ -25,7 +25,10 @@ public:
 		for (auto goal : goals)
 		{
 			auto score = goal->CalculateScore(obs, state);
-			actions.push_back(make_tuple(score, goal));
+			if (score > 0)
+			{
+				actions.push_back(make_tuple(score, goal));
+			}
 		}
 		sort(actions.begin(), actions.end());
 		reverse(actions.begin(), actions.end());

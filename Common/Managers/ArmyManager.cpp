@@ -1,4 +1,4 @@
-#include "ArmyManager.h"
+#include "Common/Managers/ArmyManager.h"
 using namespace sc2;
 void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
@@ -105,10 +105,11 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 
 const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query)
 {
-	auto unitType = obs->GetUnitTypeData()[unit->unit_type];
-	if (unitType.weapons.size())
+	auto unitData = obs->GetUnitTypeData();
+	if (!unitData.size()) return nullptr;
+	auto unitType = unitData[unit->unit_type];	if (unitType.weapons.size())
 	{
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, unitType.weapons[0].range);
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, unitType.weapons[0].range * 1.5);
 		double minPercent = DBL_MAX;
 		const Unit* weakestUnit = nullptr;
 		for (auto eu : enemyUnits)
@@ -120,6 +121,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 				minPercent = percentHealth;
 			}
 		}
+		return weakestUnit;
 	}
 	else
 	{

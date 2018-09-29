@@ -18,6 +18,7 @@ protected:
 	// These are used to help calculate score and maintain which units to act on
 	sc2::Units units;
 	sc2::Units targets;
+	bool holdOtherGoals = false; // If true then puts all other goals on hold while it's active.
 public:
 	BaseAction(string actionName) {
 		conditions = vector<BaseCondition*>();
@@ -41,7 +42,7 @@ public:
 	vector<BaseResult*> GetPossibleResults();
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state);
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
-
+	bool virtual HoldOtherGoals() { return holdOtherGoals; }
 	string GetName()
 	{
 		return name;

@@ -13,8 +13,9 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) override
 	{
 		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
+		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 		auto nexs = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
-		if (assimilators.size() >= 2 * nexs.size())
+		if (assimilators.size() >= 2 * nexs.size() || pylons.size() == 0)
 			return 0;
 		else
 		{

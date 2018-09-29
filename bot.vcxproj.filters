@@ -158,6 +158,10 @@
     <ClInclude Include="Goals\Tactics\AttackProxy.h" />
     <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
     <ClInclude Include="Common\Entity\BattleGroup.h" />
+    <ClInclude Include="Common\Managers\ArmyManager.h" />
+    <ClInclude Include="Goals\Army\PhotonCannon.h" />
+    <ClInclude Include="Goals\Army\ShieldBattery.h" />
+    <ClInclude Include="Common\Strategy\Attacks\SentryMicro.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
@@ -165,7 +169,6 @@
     </None>
     <None Include="Goals\Army\Stalker.h" />
     <None Include="Goals\Army\HighTemplar.h" />
-    <None Include="Common\Managers\ArmyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt">

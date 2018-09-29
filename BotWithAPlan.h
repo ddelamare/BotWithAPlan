@@ -30,7 +30,7 @@ public:
 
 	bool Lost;
 private:
-	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry);
+	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers);
 
 	GoalPicker goalPicker;
 	Planner    planner;
@@ -42,7 +42,7 @@ private:
 	bool shouldRecalcuate;
 	GameState  state;
 	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 25;
+	const int STEPS_PER_GOAL = 1;
 	vector<string> debugMessages;
 };
 

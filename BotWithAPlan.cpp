@@ -26,6 +26,8 @@
 #include "Goals\Army\Sentry.h"
 #include "Goals\Army\Carrier.h"
 #include "Goals\Army\Tempest.h"
+#include "Goals\Army\PhotonCannon.h"
+#include "Goals\Army\ShieldBattery.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
@@ -51,6 +53,7 @@
 #include "Common\Strategy\Attacks\DisruptorAttack.h"
 #include "Common\Strategy\Attacks\Templar.h"
 #include "Common\Strategy\Attacks\VoidRay.h"
+#include "Common\Strategy\Attacks\SentryMicro.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -104,12 +107,14 @@ BotWithAPlan::BotWithAPlan()
 	UpgradeGoals.push_back(new ThermalLanceGoal());
 	UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
 	UpgradeGoals.push_back(new GlaivesGoal());
-	//UpgradeGoals.push_back(new WarpGateGoal());
+	UpgradeGoals.push_back(new WarpGateGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new GatewayGoal());
 	AvailableActions.push_back(new CyberneticsGoal());
 	AvailableActions.push_back(new ForgeGoal());
+	AvailableActions.push_back(new PhotonCannonGoal());
+	AvailableActions.push_back(new ShieldBatteryGoal());
 	AvailableActions.push_back(new RoboticsGoal());
 	AvailableActions.push_back(new RoboticsBayGoal());
 	AvailableActions.push_back(new TwilightCouncilGoal());
@@ -162,10 +167,11 @@ void BotWithAPlan::OnStep() {
 	if (StepCounter == STEPS_PER_GOAL)
 	{
 		debugMessages.clear();
-		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages, true);
-		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages, true);
-		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages, false);
-		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages, false);
+		bool stopOthers = false;
+		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages, true, stopOthers);
+		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages, true, stopOthers);
+		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages, false, stopOthers);
+		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages, false, stopOthers);
 		StepCounter = 0;
 	}
 	StepCounter++;
@@ -221,6 +227,8 @@ void BotWithAPlan::OnStep() {
 	tMicro.Execute(obs, actions, query, Debug(), &state);
 	auto vMicro = VoidRayAttack(obs, query);
 	vMicro.Execute(obs, actions, query, Debug(), &state);
+	auto sMicro = SentryMicro(obs, query);
+	sMicro.Execute(obs, actions, query, Debug(), &state);
 
 	// Morph all gateways to warpgates
 	auto gateways = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
@@ -240,10 +248,12 @@ void BotWithAPlan::OnStep() {
 #if DEBUG_MODE	
 	Debug()->SendDebug();
 #endif
+	Actions()->SendActions();
 }
 
-void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry)
+void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
 {
+	if (stopOthers) return;
 	BaseAction* goal = nullptr;
 	BaseAction* nextInPlan = nullptr;
 	auto actionList = goalPicker.GetGoals(goals, obs, &state);
@@ -275,6 +285,11 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 					msg += " GS:" + nextInPlan->GetName();
 				messages->push_back(msg);
 				goal = nullptr;
+				break;
+			}
+			else if (goal->HoldOtherGoals())
+			{
+				stopOthers = true;
 				break;
 			}
 		}

@@ -9,11 +9,11 @@ class RushGoal : public BaseAction
 {
 public:
 	RushGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Mass Units", 4, sc2::UNIT_TYPEID::PROTOSS_VOIDRAY, 4, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 2));
+		this->conditions.push_back(new BaseCondition("Mass Units", 8,  sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON, 3,sc2::UNIT_TYPEID::PROTOSS_SHIELDBATTERY,1, sc2::UNIT_TYPEID::PROTOSS_VOIDRAY, 4, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 2));
 		this->BaseAction::name = "Rush";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 2;
+		return 10;
 	};
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
@@ -33,7 +33,7 @@ public:
 		{
 			attackPoint = enemyStuff[0]->pos;
 		}
-		actions->UnitCommand(army, ABILITY_ID::ATTACK, attackPoint);
+		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
 
 		return madeStaker;
 	}

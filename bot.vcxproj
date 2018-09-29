@@ -138,8 +138,8 @@
   <ItemGroup>
     <ClCompile Include="BotEvents.cpp" />
     <ClCompile Include="BotWithAPlan.cpp" />
-    <ClCompile Include="Common\Managers\ArmyManager.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
+    <ClCompile Include="Common\Managers\ArmyManager.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
@@ -153,19 +153,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
-    <None Include="Common\Managers\ArmyManager.h" />
     <None Include="Goals\Army\HighTemplar.h" />
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Entity\BattleGroup.h" />
     <ClInclude Include="BotWithAPlan.h" />
+    <ClInclude Include="Common\Managers\ArmyManager.h" />
     <ClInclude Include="Common\ResourceState.h" />
     <ClInclude Include="Common\ItemDependencies.h" />
     <ClInclude Include="Common\GameState.h" />
     <ClInclude Include="Common\Resource.h" />
     <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
+    <ClInclude Include="Common\Strategy\Attacks\SentryMicro.h" />
     <ClInclude Include="Common\Strategy\Attacks\Templar.h" />
     <ClInclude Include="Common\Strategy\Attacks\VoidRay.h" />
     <ClInclude Include="Common\Strategy\Building\BuildingStrategy.h" />
@@ -185,8 +186,10 @@
     <ClInclude Include="Goals\Army\Immortal.h" />
     <ClInclude Include="Goals\Army\Observer.h" />
     <ClInclude Include="Goals\Army\Phoenix.h" />
+    <ClInclude Include="Goals\Army\PhotonCannon.h" />
     <ClInclude Include="Goals\Army\Robotics.h" />
     <ClInclude Include="Goals\Army\Sentry.h" />
+    <ClInclude Include="Goals\Army\ShieldBattery.h" />
     <ClInclude Include="Goals\Army\Tempest.h" />
     <ClInclude Include="Goals\Army\WarpPrism.h" />
     <ClInclude Include="Goals\Tactics\AttackProxy.h" />

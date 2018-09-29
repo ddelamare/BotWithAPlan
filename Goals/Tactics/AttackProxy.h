@@ -11,6 +11,7 @@ class AttackProxyGoal : public BaseAction
 public:
 	AttackProxyGoal() : BaseAction() {
 		this->conditions.push_back(new HaveBigArmy(50));
+		this->conditions.push_back(new BaseCondition("Static Defenses",4, UNIT_TYPEID::PROTOSS_PHOTONCANNON, 3, UNIT_TYPEID::PROTOSS_SHIELDBATTERY,1));
 		this->BaseAction::name = "Attack Proxy";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {

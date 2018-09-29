@@ -12,6 +12,7 @@ public:
 	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
 		name = "Expand";
+		holdOtherGoals = true;
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());

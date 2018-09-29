@@ -16,7 +16,7 @@ public:
 		name = "Build Pylon";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		double score = 16.0f;
+		double score = 30.0f;
 		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
 		//Add food from building pylons
@@ -33,7 +33,7 @@ public:
 			score = 50;
 		}
 
-		if (score < 1)
+		if (score < 1 || obs->GetFoodCap() == 200)
 		{
 			// if we have more than 16 free food, no reason to build one.
 			score = 0;
