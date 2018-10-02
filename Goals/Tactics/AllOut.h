@@ -9,7 +9,7 @@ class AllOutGoal : public BaseAction
 {
 public:
 	AllOutGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Mass Units", 6, sc2::UNIT_TYPEID::PROTOSS_STALKER, 10, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 2, sc2::UNIT_TYPEID::PROTOSS_VOIDRAY, 5));
+		this->conditions.push_back(new BaseCondition("Mass Units", 6, sc2::UNIT_TYPEID::PROTOSS_STALKER, 10, sc2::UNIT_TYPEID::PROTOSS_STARGATE, 1, sc2::UNIT_TYPEID::PROTOSS_VOIDRAY, 4));
 		this->BaseAction::name = "All In";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {

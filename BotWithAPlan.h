@@ -16,6 +16,7 @@
 using namespace sc2;
 #define LADDER_MODE 0
 #define DEBUG_MODE 1	
+#define PLANNER_MODE 0  
 class BotWithAPlan : public Agent {
 public:
 	BotWithAPlan();

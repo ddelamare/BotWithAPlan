@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::Hard)
+					CreateComputer(race, sc2::Difficulty::HardVeryHard)
 					});
 
 				coordinator.LaunchStarcraft();
@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-#else
+#elif PLANNER_MODE
 	InitResources();
 
 	GenerateDependencyList();

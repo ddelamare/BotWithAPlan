@@ -16,7 +16,7 @@ public:
 		double score = 1;
 		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_VOIDRAY)).size();
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
-		score = Util::FeedbackFunction(percent, .2, 1.5);
+		score = Util::FeedbackFunction(percent, .2, .9);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
 		{

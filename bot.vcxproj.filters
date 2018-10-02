@@ -162,6 +162,8 @@
     <ClInclude Include="Goals\Army\PhotonCannon.h" />
     <ClInclude Include="Goals\Army\ShieldBattery.h" />
     <ClInclude Include="Common\Strategy\Attacks\SentryMicro.h" />
+    <ClInclude Include="Goals\Tactics\Proxy4Gate.h" />
+    <ClInclude Include="Goals\Economy\ProxyPylon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
