@@ -48,8 +48,8 @@ bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* ob
 			outsideOfCluster++;
 		}
 	}
-
-	return (outsideOfCluster /= group->units.size()) <= CLUSTER_PERCENT_THRESHOLD;
+	auto clusterRatio = (double)outsideOfCluster / (double)(group->units.size());
+	return clusterRatio <= CLUSTER_PERCENT_THRESHOLD;
 }
 void ArmyManager::ClusterUnits(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
@@ -57,10 +57,10 @@ void ArmyManager::ClusterUnits(BattleGroup* group, const ObservationInterface* o
 	if (group->units.size() <= 1) return;
 	auto averagePoint = Util::GetAveragePoint(group->units);
 	debug->DebugSphereOut(averagePoint, 5);
-	if (HasTarget(group))
-	{
-		averagePoint = ((averagePoint + Util::ToPoint3D(group->target)) / 2);
-	}
+	//if (HasTarget(group))
+	//{
+	//	averagePoint = (averagePoint + Util::ToPoint3D(group->target)) / 2);
+	//}
 	action->UnitCommand(group->units, ABILITY_ID::ATTACK, averagePoint);
 }
 void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)

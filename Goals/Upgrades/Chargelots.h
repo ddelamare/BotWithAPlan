@@ -13,7 +13,7 @@ public:
 		this->BaseAction::name = "Research Charge";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		double score = 0;
+		double score = .1;
 		auto upgrades = obs->GetUpgrades();
 		auto hasUpgrade = VectorHelpers::FoundInVector(upgrades, (UpgradeID)UPGRADE_ID::CHARGE);
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL), ABILITY_ID::RESEARCH_CHARGE, obs)) 

@@ -71,7 +71,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
 	EconomyGoals.push_back(new RoboticsGoal());
-	EconomyGoals.push_back(new StarGateGoal());
+	//EconomyGoals.push_back(new StarGateGoal());
 	EconomyGoals.push_back(new ExpandGoal());
 
 	// Build Because we Can
@@ -79,17 +79,17 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new AdeptGoal());
 	ArmyGoals.push_back(new ColossusGoal());
-	ArmyGoals.push_back(new VoidRayGoal());
+	//ArmyGoals.push_back(new VoidRayGoal());
 	ArmyGoals.push_back(new ImmortalGoal());
-	ArmyGoals.push_back(new DarkTemplarGoal());
+	//ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
 	ArmyGoals.push_back(new HighTemplarGoal());
 	ArmyGoals.push_back(new ArchonGoal());
 	ArmyGoals.push_back(new ObserverGoal());
-	ArmyGoals.push_back(new PhoenixGoal());
+	//ArmyGoals.push_back(new PhoenixGoal());
 	ArmyGoals.push_back(new SentryGoal());
-	ArmyGoals.push_back(new CarrierGoal());
-	ArmyGoals.push_back(new TempestGoal());
+	//ArmyGoals.push_back(new CarrierGoal());
+	//ArmyGoals.push_back(new TempestGoal());
 
 	// Tactics and Upgrade Goals
 
@@ -248,7 +248,9 @@ void BotWithAPlan::OnStep() {
 #if DEBUG_MODE	
 	Debug()->SendDebug();
 #endif
+#if REALTIME
 	Actions()->SendActions();
+#endif
 }
 
 void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)

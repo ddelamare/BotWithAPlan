@@ -164,6 +164,7 @@
     <ClInclude Include="Common\Strategy\Attacks\SentryMicro.h" />
     <ClInclude Include="Goals\Tactics\Proxy4Gate.h" />
     <ClInclude Include="Goals\Economy\ProxyPylon.h" />
+    <ClInclude Include="Common\Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

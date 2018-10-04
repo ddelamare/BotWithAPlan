@@ -297,6 +297,26 @@ struct IsEnemyArmy
 		else return !IsWorker()(unit) && IsArmy()(unit);
 	}
 };
+
+struct IsFlying
+{
+	bool operator()(const sc2::Unit & unit)
+	{
+		return unit.is_flying;
+	}
+};
+
+struct IsEnemyGroundArmy
+{
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (unit.alliance != Unit::Alliance::Enemy)
+		{
+			return false;
+		}
+		else return !IsFlying()(unit) && IsEnemyArmy()(unit);
+	}
+};
 	
 struct IsEnemyBuilding
 {
@@ -326,4 +346,19 @@ struct UnitsInProgress
 private: sc2::UNIT_TYPEID unitType;
 };
 
+struct CompletedUnits
+{
+	CompletedUnits(UNIT_TYPEID type)
+	{
+		unitType = type;
+	}
+	bool operator()(const Unit& unit) {
+		if (unitType == unit.unit_type)
+		{
+			return unit.build_progress >= 1;
+		}
+		return false;
+	}
+private: sc2::UNIT_TYPEID unitType;
+};
 #endif // UNIT_FILTERS

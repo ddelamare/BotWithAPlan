@@ -4,10 +4,13 @@
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
 #include "Common\Util.h"
+#include "Common\Constants.h"
 #include "Common\Strategy\Building\ExpandStrategy.h"
 
 class ExpandGoal : public BaseAction
 {
+	double CLAMP = .25;
+	int MIN_ARMY_PER_EXPO = 5;
 public:
 	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
@@ -23,16 +26,24 @@ public:
 			assignedHarvesters += th->assigned_harvesters;
 			idealHarvesters += th->ideal_harvesters;
 		}
-		
+		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_PROBE_CAP, .2, 1);
+		auto food = obs->GetFoodArmy();
+		if (food / (MIN_ARMY_PER_EXPO *(townhalls.size() + 1)) < 0) return 0;
+		if ((idealHarvesters + 16) > Constants::HARD_PROBE_CAP) return 0;
 		if (townhalls.size())
 		{
 			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
 			if (differance >= 2)
-				return 1.5; // If we are near probe capacity, we need to expand
+				score *= 1.5; // If we are near probe capacity, we need to expand
 			else if (differance > -5)
-				return .8; // If we are nearing probe capacity we might expand
+				score *= 1.1; // If we are nearing probe capacity we might expand
 			else
 				return 0;
+
+			if (score < CLAMP)
+				return 0;
+			else
+				return score;
 		}
 		else										 
 			return 0;

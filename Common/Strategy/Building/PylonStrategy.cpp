@@ -1,4 +1,5 @@
 #include "PylonStrategy.h"
+#include "Common\UnitHelpers.h"
 using namespace sc2;
 PylonStrategy::PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon) : BuildingStrategy(unit, needsClearance, needsPylon)
 {
@@ -15,10 +16,27 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 {
 	float PYLON_RADIUS = 1.125;
 
-	auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 	auto nexii = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
-	auto minerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state->StartingLocation), obs, 15);
 	Point3D buildPos;
+	if (nexii.size())
+	{
+		for (auto nex : nexii)
+		{
+			auto nearbyPylons = Util::FindNearbyUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON), nex->pos, obs, 10);
+			if (nearbyPylons.size() == 0)
+			{
+				auto nearbyMinerals = Util::FindNearbyUnits(Unit::Alliance::Neutral, IsMineralField(), nex->pos, obs, 15);
+				auto averagePoint = Util::GetAveragePoint(nearbyMinerals);
+				auto vector = nex->pos - averagePoint;
+				Normalize3D(vector);
+				buildPos = nex->pos + (vector * (nex->radius + PYLON_RADIUS + 2));  // Add pylon and nexus radius
+				debug->DebugSphereOut(buildPos, 3);
+				return buildPos;
+			}
+		}
+	}
+	auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
+
 	if (pylons.size())
 	{
 		//TODO: BUild next to nexuses without pylons
@@ -26,32 +44,6 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 		return spiralizer.FindPlacement(obs, actions, query, debug, state);
 
 	}
-	else if(nexii.size())  // If there are no pylons, build next to nexus
-	{
-		auto mainNex = nexii[0];
-		if (Distance2D(state->MineralDirection, Point2D(0, 0)) == 0) // Check if it's been set
-		{
-			//Calc mineral vector and normalize
-			int visibleMinerals = 0;
-			Point3D sum;
-			for (auto min : minerals)
-			{
-				if (min->display_type == Unit::DisplayType::Visible)
-				{
-					sum += min->pos;
-					visibleMinerals++;
-				}
-			}
-			if (visibleMinerals > 0)
-			{
-				sum /= visibleMinerals;
-				sum = sum - mainNex->pos;
-				sum.z = 0;
-				Normalize3D(sum);
-				state->MineralDirection = sum;
-			}
-		}
-		buildPos = mainNex->pos - (state->MineralDirection * (mainNex->radius + PYLON_RADIUS + 2));  // Add pylon and nexus radius
-	}
+
  	return buildPos;
 }

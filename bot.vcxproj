@@ -157,6 +157,7 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\Constants.h" />
     <ClInclude Include="Common\Entity\BattleGroup.h" />
     <ClInclude Include="BotWithAPlan.h" />
     <ClInclude Include="Common\Managers\ArmyManager.h" />

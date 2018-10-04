@@ -95,6 +95,30 @@ void BotWithAPlan::OnGameStart() {
     
 	// Sort expansions by distance to home base
 	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.StartingLocation));
+
+
+	// Calculate building offset
+	auto nearMinerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);
+
+	//Calc mineral vector and normalize
+	int visibleMinerals = 0;
+	Point3D nearSum;
+	for (auto min : nearMinerals)
+	{
+		if (min->display_type == Unit::DisplayType::Visible)
+		{
+			nearSum += min->pos;
+			visibleMinerals++;
+		}
+	}
+	if (visibleMinerals > 0)
+	{
+		nearSum /= visibleMinerals;
+		nearSum = nearSum - nexus->pos;
+		nearSum.z = 0;
+		Normalize3D(nearSum);
+		state.MineralDirection = nearSum;
+	}
 }
 
 void BotWithAPlan::OnGameEnd()

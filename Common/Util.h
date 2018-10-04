@@ -7,7 +7,7 @@ using namespace sc2;
 
 namespace Util {
 
-	// Basically this function outputs a lower value as current percent increases over target percent and when percent is 0, returns score when zero
+	// Basically this function outputs a lower value as current percent increases over hallNeedingMiners percent and when percent is 0, returns score when zero
 	const static double FeedbackFunction(double currentPercent,double targetPercent, double multiplier)
 	{
 		// equivalent to 1/((currentPercent / targetPercent) + (1/multiplier));
@@ -22,7 +22,7 @@ namespace Util {
 	const static Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query)
 	{
 		double distance = DBL_MAX;
-		const Unit* target = 0;
+		const Unit* hallNeedingMiners = 0;
 		auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
 		for (auto nexus : nexuses)
 		{
@@ -32,28 +32,15 @@ namespace Util {
 				if (dis < distance)
 				{
 					distance = dis;
-					target = nexus;
+					hallNeedingMiners = nexus;
 				}
 			}
 
 		}
-		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
-		for (auto assim : assimilators)
-		{
-			if (assim->ideal_harvesters > assim->assigned_harvesters)
-			{
-				auto dis = query->PathingDistance(worker->pos, assim->pos + Point3D(assim->radius, 0, 0));
-				if (dis < distance)
-				{
-					distance = dis;
-					target = assim;
-				}
-			}
-		}
 
-		if (target && target->unit_type == UNIT_TYPEID::PROTOSS_NEXUS)
+		if (hallNeedingMiners)
 		{
-			auto nex = target;
+			auto nex = hallNeedingMiners;
 			// Find nearby mineral patch.
 			Units minerals = obs->GetUnits(Unit::Alliance::Neutral, IsMineralField());
 			float distance = std::numeric_limits<float>::max();
@@ -61,12 +48,29 @@ namespace Util {
 				float d = DistanceSquared2D(m->pos, nex->pos);
 				if (d < distance) {
 					distance = d;
-					target = m;
+					hallNeedingMiners = m;
+				}
+			}
+		}
+		// Only assign gas after minerals have been filled
+		if (!hallNeedingMiners)
+		{
+			auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
+			for (auto assim : assimilators)
+			{
+				if (assim->ideal_harvesters > assim->assigned_harvesters)
+				{
+					auto dis = query->PathingDistance(worker->pos, assim->pos + Point3D(assim->radius, 0, 0));
+					if (dis < distance)
+					{
+						distance = dis;
+						hallNeedingMiners = assim;
+					}
 				}
 			}
 		}
 
-		return target;
+		return hallNeedingMiners;
 	}
 
 	const static Unit* FindClosestAvailableWorker(Point3D point, const ObservationInterface* obs, QueryInterface* query, GameState* state)

@@ -21,7 +21,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	auto disruptors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR));
 	for (auto unit : disruptors)
 	{
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, 10);
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyGroundArmy(), unit->pos, obs, 10);
 
 		if (enemyUnits.size())
 		{
@@ -29,6 +29,29 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
             // Subtract start minus end to get a vector away from the center
             debug->DebugSphereOut(targetPoint, 2, Colors::Red);
             actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, targetPoint);
+		}
+	}
+
+
+	//Micro the orbs
+	auto orbs = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTORPHASED));
+	for (auto unit : orbs)
+	{
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyGroundArmy(), unit->pos, obs, 10);
+		if (enemyUnits.size())
+		{
+			auto targetPoint = Util::GetAveragePoint(enemyUnits);
+			actions->UnitCommand(unit, ABILITY_ID::ATTACK, targetPoint);
+		}
+		else
+		{
+			// No enemys nearby? Kill whatever
+			auto enemys = Util::FindNearbyUnits(IsEnemy(), unit->pos, obs, 10);
+			if (enemys.size())
+			{
+				auto targetPoint = Util::GetAveragePoint(enemyUnits);
+				actions->UnitCommand(unit, ABILITY_ID::ATTACK, targetPoint);
+			}
 		}
 	}
 

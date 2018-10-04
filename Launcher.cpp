@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 				Coordinator coordinator;
 				coordinator.LoadSettings(argc, argv);
 				coordinator.SetMultithreaded(true);
-				coordinator.SetRealtime(false);
+				coordinator.SetRealtime(REALTIME);
 				coordinator.SetStepSize(10);
 				BotWithAPlan bot;
 				coordinator.SetParticipants({

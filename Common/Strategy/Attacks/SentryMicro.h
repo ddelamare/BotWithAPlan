@@ -33,10 +33,10 @@ void SentryMicro::Execute(const sc2::ObservationInterface *obs, sc2::ActionInter
 	for (auto unit : sentries)
 	{
 		auto targetsToShieldAgainst = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsUnits(unitTypesToShield), unit->pos, obs, 10);
-		auto enemyUnits = Util::FindNearbyUnits(Unit::Alliance::Self, IsCombatUnit(), unit->pos, obs, 10);
+		auto alliedUnits = Util::FindNearbyUnits(Unit::Alliance::Self, IsCombatUnit(), unit->pos, obs, 10);
 		// If there are enemies around that are weak against guardian shield then use it
 		// Only if there;s unit to protect
-		if (targetsToShieldAgainst.size() >= 5 && enemyUnits.size() >= 5)
+		if (targetsToShieldAgainst.size() >= 5 && alliedUnits.size() >= 5)
 		{
 			actions->UnitCommand(unit, ABILITY_ID::EFFECT_GUARDIANSHIELD);
 		}

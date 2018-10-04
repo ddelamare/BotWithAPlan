@@ -23,7 +23,7 @@ namespace Util {
 		bool madeUnit = false;
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(buildingType));
 		for (auto building : buildings) {
-			if (building->orders.size() == 0)
+			if (building->orders.size() == 0 && building->build_progress >= 1.0)
 			{
 				actions->UnitCommand(building, train_unit_ability);
 				madeUnit = true;
@@ -40,7 +40,7 @@ namespace Util {
 		UnitTypeData unittype = unitTypes[(int)unit_type];
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(buildingType));
 		for (auto building : buildings) {
-			if (building->orders.size() == 0)
+			if (building->orders.size() == 0 && building->build_progress >= 1.0)
 			{
 				actions->UnitCommand(building, unittype.ability_id);
 				madeUnit = true;
@@ -55,7 +55,7 @@ namespace Util {
 		// All the abilities for the warp version of train are exactly 497 from the ability of the regular train
 		const int WARPCONVERSION_DIFFERENCE = 497;
 		bool madeUnit = false;
-		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_WARPGATE));
+		auto buildings = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(UNIT_TYPEID::PROTOSS_WARPGATE));
 		UnitTypes unitTypes = obs->GetUnitTypeData();
 		UnitTypeData unittype = unitTypes[(int)unit_type];
 		auto warpAbility = (ABILITY_ID) ((int)unittype.ability_id + WARPCONVERSION_DIFFERENCE);
@@ -103,6 +103,7 @@ namespace Util {
 			if (buildingStrategy->foundUnit)
 			{
 				actions->UnitCommand(worker, build_ability, buildingStrategy->foundUnit);
+				actions->UnitCommand(worker, ABILITY_ID::STOP, true); // Send worker to idle pool to be reassigned
 			}
 			// Standard Placement
 			else
