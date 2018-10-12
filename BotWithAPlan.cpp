@@ -42,8 +42,11 @@
 #include "Goals\Tactics\Rush.h"
 #include "Goals\Tactics\AttackProxy.h"
 #include "Goals\Tactics\DefendWithWorkers.h"
+#include "Goals\Tactics\4Gate.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
+#include "Goals\Upgrades\GroundArmor.h"
+#include "Goals\Upgrades\Shields.h"
 #include "Goals\Upgrades\Blink.h"
 #include "Goals\Upgrades\Glaives.h"
 #include "Goals\Upgrades\ThermalLance.h"
@@ -71,7 +74,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new AssimilatorGoal());
 	EconomyGoals.push_back(new GatewayGoal());
 	EconomyGoals.push_back(new RoboticsGoal());
-	//EconomyGoals.push_back(new StarGateGoal());
+	EconomyGoals.push_back(new StarGateGoal());
 	EconomyGoals.push_back(new ExpandGoal());
 
 	// Build Because we Can
@@ -79,17 +82,17 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new StalkerGoal());
 	ArmyGoals.push_back(new AdeptGoal());
 	ArmyGoals.push_back(new ColossusGoal());
-	//ArmyGoals.push_back(new VoidRayGoal());
+	ArmyGoals.push_back(new VoidRayGoal());
 	ArmyGoals.push_back(new ImmortalGoal());
-	//ArmyGoals.push_back(new DarkTemplarGoal());
+	ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
 	ArmyGoals.push_back(new HighTemplarGoal());
 	ArmyGoals.push_back(new ArchonGoal());
 	ArmyGoals.push_back(new ObserverGoal());
-	//ArmyGoals.push_back(new PhoenixGoal());
+	ArmyGoals.push_back(new PhoenixGoal());
 	ArmyGoals.push_back(new SentryGoal());
-	//ArmyGoals.push_back(new CarrierGoal());
-	//ArmyGoals.push_back(new TempestGoal());
+	ArmyGoals.push_back(new CarrierGoal());
+	ArmyGoals.push_back(new TempestGoal());
 
 	// Tactics and Upgrade Goals
 
@@ -100,12 +103,16 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new AttackProxyGoal());
 	TacticsGoals.push_back(new DefendWithUnitsGoal());
 	//TacticsGoals.push_back(new RushGoal());
+	//TacticsGoals.push_back(new Do4GateGoal());
+	//TacticsGoals.push_back(new RushGoal());
 
 	UpgradeGoals.push_back(new ChargelotGoal());
 	UpgradeGoals.push_back(new BlinkGoal());
 	UpgradeGoals.push_back(new PsiStormGoal());
 	UpgradeGoals.push_back(new ThermalLanceGoal());
 	UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
+	UpgradeGoals.push_back(new GroundArmorUpgradeGoal());
+	UpgradeGoals.push_back(new ShieldUpgradeGoal());
 	UpgradeGoals.push_back(new GlaivesGoal());
 	UpgradeGoals.push_back(new WarpGateGoal());
 
@@ -144,10 +151,13 @@ void BotWithAPlan::OnStep() {
 	// Store the number of each unit they have
 	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsArmy());
 	UnitMap cUnits;
+	int maxFood = 0;
 	for (auto unit : enemyUnits)
 	{
 		cUnits[unit->unit_type]++;
+		maxFood += state.UnitInfo[unit->unit_type].food_required;
 	}
+	state.MaxEnemyFood = max(state.MaxEnemyFood, maxFood);
 	for (auto type : cUnits)
 	{
 		state.MaxEnemyUnits[type.first] = max(state.MaxEnemyUnits[type.first], type.second);
@@ -216,18 +226,30 @@ void BotWithAPlan::OnStep() {
 		}
 	}
 
+	auto nexuses = Observation()->GetUnits(Unit::Alliance::Self, IsTownHall());
+	for (auto th : nexuses)
+	{
+		auto nearbyUnits = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsEnemyArmy(), th->pos, obs, 25);
+		if (nearbyUnits.size())
+		{
+			// RALLY THE TROOPS!
+			armyManager.SetTarget(&armyManager.battleGroups[0], nearbyUnits[0]->pos);
+		}
+	}
+
 	armyManager.ManageGroups(obs,query,actions,&state,Debug());
 
+
 	// Blink micro
-	auto bsMicro = BlinkStalker(obs, query);
+	auto bsMicro = BlinkStalker(obs, query, &state);
 	bsMicro.Execute(obs, actions, query, Debug(), &state);
-	auto disruptorMicro = DisruptorAttack(obs, query);
+	auto disruptorMicro = DisruptorAttack(obs, query, &state);
 	disruptorMicro.Execute(obs, actions, query, Debug(), &state);
-	auto tMicro = TemplarMicro(obs, query);
+	auto tMicro = TemplarMicro(obs, query, &state);
 	tMicro.Execute(obs, actions, query, Debug(), &state);
-	auto vMicro = VoidRayAttack(obs, query);
+	auto vMicro = VoidRayAttack(obs, query, &state);
 	vMicro.Execute(obs, actions, query, Debug(), &state);
-	auto sMicro = SentryMicro(obs, query);
+	auto sMicro = SentryMicro(obs, query, &state);
 	sMicro.Execute(obs, actions, query, Debug(), &state);
 
 	// Morph all gateways to warpgates
@@ -289,7 +311,7 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 				goal = nullptr;
 				break;
 			}
-			else if (goal->HoldOtherGoals())
+			else if (goal->HoldOtherGoals(obs))
 			{
 				stopOthers = true;
 				break;

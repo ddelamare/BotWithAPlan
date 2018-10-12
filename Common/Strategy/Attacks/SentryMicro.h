@@ -8,14 +8,14 @@ class SentryMicro
 	UnitTypeData unitInfo;
 	std::vector<UNIT_TYPEID> unitTypesToShield;
 public:
-	SentryMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query);
+	SentryMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 
 };
-SentryMicro::SentryMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query)
+SentryMicro::SentryMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state)
 {
-	auto info = obs->GetUnitTypeData();
-	unitInfo = info[(int)UNIT_TYPEID::PROTOSS_SENTRY];
+	auto info = &state->UnitInfo;
+	unitInfo = (*info)[(int)UNIT_TYPEID::PROTOSS_SENTRY];
 	unitTypesToShield.push_back(sc2::UNIT_TYPEID::TERRAN_MARINE);
 	unitTypesToShield.push_back(sc2::UNIT_TYPEID::TERRAN_MARAUDER);
 	unitTypesToShield.push_back(sc2::UNIT_TYPEID::PROTOSS_ADEPT);

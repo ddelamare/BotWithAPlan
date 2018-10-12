@@ -6,14 +6,14 @@ class TemplarMicro
 {
 	UnitTypeData unitInfo;
 public:
-	TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query);
+	TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 
 };
-TemplarMicro::TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query)
+TemplarMicro::TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state)
 {
-	auto info = obs->GetUnitTypeData();
-	unitInfo = info[(int)UNIT_TYPEID::PROTOSS_HIGHTEMPLAR];
+	auto info = &state->UnitInfo;
+	unitInfo = (*info)[(int)UNIT_TYPEID::PROTOSS_HIGHTEMPLAR];
 }
 void TemplarMicro::Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {

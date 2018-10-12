@@ -15,14 +15,18 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
 		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_OBSERVER)).size();
-		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); 
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_LURKERMP] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_SWARMHOSTMP] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] > 0)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_LURKERMP] > 0 
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_SWARMHOSTMP] > 0 ||
+			state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] > 0
+			|| state->HasCloakedUnits)
 		{
-			score = Util::FeedbackFunction(percent, .2, 3);
-
+			score = Util::FeedbackFunction(percent, .05, 3);
 		}
 
+		if (percent >= 1 && score < .1)	 // We really don;t need that many
+			return 0;
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

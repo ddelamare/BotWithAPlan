@@ -14,7 +14,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		// See how many expos we see
 		double score = 0;
-		if (obs->GetFoodArmy() < 25) return 0;
+		if (obs->GetFoodArmy() < 25 || obs->GetFoodArmy() <= (.8 * state->MaxEnemyFood)) return 0;
 		auto enemyExpos = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall());
 		for (auto expo : enemyExpos)
 		{

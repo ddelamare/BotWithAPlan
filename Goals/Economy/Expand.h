@@ -28,8 +28,8 @@ public:
 		}
 		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_PROBE_CAP, .2, 1);
 		auto food = obs->GetFoodArmy();
-		if (food / (MIN_ARMY_PER_EXPO *(townhalls.size() + 1)) < 0) return 0;
-		if ((idealHarvesters + 16) > Constants::HARD_PROBE_CAP) return 0;
+		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
+		if ((idealHarvesters + 20) > Constants::HARD_PROBE_CAP) return 0;
 		if (townhalls.size())
 		{
 			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
@@ -52,5 +52,10 @@ public:
 	{
 		auto strat = new ExpandStrategy(ABILITY_ID::BUILD_NEXUS, false, false);
 		return Util::TryBuildBuilding(ABILITY_ID::BUILD_NEXUS, UNIT_TYPEID::PROTOSS_NEXUS, obs, actions, query, debug, state, strat);
+	}
+
+	bool virtual HoldOtherGoals(const sc2::ObservationInterface *obs)
+	{
+		return holdOtherGoals && obs->GetMinerals() < 400;
 	}
 };

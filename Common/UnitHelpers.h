@@ -56,8 +56,8 @@ namespace Util {
 		const int WARPCONVERSION_DIFFERENCE = 497;
 		bool madeUnit = false;
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(UNIT_TYPEID::PROTOSS_WARPGATE));
-		UnitTypes unitTypes = obs->GetUnitTypeData();
-		UnitTypeData unittype = unitTypes[(int)unit_type];
+		auto unitTypes = &state->UnitInfo;
+		UnitTypeData unittype = (*unitTypes)[(int)unit_type];
 		auto warpAbility = (ABILITY_ID) ((int)unittype.ability_id + WARPCONVERSION_DIFFERENCE);
 		for (auto building : buildings) {
 			auto abilities = query->GetAbilitiesForUnit(building).abilities;

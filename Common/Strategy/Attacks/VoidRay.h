@@ -5,16 +5,16 @@ using namespace sc2;
 class VoidRayAttack
 {
 	UnitTypeData unitInfo;
-	UnitTypes allUnitInfo;
+	UnitTypes* allUnitInfo;
 public:
-	VoidRayAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query);
+	VoidRayAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 
 };
-VoidRayAttack::VoidRayAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query)
+VoidRayAttack::VoidRayAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state)
 {
-	allUnitInfo = obs->GetUnitTypeData();
-	unitInfo = allUnitInfo[(int)UNIT_TYPEID::PROTOSS_VOIDRAY];
+	allUnitInfo = &state->UnitInfo;
+	unitInfo = (*allUnitInfo)[(int)UNIT_TYPEID::PROTOSS_VOIDRAY];
 }
 void VoidRayAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {
@@ -26,7 +26,7 @@ void VoidRayAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionInt
 		for (auto unit : enemyUnits)
 		{
 			//TODO: move to outside the loop via caching
-			auto unitAttr = allUnitInfo[unit->unit_type].attributes;
+			auto unitAttr = (*allUnitInfo)[unit->unit_type].attributes;
 			bool isArmored = VectorHelpers::FoundInVector(unitAttr, Attribute::Armored);
 			if (isArmored) armoredUnits.push_back(unit);
 		}

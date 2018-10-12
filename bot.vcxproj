@@ -194,6 +194,7 @@
     <ClInclude Include="Goals\Army\Tempest.h" />
     <ClInclude Include="Goals\Army\WarpPrism.h" />
     <ClInclude Include="Goals\Economy\ProxyPylon.h" />
+    <ClInclude Include="Goals\Tactics\4Gate.h" />
     <ClInclude Include="Goals\Tactics\AttackProxy.h" />
     <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
     <ClInclude Include="Goals\Tactics\JustDoIt.h" />
@@ -219,8 +220,10 @@
     <ClInclude Include="Goals\Upgrades\Blink.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Goals\Upgrades\Glaives.h" />
+    <ClInclude Include="Goals\Upgrades\GroundArmor.h" />
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
     <ClInclude Include="Goals\Upgrades\PsiStorm.h" />
+    <ClInclude Include="Goals\Upgrades\Shields.h" />
     <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
     <ClInclude Include="Goals\Upgrades\WarpGate.h" />
     <ClInclude Include="LadderInterface.h" />

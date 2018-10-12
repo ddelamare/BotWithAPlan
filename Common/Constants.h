@@ -6,4 +6,4 @@ public:
 
 };
 
-int Constants::HARD_PROBE_CAP = 66;
+int Constants::HARD_PROBE_CAP = 66;	  // 3 running bases worth

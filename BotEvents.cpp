@@ -24,24 +24,19 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 	{
 		VectorHelpers::RemoveFromVector(&state.ScoutingUnits, unit);
 	}
+
+	if (!state.HasCloakedUnits &&
+		Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemy(), unit->pos, Observation(), 20.0).size() == 0)
+	{
+		// Killed but no nearby enemies? Must be cloaked
+		this->state.HasCloakedUnits = true;
+	}
 }
 
 
 void BotWithAPlan::OnUnitEnterVision(const Unit* unit) 
 {
 	state.ObservedUnits[unit->unit_type] = 1;
-	auto nexuses = Observation()->GetUnits(Unit::Alliance::Self, IsTownHall());
-	for (auto th : nexuses)
-	{
-		if (Distance3D(unit->pos, th->pos) < 25)
-		{
-			// RALLY THE TROOPS!
-			//auto army = Observation()->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-			//Actions()->UnitCommand(army, ABILITY_ID::ATTACK, unit->pos);
-			//armyManager.SetMode(armyManager.battleGroups[0], BattleMode::Defend);
-			armyManager.SetTarget(&armyManager.battleGroups[0], unit->pos);
-		}
-	}
 }
 
 void BotWithAPlan::OnGameStart() {
@@ -119,6 +114,9 @@ void BotWithAPlan::OnGameStart() {
 		Normalize3D(nearSum);
 		state.MineralDirection = nearSum;
 	}
+
+	//Cache unit info
+	state.UnitInfo = Observation()->GetUnitTypeData();
 }
 
 void BotWithAPlan::OnGameEnd()

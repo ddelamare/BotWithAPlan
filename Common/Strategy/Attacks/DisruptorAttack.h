@@ -6,14 +6,14 @@ class DisruptorAttack
 {
 	UnitTypeData unitInfo;
 public:
-	DisruptorAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query);
+	DisruptorAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 
 };
-DisruptorAttack::DisruptorAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query)
+DisruptorAttack::DisruptorAttack(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state)
 {
-	auto info = obs->GetUnitTypeData();
-	unitInfo = info[(int)UNIT_TYPEID::PROTOSS_DISRUPTOR];
+	auto info = &state->UnitInfo;
+	unitInfo = (*info)[(int)UNIT_TYPEID::PROTOSS_DISRUPTOR];
 }
 void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {

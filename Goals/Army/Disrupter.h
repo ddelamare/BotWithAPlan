@@ -19,10 +19,18 @@ public:
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		score = Util::FeedbackFunction(percent, .35, 1.0);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 || state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6)
 		{
 			score *= 1.5;
 		}
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] >= 5)
+		{
+			score /= 2;
+		}
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

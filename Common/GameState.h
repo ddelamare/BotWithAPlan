@@ -29,6 +29,7 @@ struct GameState
 	UnitMap CurrentUnits;
 	UnitMap MaxEnemyUnits;
 	ArmyManager* ArmyManager;
-
-
+	bool HasCloakedUnits;
+	UnitTypes UnitInfo;
+	int MaxEnemyFood;
 };

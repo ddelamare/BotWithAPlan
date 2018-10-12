@@ -7,14 +7,14 @@ class BlinkStalker
 	UnitTypeData unitInfo;
 	const int STALKER_SHIELD_THRESH = 10;
 public:
-	BlinkStalker(const sc2::ObservationInterface *obs, sc2::QueryInterface* query);
+	BlinkStalker(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 
 };
-BlinkStalker::BlinkStalker(const sc2::ObservationInterface *obs, sc2::QueryInterface* query)
+BlinkStalker::BlinkStalker(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state)
 {
-	auto info = obs->GetUnitTypeData();
-	unitInfo = info[(int)UNIT_TYPEID::PROTOSS_STALKER];
+	auto info = &state->UnitInfo;
+	unitInfo = (*info)[(int)UNIT_TYPEID::PROTOSS_STALKER];
 }
 void BlinkStalker::Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {

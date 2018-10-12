@@ -20,7 +20,7 @@ public:
 			return 0;
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
 		{
-			score = 6;
+			score *= 4;
 		}
 		return score;
 	};

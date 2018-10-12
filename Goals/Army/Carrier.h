@@ -16,11 +16,11 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 1;
-		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX)).size();
+		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX)).size();
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		score = Util::FeedbackFunction(percent, .3, 1.0);
 
-		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] > 4)
+		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] > 3 || state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] > 3)
 		{
 			score *= 2;
 		}

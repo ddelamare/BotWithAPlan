@@ -65,14 +65,26 @@ void ArmyManager::ClusterUnits(BattleGroup* group, const ObservationInterface* o
 }
 void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
-	//TODO: Send attack command and choose targets
+	//Send attack command and choose targets
 	action->UnitCommand(group->units, ABILITY_ID::ATTACK, group->target);
+	auto averagePoint = Util::GetAveragePoint(group->units);
+	auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 10);
+	// This point should be where the sqishy units go. AKA not the front lines
+	auto vectorAway = Util::GetAveragePoint(enemyUnits);
+	vectorAway = (averagePoint * 2) - vectorAway;
+
 	for (auto unit : group->units)
 	{
-		auto enemyUnit = FindOptimalTarget(unit, obs, query);
+		auto enemyUnit = FindOptimalTarget(unit, obs, query, state);
 		if (enemyUnit)
 		{
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyUnit);
+		}
+		else if (VectorHelpers::FoundInVector(backLineUnits, unit->unit_type))
+		{
+			//move unit to back of cluster
+			action->UnitCommand(unit, ABILITY_ID::ATTACK, vectorAway);
+			debug->DebugSphereOut(vectorAway, 3, Colors::Teal);
 		}
 	}
 }
@@ -103,13 +115,13 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 	battleGroups[0].units.insert(battleGroups[0].units.end(), armyUnits.begin(), armyUnits.end());
 }
 
-const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query)
+const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 {
-	auto unitData = obs->GetUnitTypeData();
-	if (!unitData.size()) return nullptr;
-	auto unitType = unitData[unit->unit_type];	if (unitType.weapons.size())
+	auto unitData = &state->UnitInfo;
+	if (!unitData->size()) return nullptr;
+	auto unitType = (*unitData)[unit->unit_type];	if (unitType.weapons.size())
 	{
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, unitType.weapons[0].range * 1.5);
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, unitType.weapons[0].range * 2.0);
 		double minPercent = DBL_MAX;
 		const Unit* weakestUnit = nullptr;
 		for (auto eu : enemyUnits)
@@ -129,3 +141,12 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 	}
 }
 
+ArmyManager::ArmyManager()
+{
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_COLOSSUS);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_DISRUPTOR);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_VOIDRAY);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_CARRIER);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_SENTRY);
+}

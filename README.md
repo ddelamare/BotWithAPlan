@@ -10,13 +10,13 @@ Works by the following process
 
 
 TODOs:
-- Worker rush defense
-- Proxy defense
+- Better Worker rush defense
+- Better Proxy defense
 - Other rush denfense
 - Drop play
 - Proxy play
 - Finish 3/3/3 upgrades
-- Add battle manager with unit clustering
+- Add battle manager with unit clustering and better defending
 
 
 PRs are welcome!

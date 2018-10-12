@@ -165,6 +165,9 @@
     <ClInclude Include="Goals\Tactics\Proxy4Gate.h" />
     <ClInclude Include="Goals\Economy\ProxyPylon.h" />
     <ClInclude Include="Common\Constants.h" />
+    <ClInclude Include="Goals\Tactics\4Gate.h" />
+    <ClInclude Include="Goals\Upgrades\GroundArmor.h" />
+    <ClInclude Include="Goals\Upgrades\Shields.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
