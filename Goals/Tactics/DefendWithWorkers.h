@@ -14,11 +14,20 @@ public:
 		this->BaseAction::name = "Defend with Workers";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto enemyUnits = Util::FindNearbyUnits(Unit::Alliance::Enemy,IsEnemy(), Util::ToPoint3D(state->StartingLocation), obs, 20);
+		auto enemyUnits = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsEnemyGroundArmy(), Util::ToPoint3D(state->StartingLocation), obs, 20);
 		if (enemyUnits.size())
 		{
 			if (enemyUnits.size() > obs->GetFoodArmy())
 				return 10;
+		}
+		else
+		{
+			// No enemy army, find if theres a harrassing worker
+			auto enemyWorkers = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsArmy(), Util::ToPoint3D(state->StartingLocation), obs, 4);
+			if (enemyWorkers.size())
+			{
+				return 5;
+			}
 		}
 			return 0;
 	};
