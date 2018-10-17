@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 				coordinator.SetMultithreaded(true);
 				coordinator.SetRealtime(REALTIME);
 				coordinator.SetStepSize(10);
+				coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
 				BotWithAPlan bot;
 				BotWithAPlan bot2;
 				coordinator.SetParticipants({

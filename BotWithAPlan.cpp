@@ -57,6 +57,7 @@
 #include "Common\Strategy\Attacks\Templar.h"
 #include "Common\Strategy\Attacks\VoidRay.h"
 #include "Common\Strategy\Attacks\SentryMicro.h"
+#include "Common\Strategy\Attacks\Phoenix.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -251,6 +252,8 @@ void BotWithAPlan::OnStep() {
 	vMicro.Execute(obs, actions, query, Debug(), &state);
 	auto sMicro = SentryMicro(obs, query, &state);
 	sMicro.Execute(obs, actions, query, Debug(), &state);
+	auto pMicro = PhoenixLift(obs, query, &state);
+	pMicro.Execute(obs, actions, query, Debug(), &state);
 
 	// Morph all gateways to warpgates
 	auto gateways = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));

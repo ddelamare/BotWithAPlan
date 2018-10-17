@@ -5,6 +5,7 @@ using namespace sc2;
 class TemplarMicro
 {
 	UnitTypeData unitInfo;
+	vector<UNIT_TYPEID> feedbackableUnits;
 public:
 	TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
@@ -14,6 +15,12 @@ TemplarMicro::TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInter
 {
 	auto info = &state->UnitInfo;
 	unitInfo = (*info)[(int)UNIT_TYPEID::PROTOSS_HIGHTEMPLAR];
+	feedbackableUnits.push_back(UNIT_TYPEID::TERRAN_MEDIVAC);
+	feedbackableUnits.push_back(UNIT_TYPEID::TERRAN_GHOST);
+	feedbackableUnits.push_back(UNIT_TYPEID::TERRAN_RAVEN);
+	feedbackableUnits.push_back(UNIT_TYPEID::ZERG_INFESTOR);
+	feedbackableUnits.push_back(UNIT_TYPEID::ZERG_VIPER);
+	feedbackableUnits.push_back(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR);
 }
 void TemplarMicro::Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {
@@ -31,7 +38,7 @@ void TemplarMicro::Execute(const sc2::ObservationInterface *obs, sc2::ActionInte
 	{
 		for (auto unit : templar)
 		{
-			auto feedbackTargets = Util::FindNearbyUnits(IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC), unit->pos, obs, 10);
+			auto feedbackTargets = Util::FindNearbyUnits(IsUnits(feedbackableUnits), unit->pos, obs, 10);
 			auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, 10);
 			if (unit->energy < 50)
 			{

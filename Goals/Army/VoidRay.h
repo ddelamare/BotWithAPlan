@@ -29,6 +29,13 @@ public:
 			score *= 1.5;
 		}
 
+		// If reaper rush, tech to air
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] > 2
+			&& state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] < 2)
+		{
+			score *= 2;
+		}
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

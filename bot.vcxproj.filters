@@ -168,6 +168,7 @@
     <ClInclude Include="Goals\Tactics\4Gate.h" />
     <ClInclude Include="Goals\Upgrades\GroundArmor.h" />
     <ClInclude Include="Goals\Upgrades\Shields.h" />
+    <ClInclude Include="Common\Strategy\Attacks\Phoenix.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
