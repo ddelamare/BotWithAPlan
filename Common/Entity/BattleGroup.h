@@ -4,7 +4,8 @@ enum BattleMode {
 	Attack,
 	Retreat,
 	Defend,
-	Drop
+	Drop,
+	Harrass
 };
 
 struct BattleGroup

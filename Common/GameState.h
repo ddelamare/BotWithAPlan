@@ -8,7 +8,7 @@ using namespace sc2;
 
 typedef std::map<UNIT_TYPEID, int>	UnitMap;
 class ArmyManager;
-
+class BattleGroup;
 struct GameState
 {
 	GameState() {

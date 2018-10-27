@@ -8,6 +8,7 @@ class ArmyManager
 {
 	const double CLUSTER_DISTANCE_THRESHOLD = 12; // This value determines the threshold for being considered clustered
 	const double CLUSTER_PERCENT_THRESHOLD = 0.85; // If this percent of units is close enough, call it clustered
+	const double CLUSTER_MOVE_THRESHOLD = 2.5; //If unit with this distance of target and has not specfic target, don't move
 	std::vector<UnitTypeID> backLineUnits;
 private:
 	bool IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
@@ -16,7 +17,7 @@ private:
 	bool HasTarget(BattleGroup* group);
 	void PartitionGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	const Unit* FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state);
-
+	Units cachedEnemyArmy;
 public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();

@@ -3,6 +3,7 @@ using namespace sc2;
 void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	PartitionGroups(obs, query, action, state, debug);
+	this->cachedEnemyArmy = obs->GetUnits(IsEnemyArmy());
 	for (auto group : battleGroups)
 	{
 		if (group.mode == BattleMode::Attack)
@@ -29,6 +30,21 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		else if (group.mode == BattleMode::Retreat)
 		{
 			action->UnitCommand(group.units, ABILITY_ID::MOVE, state->StartingLocation);
+		}
+		else if (group.mode == BattleMode::Harrass)
+		{
+			//TODO: Add special pathing and hit and retreat logic
+			if (IsClustered(&group, obs, query, action, state, debug))
+			{
+				if (HasTarget(&group))
+				{
+					AttackTarget(&group, obs, query, action, state, debug);
+				}
+			}
+			else
+			{
+				ClusterUnits(&group, obs, query, action, state, debug);
+			}
 		}
 	}
 }
@@ -57,22 +73,28 @@ void ArmyManager::ClusterUnits(BattleGroup* group, const ObservationInterface* o
 	if (group->units.size() <= 1) return;
 	auto averagePoint = Util::GetAveragePoint(group->units);
 	debug->DebugSphereOut(averagePoint, 5);
-	//if (HasTarget(group))
-	//{
-	//	averagePoint = (averagePoint + Util::ToPoint3D(group->target)) / 2);
-	//}
-	action->UnitCommand(group->units, ABILITY_ID::ATTACK, averagePoint);
+	Units unitsToMove;
+	for (auto unit : group->units)
+	{
+		//if (abs(unit->pos.x - averagePoint.x) > CLUSTER_MOVE_THRESHOLD || abs(unit->pos.y - averagePoint.y) > CLUSTER_MOVE_THRESHOLD)
+		{
+			unitsToMove.push_back(unit);
+		}
+	}
+	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, averagePoint);
 }
 void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	//Send attack command and choose targets
-	action->UnitCommand(group->units, ABILITY_ID::ATTACK, group->target);
-	auto averagePoint = Util::GetAveragePoint(group->units);
-	auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 10);
-	// This point should be where the sqishy units go. AKA not the front lines
-	auto vectorAway = Util::GetAveragePoint(enemyUnits);
-	vectorAway = (averagePoint * 2) - vectorAway;
+	//action->UnitCommand(group->units, ABILITY_ID::ATTACK, group->target);
 
+	auto averagePoint = Util::GetAveragePoint(group->units);
+	auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 20);
+	// This point should be where the sqishy units go. AKA not the front lines
+	auto enemyAvgPoint = Util::GetAveragePoint(enemyUnits);
+	auto vectorAway = enemyAvgPoint = averagePoint - enemyAvgPoint;
+	Normalize3D(vectorAway);
+	Units unitsToMove;
 	for (auto unit : group->units)
 	{
 		auto enemyUnit = FindOptimalTarget(unit, obs, query, state);
@@ -80,13 +102,27 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 		{
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyUnit);
 		}
-		else if (VectorHelpers::FoundInVector(backLineUnits, unit->unit_type))
+		else if (VectorHelpers::FoundInVector(backLineUnits, unit->unit_type) && enemyUnits.size())
 		{
 			//move unit to back of cluster
-			action->UnitCommand(unit, ABILITY_ID::ATTACK, vectorAway);
-			debug->DebugSphereOut(vectorAway, 3, Colors::Teal);
+			auto unitType = state->UnitInfo[unit->unit_type];
+			double range = 1;
+			if (unitType.weapons.size())
+			{
+				//TODO: Find range based on eligibile targets ie air vs ground
+				range = unitType.weapons[0].range;
+			}
+			// Keep units in the back, but also in range
+			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyAvgPoint + (range * vectorAway));
+			debug->DebugSphereOut(enemyAvgPoint, 3, Colors::Teal);
+		}
+		else //if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)
+		{
+			unitsToMove.push_back(unit);
 		}
 	}
+	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, group->target);
+
 }
 void ArmyManager::SetTarget(BattleGroup* group, Point2D location)
 {
@@ -104,27 +140,43 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 {
 
 	//TODO: make defense groups
-	if (battleGroups.size() == 0)
+	if (battleGroups.size() < 2)
 	{
 		battleGroups.push_back(BattleGroup());
-		battleGroups[0].mode = BattleMode::Defend;
-		//battleGroups[0].target = state->EnemyBase;
+		battleGroups[0].mode = BattleMode::Defend; 
+		battleGroups.push_back(BattleGroup());
+		battleGroups[1].mode = BattleMode::Harrass;
 	}
-	battleGroups[0].units.clear();
 	auto armyUnits = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-	battleGroups[0].units.insert(battleGroups[0].units.end(), armyUnits.begin(), armyUnits.end());
+	auto isOracle = IsUnit(UNIT_TYPEID::PROTOSS_ORACLE);
+	for (auto& bg : battleGroups)
+	{
+		bg.units.clear();
+	}
+	for (auto unit : armyUnits)
+	{
+		if (isOracle(*unit))
+		{
+			battleGroups[1].units.push_back(unit);
+		}
+		else
+		{
+			battleGroups[0].units.push_back(unit);
+		}
+	}
 }
 
 const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 {
 	auto unitData = &state->UnitInfo;
 	if (!unitData->size()) return nullptr;
-	auto unitType = (*unitData)[unit->unit_type];	if (unitType.weapons.size())
+	auto unitType = (*unitData)[unit->unit_type];	
+	if (unitType.weapons.size())
 	{
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, unitType.weapons[0].range * 2.0);
+		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, unitType.weapons[0].range * 2.0);
 		double minPercent = DBL_MAX;
 		const Unit* weakestUnit = nullptr;
-		for (auto eu : enemyUnits)
+		for (auto eu : nearbyEnemies)
 		{
 			auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
 			if (percentHealth < minPercent)

@@ -28,6 +28,7 @@
 #include "Goals\Army\Tempest.h"
 #include "Goals\Army\PhotonCannon.h"
 #include "Goals\Army\ShieldBattery.h"
+#include "Goals\Army\Oracle.h"
 #include "Goals\Tech\Cybernetics.h"
 #include "Goals\Tech\Forge.h"
 #include "Goals\Tech\TwilightCouncil.h"
@@ -94,6 +95,7 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new SentryGoal());
 	ArmyGoals.push_back(new CarrierGoal());
 	ArmyGoals.push_back(new TempestGoal());
+	ArmyGoals.push_back(new OracleGoal());
 
 	// Tactics and Upgrade Goals
 
@@ -226,7 +228,6 @@ void BotWithAPlan::OnStep() {
 			break;
 		}
 	}
-
 	auto nexuses = Observation()->GetUnits(Unit::Alliance::Self, IsTownHall());
 	for (auto th : nexuses)
 	{
@@ -258,6 +259,16 @@ void BotWithAPlan::OnStep() {
 	// Morph all gateways to warpgates
 	auto gateways = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
 	actions->UnitCommand(gateways, ABILITY_ID::MORPH_WARPGATE);
+
+#if LADDER_MODE
+	// This does not seem to work in local tests
+
+	if (ShouldSurrender(obs))
+	{
+		auto y = Control()->RequestLeaveGame();
+	}
+#endif
+
 
 	for (int i = 0; i < state.ExpansionLocations.size(); i++)
 	{
@@ -327,6 +338,14 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 	}
 }
 
+bool BotWithAPlan::ShouldSurrender(const sc2::ObservationInterface * obs)
+{
+	auto probes = obs->GetFoodWorkers();
+	auto minerals = obs->GetMinerals();
+	auto armyCount = obs->GetArmyCount();
+
+	return probes == 0 && minerals < 50 && armyCount == 0;
+}
 
 #pragma region Bot Ladder Hooks
 void *CreateNewAgent()

@@ -33,6 +33,7 @@ public:
 	bool Lost;
 private:
 	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers);
+	bool ShouldSurrender(const sc2::ObservationInterface * obs);
 
 	GoalPicker goalPicker;
 	Planner    planner;

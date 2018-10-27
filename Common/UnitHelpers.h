@@ -4,6 +4,7 @@
 #include "VectorHelpers.h"
 #include <vector>
 #include "Common/Strategy/Building/SpiralStrategy.h"
+#include "Common/Strategy/Building/GridStrategy.h"
 namespace Util {
 
 	static Point3D GetAveragePoint(Units units)
@@ -74,7 +75,7 @@ namespace Util {
 
 			if (hasability)
 			{
-				SpiralStrategy strat(warpAbility, false, false, .5);
+				GridStrategy strat(warpAbility, false, false, 1);
 				actions->UnitCommand(building, warpAbility, strat.FindPlacement(obs,actions,query,debug, state));
 				madeUnit = true;
 			}

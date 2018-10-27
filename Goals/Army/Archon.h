@@ -18,6 +18,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
+		return score; // This goal currently stalls and never complets. FIXME!!!
 		if (   state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] >= 5 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] >= 5 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 10
@@ -33,7 +34,7 @@ public:
 					unitFood += 2;
 				}
 			}
-			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
 			score = Util::FeedbackFunction(percent, .35, 2.5);
 		}
 		if (obs->GetMinerals() < 500 && obs->GetVespene() > 2000)

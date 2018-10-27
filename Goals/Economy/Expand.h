@@ -10,7 +10,7 @@
 class ExpandGoal : public BaseAction
 {
 	double CLAMP = .25;
-	int MIN_ARMY_PER_EXPO = 5;
+	int MIN_ARMY_PER_EXPO = 3;
 public:
 	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));

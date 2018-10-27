@@ -26,7 +26,7 @@ public:
 			int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_SENTRY)).size();
 			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 
-			score = Util::FeedbackFunction(percent, .05, 1.5);
+			score = Util::FeedbackFunction(percent, .05, 1.1);
 		}
 		return score;
 	};

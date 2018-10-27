@@ -1,9 +1,6 @@
 #pragma once
-class Constants
+namespace Constants
 {
-public:
-	static int HARD_PROBE_CAP;
-
+	const int HARD_PROBE_CAP = 66;		 // 3 running bases worth
+	const float PYLON_RADIUS = 1.125;
 };
-
-int Constants::HARD_PROBE_CAP = 66;	  // 3 running bases worth

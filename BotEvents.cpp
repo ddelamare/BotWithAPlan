@@ -117,6 +117,9 @@ void BotWithAPlan::OnGameStart() {
 
 	//Cache unit info
 	state.UnitInfo = Observation()->GetUnitTypeData();
+
+	Actions()->SendChat("gl hf!");
+	Actions()->SendChat("Bot version: 1.4");
 }
 
 void BotWithAPlan::OnGameEnd()

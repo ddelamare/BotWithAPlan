@@ -142,11 +142,10 @@ namespace Util {
 		return foundUnit;
 	}
 
-	const static Units FindNearbyUnits(Filter filter, Point3D point, const ObservationInterface* obs, double radius)
+	const static Units FindNearbyUnits(Units* units, Point3D point, const ObservationInterface* obs, double radius)
 	{
-		auto units = obs->GetUnits(filter);
 		auto unitsNearby = Units();
-		for (auto unit : units)
+		for (auto unit : *units)
 		{
 			auto dis = Distance3D(unit->pos, point);
 			if (dis < radius)
@@ -157,19 +156,16 @@ namespace Util {
 		return unitsNearby;
 	}
 
+	const static Units FindNearbyUnits(Filter filter, Point3D point, const ObservationInterface* obs, double radius)
+	{
+		auto units = obs->GetUnits(filter);
+		return Util::FindNearbyUnits(&units, point, obs, radius);
+	}
+
 	const static Units FindNearbyUnits(sc2::Unit::Alliance alliance, Filter filter, Point3D point, const ObservationInterface* obs, double radius)
 	{
 		auto units = obs->GetUnits(alliance,filter);
-		auto unitsNearby = Units();
-		for (auto unit : units)
-		{
-			auto dis = Distance3D(unit->pos, point);
-			if (dis < radius)
-			{
-				unitsNearby.push_back(unit);
-			}
-		}
-		return unitsNearby;
+		return Util::FindNearbyUnits(&units, point, obs, radius);
 	}
 
 	bool static DoesAnyUnitHaveOrder(Units units, ABILITY_ID ability)
