@@ -17,6 +17,10 @@ TODOs:
 - Proxy play
 - Finish 3/3/3 upgrades
 - Add battle manager with unit clustering and better defending
+- Prioritize pylons supporting lots of buildings
+- Improve backline unit micro
+- Add harrass unit groups
+
 
 
 PRs are welcome!
