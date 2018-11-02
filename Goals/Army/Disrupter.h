@@ -25,6 +25,13 @@ public:
 			score *= 1.5;
 		}
 
+		//// Disruptors can easily kill cannons even with shield batteries
+		//if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_SHIELDBATTERY] >= 2
+		//	|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON] >= 3)
+		//{
+		//	score *= 3.5;
+		//}
+
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] >= 5)
 		{

@@ -30,6 +30,17 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
             debug->DebugSphereOut(targetPoint, 2, Colors::Red);
             actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, targetPoint);
 		}
+		else
+		{
+			enemyUnits = Util::FindNearbyUnits(IsEnemyBuilding(), unit->pos, obs, 10);
+			if (enemyUnits.size())
+			{
+				auto targetPoint = Util::GetAveragePoint(enemyUnits);
+				// Subtract start minus end to get a vector away from the center
+				debug->DebugSphereOut(targetPoint, 2, Colors::Blue);
+				actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, targetPoint);
+			}
+		}
 	}
 
 

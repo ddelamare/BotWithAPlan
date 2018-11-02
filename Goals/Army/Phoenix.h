@@ -17,7 +17,8 @@ public:
 		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX)).size();
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 
-		if (state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] > 6 || state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] > 4)
+		if (state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 6 
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3)
 		{
 			score = Util::FeedbackFunction(percent, .4, 2);
 		}

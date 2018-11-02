@@ -20,18 +20,24 @@ public:
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		score = Util::FeedbackFunction(percent, .3, 1.0);
 
-		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] > 4 
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_ARCHON] > 4 || state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] > 2
-			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] > 4)
+		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] >= 4 
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_ARCHON] >= 4 
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2	
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_COLOSSUS] >= 2
+			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 4)
 		{
 			score *= 2;
 		}
 
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_SHIELDBATTERY] >= 2
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON] >= 3)
+		{
+			score *= 3.5;
+		}
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		return Util::TryBuildUnit(ABILITY_ID::TRAIN_TEMPEST, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions);
-
 	}
 };

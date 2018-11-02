@@ -13,7 +13,7 @@ public:
 	{
 		this->conditions.push_back(new BaseCondition("Build pylon", 4, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_SHIELDBATTERY, 1));
-		this->BaseAction::name = "Build Photon Cannon";
+		this->BaseAction::name = "Build Shield Battery";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		return 0;

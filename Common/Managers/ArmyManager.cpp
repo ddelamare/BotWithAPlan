@@ -4,6 +4,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 {
 	PartitionGroups(obs, query, action, state, debug);
 	this->cachedEnemyArmy = obs->GetUnits(IsEnemyArmy());
+	this->cachedEnemies = obs->GetUnits(IsEnemy());	// includes buildings
 	for (auto group : battleGroups)
 	{
 		if (group.mode == BattleMode::Attack)
@@ -112,6 +113,10 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 				//TODO: Find range based on eligibile targets ie air vs ground
 				range = unitType.weapons[0].range;
 			}
+			if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_DISRUPTOR)
+			{
+				range = 8; // Disruptor ability range. Weapon range is 1 for some reason
+			}
 			// Keep units in the back, but also in range
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyAvgPoint + (range * vectorAway));
 			debug->DebugSphereOut(enemyAvgPoint, 3, Colors::Teal);
@@ -184,6 +189,31 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 				weakestUnit = eu;
 				minPercent = percentHealth;
 			}
+		}
+		if (!weakestUnit)
+		{
+		   auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, unitType.weapons[0].range * 2.0);
+		   int pylons = 0;
+		   int poweredBuildings = 0;
+		   auto isPylon = IsUnit(UNIT_TYPEID::PROTOSS_PYLON);
+		   const Unit* pylon = nullptr;
+		   for (auto eu : nearbyBuildings)
+		   {
+			   if (isPylon(*eu))
+			   {
+				   pylons++;
+				   pylon = eu;
+			   }
+			   else if (eu->is_powered)
+			   {
+				   poweredBuildings++;
+			   }
+		   }
+		   // if there are more than twice the number of buildings as pylons, target the pylons
+		   if ((pylons * 2) <= poweredBuildings)
+		   {
+			   weakestUnit = pylon;
+		   }
 		}
 		return weakestUnit;
 	}

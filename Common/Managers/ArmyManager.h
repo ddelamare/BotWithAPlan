@@ -18,6 +18,7 @@ private:
 	void PartitionGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	const Unit* FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state);
 	Units cachedEnemyArmy;
+	Units cachedEnemies;
 public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();

@@ -152,7 +152,7 @@ void BotWithAPlan::OnStep() {
 	auto actions = Actions();
 
 	// Store the number of each unit they have
-	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsArmy());
+	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy);
 	UnitMap cUnits;
 	int maxFood = 0;
 	for (auto unit : enemyUnits)
@@ -191,7 +191,7 @@ void BotWithAPlan::OnStep() {
 
 	//
 	auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-	if (townhalls.size() == 0) Lost = true;
+	Units extraWorkers;
 	for (auto th : townhalls)
 	{
 		if (th->assigned_harvesters > th->ideal_harvesters)
@@ -201,12 +201,12 @@ void BotWithAPlan::OnStep() {
 			auto overWorkers = Util::FindNearbyUnits(IsWorker(), th->pos, obs, 15);
 			int diff = th->assigned_harvesters - th->ideal_harvesters;
 			if (overWorkers.size() < diff) continue; // If no workers in area continue
-			auto unitsToStop = Units(overWorkers.begin(), overWorkers.begin() + diff);
-			actions->UnitCommand(unitsToStop, ABILITY_ID::STOP);
+			extraWorkers = Units(overWorkers.begin(), overWorkers.begin() + diff);
 		}
 	}
 
 	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
+	idleUnits.insert(idleUnits.end(), extraWorkers.begin(), extraWorkers.end());
 	for (int i = 0; i < idleUnits.size() ;i++)
 	{
 		// Don't reassign scouts

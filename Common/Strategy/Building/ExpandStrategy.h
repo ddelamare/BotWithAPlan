@@ -65,6 +65,11 @@ public:
 
 		for (auto exp : state->ExpansionLocations)
 		{
+			// If enemy is too close don't expand there
+			if (Util::FindNearbyUnits(Unit::Alliance::Enemy, IsEnemy(), exp, obs, 10).size())
+			{
+				continue;
+			}
 			auto furtherst = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
 			if (!furtherst) return buildPos;
 			auto otherFurthest = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, furtherst->pos);

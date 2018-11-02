@@ -21,7 +21,21 @@ int main(int argc, char* argv[]) {
 	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
 
 	return 0;
-#elif DEBUG_MODE
+#elif PLANNER_MODE
+	InitResources();
+
+	GenerateDependencyList();
+
+	auto planner = new Planner();
+	auto state = ResourceState();
+
+	state.AddResource(sc2::UNIT_TYPEID::PROTOSS_PROBE, 1);
+	//state.AddResource(sc2::UNIT_TYPEID::NEXUS, 14);
+	planner->Init();
+	auto plan = planner->CalculatePlan(state, new WinAction());
+	planner->PrintPlan(plan);
+	std::cin.get();
+#else  // Run local sims
 	auto races = new Race[3]{ Race::Zerg, Race::Terran,  Race::Protoss };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
@@ -40,14 +54,14 @@ int main(int argc, char* argv[]) {
 				coordinator.SetMultithreaded(true);
 				coordinator.SetRealtime(REALTIME);
 				coordinator.SetStepSize(10);
-				coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
+				//coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
 				BotWithAPlan bot;
 				BotWithAPlan bot2;
 				coordinator.SetParticipants({
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::Hard)
+					CreateComputer(race, sc2::Difficulty::VeryHard)
 					});
 
 				coordinator.LaunchStarcraft();
@@ -81,20 +95,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-#elif PLANNER_MODE
-	InitResources();
 
-	GenerateDependencyList();
-
-	auto planner = new Planner();
-	auto state = ResourceState();
-
-	state.AddResource(sc2::UNIT_TYPEID::PROTOSS_PROBE, 1);
-	//state.AddResource(sc2::UNIT_TYPEID::NEXUS, 14);
-	planner->Init();
-	auto plan = planner->CalculatePlan(state, new WinAction());
-	planner->PrintPlan(plan);
-	std::cin.get();
 
 #endif
 
