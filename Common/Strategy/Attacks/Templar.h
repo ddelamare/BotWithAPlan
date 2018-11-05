@@ -1,11 +1,12 @@
 #pragma once
 #include "Common/Util.h"
+#include <vector>
 using namespace sc2;
 
 class TemplarMicro
 {
 	UnitTypeData unitInfo;
-	vector<UNIT_TYPEID> feedbackableUnits;
+	std::vector<UNIT_TYPEID> feedbackableUnits;
 public:
 	TemplarMicro(const sc2::ObservationInterface *obs, sc2::QueryInterface* query, GameState* state);
 	void Execute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);

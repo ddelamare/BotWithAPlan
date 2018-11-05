@@ -1,4 +1,5 @@
 #pragma once
+using namespace sc2;
 
 enum BattleMode {
 	Attack,
@@ -17,4 +18,4 @@ struct BattleGroup
 	Units units;
 	Point2D target;
 };
-
+															   

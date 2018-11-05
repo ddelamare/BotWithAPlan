@@ -27,8 +27,6 @@
     <ClCompile Include="Common\ItemDependencies.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Launcher.cpp" />
-    <ClCompile Include="BotWithAPlan.cpp" />
     <ClCompile Include="Planner\Planner.cpp">
       <Filter>Planner</Filter>
     </ClCompile>
@@ -45,7 +43,6 @@
     <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\PylonStrategy.cpp" />
-    <ClCompile Include="BotEvents.cpp" />
     <ClCompile Include="Common\Managers\ArmyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -58,7 +55,6 @@
     <ClInclude Include="Planner\GameState.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="BotWithAPlan.h" />
     <ClInclude Include="Planner\Planner.h">
       <Filter>Planner</Filter>
     </ClInclude>
@@ -131,7 +127,6 @@
     <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
     <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Goals\Upgrades\Blink.h" />
-    <ClInclude Include="LadderInterface.h" />
     <ClInclude Include="Planner\Conditions\HaveBigArmy.h">
       <Filter>Planner\Conditions</Filter>
     </ClInclude>

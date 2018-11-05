@@ -93,13 +93,13 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 20);
 	// This point should be where the sqishy units go. AKA not the front lines
 	auto enemyAvgPoint = Util::GetAveragePoint(enemyUnits);
-	auto vectorAway = enemyAvgPoint = averagePoint - enemyAvgPoint;
+	auto vectorAway = averagePoint - enemyAvgPoint;
 	Normalize3D(vectorAway);
 	Units unitsToMove;
 	for (auto unit : group->units)
 	{
 		auto enemyUnit = FindOptimalTarget(unit, obs, query, state);
-		if (enemyUnit)
+		if (enemyUnit && unit->weapon_cooldown != 0)
 		{
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyUnit);
 		}
@@ -115,7 +115,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			}
 			if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_DISRUPTOR)
 			{
-				range = 8; // Disruptor ability range. Weapon range is 1 for some reason
+				range = Constants::DISRUPTOR_RANGE;
 			}
 			// Keep units in the back, but also in range
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyAvgPoint + (range * vectorAway));
@@ -148,9 +148,15 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 	if (battleGroups.size() < 2)
 	{
 		battleGroups.push_back(BattleGroup());
-		battleGroups[0].mode = BattleMode::Defend; 
+		battleGroups[0].mode = BattleMode::Defend;
 		battleGroups.push_back(BattleGroup());
 		battleGroups[1].mode = BattleMode::Harrass;
+	}
+	if (battleGroups[0].units.size() == 0)
+	{
+		battleGroups[0].mode = BattleMode::Defend;
+		battleGroups[0].target = Point2D();
+
 	}
 	auto armyUnits = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
 	auto isOracle = IsUnit(UNIT_TYPEID::PROTOSS_ORACLE);
@@ -184,7 +190,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		for (auto eu : nearbyEnemies)
 		{
 			auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
-			if (percentHealth < minPercent)
+			if (percentHealth < minPercent && percentHealth < 1.0)
 			{
 				weakestUnit = eu;
 				minPercent = percentHealth;
@@ -215,6 +221,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 			   weakestUnit = pylon;
 		   }
 		}
+		
 		return weakestUnit;
 	}
 	else
@@ -230,5 +237,6 @@ ArmyManager::ArmyManager()
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_DISRUPTOR);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_VOIDRAY);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_CARRIER);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_TEMPEST);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_SENTRY);
 }

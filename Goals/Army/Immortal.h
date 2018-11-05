@@ -33,6 +33,16 @@ public:
 		{
 			score *= 1.4;
 		}
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_VOIDRAY] > 1
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 1
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_CARRIER] > 1
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 1
+			)
+		{
+			score /= 1.2;
+		}
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

@@ -21,7 +21,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	auto disruptors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR));
 	for (auto unit : disruptors)
 	{
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyGroundArmy(), unit->pos, obs, 10);
+		auto enemyUnits = Util::FindNearbyUnits(IsEnemyGroundArmy(), unit->pos, obs, Constants::DISRUPTOR_RANGE);
 
 		if (enemyUnits.size())
 		{

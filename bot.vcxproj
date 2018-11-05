@@ -23,7 +23,7 @@
     <ProjectGuid>{59A1A504-22E3-4655-AFE7-0F5ADE0C9FA3}</ProjectGuid>
     <RootNamespace>bot</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>BotWithAPlan</ProjectName>
+    <ProjectName>Common</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -40,7 +40,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -136,14 +136,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BotEvents.cpp" />
-    <ClCompile Include="BotWithAPlan.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Managers\ArmyManager.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
-    <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="Planner\Actions\BaseAction.cpp" />
     <ClCompile Include="Planner\Conditions\BaseCondition.cpp" />
     <ClCompile Include="Planner\Planner.cpp" />
@@ -159,7 +156,6 @@
   <ItemGroup>
     <ClInclude Include="Common\Constants.h" />
     <ClInclude Include="Common\Entity\BattleGroup.h" />
-    <ClInclude Include="BotWithAPlan.h" />
     <ClInclude Include="Common\Managers\ArmyManager.h" />
     <ClInclude Include="Common\ResourceState.h" />
     <ClInclude Include="Common\ItemDependencies.h" />
@@ -230,7 +226,6 @@
     <ClInclude Include="Goals\Upgrades\Shields.h" />
     <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
     <ClInclude Include="Goals\Upgrades\WarpGate.h" />
-    <ClInclude Include="LadderInterface.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />
