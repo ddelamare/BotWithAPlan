@@ -171,6 +171,7 @@
     <ClInclude Include="Common\Strategy\Attacks\Phoenix.h" />
     <ClInclude Include="Goals\Army\Oracle.h" />
     <ClInclude Include="Common\Strategy\Building\GridStrategy.h" />
+    <ClInclude Include="Goals\Tactics\ForgeFastExpand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

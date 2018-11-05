@@ -16,7 +16,8 @@ public:
 		this->BaseAction::name = "Build Photon Cannon";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 0;
+		auto score = 0.0;
+		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

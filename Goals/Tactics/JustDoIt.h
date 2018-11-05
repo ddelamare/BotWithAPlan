@@ -29,6 +29,8 @@ public:
 		}
 		else if (enemyStuff.size())
 		{
+			std::sort(enemyStuff.begin(), enemyStuff.end(), Sorters::sort_by_distance(Util::GetAveragePoint(army)));
+			
 			attackPoint = enemyStuff[0]->pos;
 		}
 		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);

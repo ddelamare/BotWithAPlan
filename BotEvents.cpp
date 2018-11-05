@@ -41,6 +41,11 @@ void BotWithAPlan::OnUnitEnterVision(const Unit* unit)
 
 void BotWithAPlan::OnGameStart() {
 	LOG(1) << "Bot initialized" << endl;
+
+	auto players = Observation()->GetGameInfo().player_info;
+	LOG(1) << Util::GetStringFromRace(players[0].race_actual) << endl;
+	LOG(1) << Util::GetStringFromRace(players[1].race_actual) << endl;
+
 	auto nexus = Observation()->GetUnits(IsTownHall())[0];
 	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
 	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
@@ -119,7 +124,7 @@ void BotWithAPlan::OnGameStart() {
 	state.UnitInfo = Observation()->GetUnitTypeData();
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 1.4");
+	Actions()->SendChat("Bot version: 1.5");
 #endif
 }
 

@@ -44,6 +44,7 @@
 #include "Goals\Tactics\AttackProxy.h"
 #include "Goals\Tactics\DefendWithWorkers.h"
 #include "Goals\Tactics\4Gate.h"
+#include "Goals\Tactics\ForgeFastExpand.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\GroundArmor.h"
@@ -78,6 +79,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new RoboticsGoal());
 	EconomyGoals.push_back(new StarGateGoal());
 	EconomyGoals.push_back(new ExpandGoal());
+	EconomyGoals.push_back(new PhotonCannonGoal());
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
@@ -105,6 +107,7 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new JustDoitGoal());
 	TacticsGoals.push_back(new AttackProxyGoal());
 	TacticsGoals.push_back(new DefendWithUnitsGoal());
+	TacticsGoals.push_back(new ForgeFastExpandGoal());
 	//TacticsGoals.push_back(new RushGoal());
 	//TacticsGoals.push_back(new Do4GateGoal());
 	//TacticsGoals.push_back(new RushGoal());

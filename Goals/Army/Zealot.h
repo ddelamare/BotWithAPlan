@@ -25,6 +25,11 @@ public:
 		{
 			score *= 2;
 		}
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPT] > 1 || state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPTPHASESHIFT] > 1)
+		{
+			score /= 2;
+		}
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

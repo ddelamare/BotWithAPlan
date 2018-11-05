@@ -26,7 +26,10 @@ public:
 		{
 			score *= 1.2;
 		}
-		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_STALKER] > 8 || state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON] > 0)
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_STALKER] > 8 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON] > 0
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_SPINECRAWLER] > 2
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BUNKER] > 1)
 		{
 			score *= 1.4;
 		}
