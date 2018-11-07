@@ -17,6 +17,7 @@ private:
 	bool HasTarget(BattleGroup* group);
 	void PartitionGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	const Unit* FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state);
+	void SneakToTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	Units cachedEnemyArmy;
 	Units cachedEnemies;
 public:

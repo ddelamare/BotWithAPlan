@@ -35,17 +35,17 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		else if (group.mode == BattleMode::Harrass)
 		{
 			//TODO: Add special pathing and hit and retreat logic
-			if (IsClustered(&group, obs, query, action, state, debug))
+			//if (IsClustered(&group, obs, query, action, state, debug))
 			{
 				if (HasTarget(&group))
 				{
-					AttackTarget(&group, obs, query, action, state, debug);
+					SneakToTarget(&group, obs, query, action, state, debug);
 				}
 			}
-			else
+			/*else
 			{
 				ClusterUnits(&group, obs, query, action, state, debug);
-			}
+			}*/
 		}
 	}
 }
@@ -151,6 +151,7 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 		battleGroups[0].mode = BattleMode::Defend;
 		battleGroups.push_back(BattleGroup());
 		battleGroups[1].mode = BattleMode::Harrass;
+		battleGroups[1].target = state->EnemyBase;
 	}
 	if (battleGroups[0].units.size() == 0)
 	{
@@ -176,7 +177,37 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 		}
 	}
 }
+void ArmyManager::SneakToTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
+{
+	if (group->units.size() <= 1) return;
+	auto averagePoint = Util::GetAveragePoint(group->units);
+	debug->DebugSphereOut(averagePoint, 5);
+	Units unitsToMove;
+	auto xTarget = 0;
+	auto yTarget = 0;
+	Point2D point;
+	if (group->target.x < obs->GetGameInfo().playable_max.x / 2.0)
+		xTarget = obs->GetGameInfo().playable_min.x;
+	else
+		xTarget = obs->GetGameInfo().playable_max.x;
+	if (group->target.y < obs->GetGameInfo().playable_max.y / 2.0)
+		yTarget = obs->GetGameInfo().playable_min.y;
+	else
+		yTarget = obs->GetGameInfo().playable_max.y;
 
+	if (abs(averagePoint.x - xTarget) > 5)
+		point = Point2D(xTarget, averagePoint.y);
+	else if (abs(averagePoint.y - yTarget) > 5)
+		point = Point2D(averagePoint.x, yTarget);
+	if (Distance2D(averagePoint, group->target) < 20)
+	{
+		point = group->target;
+	}
+
+
+	action->UnitCommand(group->units, ABILITY_ID::ATTACK, point);
+
+}
 const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 {
 	auto unitData = &state->UnitInfo;
