@@ -6,3 +6,5 @@ lib/
 BotWithAPlan/x64/
 *.db
 MicroTest/Debug/
+project/x64/
+project/.vs/
