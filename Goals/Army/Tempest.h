@@ -13,6 +13,7 @@ public:
 		this->conditions.push_back(new BaseCondition("Build Beacon", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_TEMPEST, 1));
 		this->BaseAction::name = "Build Tempest";
+		holdOtherGoals = true;
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 1;
@@ -20,13 +21,19 @@ public:
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		score = Util::FeedbackFunction(percent, .3, 1.0);
 
-		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] >= 4 
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_ARCHON] >= 4 
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2	
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_COLOSSUS] >= 2
-			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 4)
+		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_FUSIONCORE] > 0)
 		{
 			score *= 2;
+		}
+
+		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] >= 4 
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_ARCHON] >= 4 
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2
+			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BATTLECRUISER] >= 2
+			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_COLOSSUS] >= 2
+			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 2)
+		{
+			score *= 3;
 		}
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_SHIELDBATTERY] >= 2

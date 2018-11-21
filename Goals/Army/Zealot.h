@@ -26,9 +26,12 @@ public:
 			score *= 2;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPT] > 1 || state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPTPHASESHIFT] > 1)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPT] > 1 
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPTPHASESHIFT] > 1
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] > 3
+			)
 		{
-			score /= 2;
+			score /= 4;
 		}
 		return score;
 	};

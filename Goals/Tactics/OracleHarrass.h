@@ -14,6 +14,7 @@ public:
 		this->BaseAction::name = "Oracle Harass";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
+		if (obs->GetGameLoop() < 6000 || obs->GetGameLoop() > 9000) return 0;
 		return 5;
 	};
 
@@ -26,8 +27,8 @@ public:
 		{
 			attackPoint = visibleBuildings[0]->pos;
 		}
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
-		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[0], BattleMode::Harrass);
+		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[1], attackPoint);
+		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[1], BattleMode::Harrass);
 
 		return madeStaker;
 	}

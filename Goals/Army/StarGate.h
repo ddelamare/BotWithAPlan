@@ -19,7 +19,7 @@ public:
 		// Don;t build it unless we need it
 		if (!stargates.size()) return 0;
 		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-		return (nexus.size() + 1) / (stargates.size() + 2);
+		return (nexus.size() + 1) / (stargates.size() + 4);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

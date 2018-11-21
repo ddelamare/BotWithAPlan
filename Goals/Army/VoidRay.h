@@ -20,7 +20,7 @@ public:
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
 			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 2
+			//|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_LIBERATOR] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_LIBERATORAG] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 2
@@ -33,7 +33,7 @@ public:
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] > 2
 			&& state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] < 2)
 		{
-			score *= 2;
+			score *= 3;
 		}
 
 		return score;

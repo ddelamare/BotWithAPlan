@@ -7,6 +7,7 @@ class AssimilatorGoal : public BaseAction
 public:
 	AssimilatorGoal()
 	{
+		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ASSIMILATOR, 1));
 		name = "Build Assimilator";
 	}
 

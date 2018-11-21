@@ -10,7 +10,7 @@ class ForgeFastExpandGoal : public BaseAction
 {
 public:
 	ForgeFastExpandGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Forge Nexus", 4, UNIT_TYPEID::PROTOSS_FORGE, 3, UNIT_TYPEID::PROTOSS_NEXUS, 1));
+		this->conditions.push_back(new BaseCondition("Forge Nexus", 4, UNIT_TYPEID::PROTOSS_FORGE, 1, UNIT_TYPEID::PROTOSS_NEXUS, 1));
 		this->BaseAction::name = "Forge Fast Expand";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {

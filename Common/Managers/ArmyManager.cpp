@@ -204,7 +204,6 @@ void ArmyManager::SneakToTarget(BattleGroup* group, const ObservationInterface* 
 		point = group->target;
 	}
 
-
 	action->UnitCommand(group->units, ABILITY_ID::ATTACK, point);
 
 }

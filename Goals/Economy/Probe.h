@@ -9,6 +9,8 @@ class ProbeGoal : public BaseAction
 public:
 	ProbeGoal() : BaseAction() {
 		name = "Build Probe";
+		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		units.clear();

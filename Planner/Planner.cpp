@@ -96,6 +96,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	{
 		bool hasAny = false;
 		float heuristic = -1;
+
 		auto resourcesGained = action->GetPossibleResults()[0]->ResourcesGained();
 		for (auto res : goalState.resources)
 		{

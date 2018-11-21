@@ -16,12 +16,16 @@ public:
 		name = "Build Pylon";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		double score = 30.0f;
+		double score = 20.0f;
 		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
 		//Add food from building pylons
 		auto pylonsInProgress = obs->GetUnits(Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_PYLON));
 		foodLeft += pylonsInProgress.size() * 8;
+		if (Util::IsAnyWorkerCommitted(ABILITY_ID::BUILD_PYLON, obs))
+		{
+			foodLeft += 8;
+		}
 
 		if (foodLeft > 0)
 		{
