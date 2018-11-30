@@ -2,13 +2,20 @@
 
 PlanBotBase::PlanBotBase()
 {
+	goalPicker = GoalPicker();
+	planner = Planner();
+	EconomyGoals = vector<BaseAction*>();
+	ArmyGoals = vector<BaseAction*>();
+	state.ArmyManager = &armyManager;
+}
+void PlanBotBase::Init()
+{
 	planner.Init();
 	shouldRecalcuate = true;
 
 	Lost = false;
 	StepCounter = STEPS_PER_GOAL;
 }
-
 void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
 {
 	if (stopOthers) return;

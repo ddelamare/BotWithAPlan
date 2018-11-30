@@ -136,12 +136,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Managers\ArmyManager.cpp" />
+    <ClCompile Include="Common\Managers\WorkerManager.cpp" />
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
-    <ClCompile Include="PlanBotBase.cpp" />
     <ClCompile Include="Planner\Actions\BaseAction.cpp" />
     <ClCompile Include="Planner\Conditions\BaseCondition.cpp" />
     <ClCompile Include="Planner\Planner.cpp" />
@@ -155,6 +156,7 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\BotBase\PlanBotBase.h" />
     <ClInclude Include="Common\Constants.h" />
     <ClInclude Include="Common\Entity\BattleGroup.h" />
     <ClInclude Include="Common\Managers\ArmyManager.h" />
@@ -228,7 +230,6 @@
     <ClInclude Include="Goals\Upgrades\Shields.h" />
     <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
     <ClInclude Include="Goals\Upgrades\WarpGate.h" />
-    <ClInclude Include="PlanBotBase.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="Common\Strategy\Building\PylonStrategy.h" />
     <ClInclude Include="Goals\Army\StarGate.h" />
     <ClInclude Include="Goals\Army\VoidRay.h" />
+    <ClInclude Include="Common\Managers\WorkerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cogfiles.txt" />

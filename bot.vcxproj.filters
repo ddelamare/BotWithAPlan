@@ -44,7 +44,8 @@
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\PylonStrategy.cpp" />
     <ClCompile Include="Common\Managers\ArmyManager.cpp" />
-    <ClCompile Include="PlanBotBase.cpp" />
+    <ClCompile Include="Common\Managers\WorkerManager.cpp" />
+    <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -169,7 +170,8 @@
     <ClInclude Include="Common\Strategy\Building\GridStrategy.h" />
     <ClInclude Include="Goals\Tactics\ForgeFastExpand.h" />
     <ClInclude Include="Goals\Tactics\OracleHarrass.h" />
-    <ClInclude Include="PlanBotBase.h" />
+    <ClInclude Include="Common\Managers\WorkerManager.h" />
+    <ClInclude Include="Common\BotBase\PlanBotBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

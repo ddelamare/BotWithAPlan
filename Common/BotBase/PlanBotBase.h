@@ -22,6 +22,7 @@ class PlanBotBase : public Agent
 {
 public:
 	PlanBotBase();
+	void Init();
 	void OnGameStart() = 0;
 	void OnStep() = 0;
 	void OnBuildingConstructionComplete(const Unit *) = 0;
