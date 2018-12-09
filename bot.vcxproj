@@ -166,6 +166,7 @@
     <ClInclude Include="Common\Resource.h" />
     <ClInclude Include="Common\Strategy\Attacks\BlinkStalker.h" />
     <ClInclude Include="Common\Strategy\Attacks\DisruptorAttack.h" />
+    <ClInclude Include="Common\Strategy\Attacks\OracleAttack.h" />
     <ClInclude Include="Common\Strategy\Attacks\Phoenix.h" />
     <ClInclude Include="Common\Strategy\Attacks\SentryMicro.h" />
     <ClInclude Include="Common\Strategy\Attacks\Templar.h" />

@@ -2,6 +2,12 @@
 using namespace sc2;
 void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
+	if (!HasThermalLance)
+	{
+		auto upgrades = obs->GetUpgrades();
+		HasThermalLance = VectorHelpers::FoundInVector(upgrades, (UpgradeID)UPGRADE_ID::EXTENDEDTHERMALLANCE);
+	}
+
 	PartitionGroups(obs, query, action, state, debug);
 	this->cachedEnemyArmy = obs->GetUnits(IsEnemyArmy());
 	this->cachedEnemies = obs->GetUnits(IsEnemy());	// includes buildings
@@ -54,7 +60,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	if (group->units.size() <= 5) return false;
-
+	//return true;
 	//see if units are clustered well enough
 	auto averagePoint = Util::GetAveragePoint(group->units);
 	int outsideOfCluster = 0;
@@ -95,11 +101,16 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	auto enemyAvgPoint = Util::GetAveragePoint(enemyUnits);
 	auto vectorAway = averagePoint - enemyAvgPoint;
 	Normalize3D(vectorAway);
+	Point3D vectorTowardTarget = Util::ToPoint3D(group->target) - averagePoint ;
+	vectorTowardTarget.z = 0;
+	vectorTowardTarget /= 2;
+	//Normalize3D(vectorTowardTarget);
 	Units unitsToMove;
+	float minSpeed = 0;
 	for (auto unit : group->units)
 	{
 		auto enemyUnit = FindOptimalTarget(unit, obs, query, state);
-		if (enemyUnit && unit->weapon_cooldown != 0)
+		if (enemyUnit && unit->weapon_cooldown == 0) // If a enemy is near and can fire, target them
 		{
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyUnit);
 		}
@@ -108,6 +119,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			//move unit to back of cluster
 			auto unitType = state->UnitInfo[unit->unit_type];
 			double range = 1;
+			auto closestUnit = Util::FindClosetOfType(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), unit->pos, obs, query);
 			if (unitType.weapons.size())
 			{
 				//TODO: Find range based on eligibile targets ie air vs ground
@@ -117,16 +129,36 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			{
 				range = Constants::DISRUPTOR_RANGE;
 			}
+			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_COLOSSUS && HasThermalLance)
+			{
+				range = Constants::COLOSSUS_EXTENDED_RANGE;
+			}
+			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_CARRIER)
+			{
+				range = Constants::CARRIER_RANGE;
+			}
 			// Keep units in the back, but also in range
-			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyAvgPoint + (range * vectorAway));
-			debug->DebugSphereOut(enemyAvgPoint, 3, Colors::Teal);
+			action->UnitCommand(unit, ABILITY_ID::MOVE, closestUnit->pos + (range * vectorAway));
+			debug->DebugSphereOut(closestUnit->pos + (range * vectorAway), 3, Colors::Teal);
 		}
 		else //if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)
 		{
+			auto moveSpeed = state->UnitInfo[unit->unit_type].movement_speed;
+			if (moveSpeed < minSpeed || minSpeed == 0)
+			{
+				minSpeed = moveSpeed;
+			}
 			unitsToMove.push_back(unit);
 		}
 	}
-	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, group->target);
+	//if (query->PathingDistance(averagePoint, averagePoint + vectorTowardTarget) > 0)
+	{
+	//	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, averagePoint + vectorTowardTarget);
+	}
+	//else
+	{
+		action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, group->target);
+	}
 
 }
 void ArmyManager::SetTarget(BattleGroup* group, Point2D location)

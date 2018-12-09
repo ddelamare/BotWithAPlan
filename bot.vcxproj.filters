@@ -172,6 +172,7 @@
     <ClInclude Include="Goals\Tactics\OracleHarrass.h" />
     <ClInclude Include="Common\Managers\WorkerManager.h" />
     <ClInclude Include="Common\BotBase\PlanBotBase.h" />
+    <ClInclude Include="Common\Strategy\Attacks\OracleAttack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

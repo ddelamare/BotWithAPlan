@@ -13,7 +13,7 @@ public:
 		this->conditions.push_back(new BaseCondition("Build Beacon", 6, sc2::UNIT_TYPEID::PROTOSS_PYLON, 1, sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON, 1, sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_TEMPEST, 1));
 		this->BaseAction::name = "Build Tempest";
-		holdOtherGoals = true;
+		//holdOtherGoals = true;
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 1;
@@ -41,6 +41,13 @@ public:
 		{
 			score *= 3.5;
 		}
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_CORRUPTOR] > 0
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_VIKINGFIGHTER] > 3)
+		{
+			score /= 2.5;
+		}
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

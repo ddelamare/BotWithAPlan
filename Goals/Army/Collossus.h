@@ -19,12 +19,15 @@ public:
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		score = Util::FeedbackFunction(percent, .3, 1.0);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 ||state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 6)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
+			||state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] >= 6)
 		{
-			score *= 1.5;
+			score *= 2.5;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_CORRUPTOR] > 0 || state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0)
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_CORRUPTOR] > 0 
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_VIKINGFIGHTER] > 2)
 		{
 			score /= 2.5;
 		}

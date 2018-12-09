@@ -14,7 +14,7 @@ public:
 		this->BaseAction::name = "Oracle Harass";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		if (obs->GetGameLoop() < 6000 || obs->GetGameLoop() > 9000) return 0;
+		if (obs->GetGameLoop() < 6000 || obs->GetGameLoop() > 9000 || true) return 0;
 		return 5;
 	};
 

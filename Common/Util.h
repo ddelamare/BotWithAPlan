@@ -90,9 +90,9 @@ namespace Util {
 		return foundUnit;
 	}
 
-	const static Unit* FindClosetOfType(Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query)
+	const static Unit* FindClosetOfType(Unit::Alliance alliance, Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query)
 	{
-		auto units = obs->GetUnits(Unit::Alliance::Self, filter);
+		auto units = obs->GetUnits(alliance, filter);
 		double distance = DBL_MAX;
 		const Unit* foundUnit = nullptr;
 		for (auto unit : units)
@@ -277,12 +277,14 @@ struct Sorters
 
 		bool operator()(Point3D const & lhs, Point3D const & rhs)
 		{
-			return q->PathingDistance(lhs, referencePoint) < q->PathingDistance(rhs, referencePoint);
+			float l = q->PathingDistance(referencePoint,lhs );
+			float r = q->PathingDistance(referencePoint, rhs);
+			return l < r;
 		}
 
 		bool operator()(Unit const * lhs, Unit const * rhs)
 		{
-			return q->PathingDistance(lhs->pos, referencePoint) < q->PathingDistance(rhs->pos, referencePoint);
+			return q->PathingDistance(referencePoint, lhs->pos ) < q->PathingDistance(referencePoint, rhs->pos);
 		}
 	};
 

@@ -13,7 +13,6 @@ public:
 		this->conditions.push_back(new HaveGateWayTrainer());
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STALKER, 1));
 		this->BaseAction::name = "Build Stalker";
-		holdOtherGoals = true;
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;

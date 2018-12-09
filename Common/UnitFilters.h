@@ -91,6 +91,7 @@ struct IsBuilding {
 		}
 	}
 };
+
 struct IsArmy {
 	bool operator()(const sc2::Unit & unit)
 	{
@@ -294,7 +295,7 @@ struct IsEnemyArmy
 		{
 			return false;
 		}
-		else return !IsWorker()(unit) && IsArmy()(unit);
+		else return !IsWorker()(unit) && IsAttackable()(unit) && IsArmy()(unit);
 	}
 };
 

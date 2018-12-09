@@ -6,6 +6,7 @@ PlanBotBase::PlanBotBase()
 	planner = Planner();
 	EconomyGoals = vector<BaseAction*>();
 	ArmyGoals = vector<BaseAction*>();
+	state.CurrentUnits = UnitMap();
 	state.ArmyManager = &armyManager;
 }
 void PlanBotBase::Init()
@@ -63,4 +64,10 @@ void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::Ob
 							   // Only allow the top choice to build it's dependencies. Otherwise we build one of everything
 		allowDependencies = false;
 	}
+}
+
+
+void PlanBotBase::DebugWriteInView(string message, Point2D relativePosition, DebugInterface* debug, const ObservationInterface* obs)
+{
+	debug->DebugTextOut(message, relativePosition);
 }

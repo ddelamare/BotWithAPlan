@@ -123,4 +123,38 @@ namespace Util {
 		return TryBuildBuilding(build_ability, unitType, obs, actions, query, debug,  state, new SpiralStrategy(build_ability, true, true));
 	}
 
+	// Taken from sc2api/sc2libs/sc2_search and modfied with unit sizes
+	std::vector<std::pair<Point3D, std::vector<Unit> > > static FindClusters(const Units& units, float distance_apart)
+	{
+		float squared_distance_apart = distance_apart * distance_apart;
+		std::vector<std::pair<Point3D, std::vector<Unit> > > clusters;
+		for (size_t i = 0, e = units.size(); i < e; ++i) {
+			const Unit& u = *units[i];
+
+			float distance = std::numeric_limits<float>::max();
+			std::pair<Point3D, std::vector<Unit> >* target_cluster = nullptr;
+			// Find the cluster this mineral patch is closest to.
+			for (auto& cluster : clusters) {
+				float d = DistanceSquared3D(u.pos, cluster.first);
+				if (d < distance) {
+					distance = d;
+					target_cluster = &cluster;
+				}
+			}
+
+			// If the target cluster is some distance away don't use it.
+			if (distance > squared_distance_apart) {
+				clusters.push_back(std::pair<Point3D, std::vector<Unit> >(u.pos, std::vector<Unit>{u}));
+				continue;
+			}
+
+			// Otherwise append to that cluster and update it's center of mass.
+			target_cluster->second.push_back(u);
+			size_t size = target_cluster->second.size();
+			target_cluster->first = ((target_cluster->first * (float(size) - 1)) + u.pos) / float(size);
+		}
+
+		return clusters;
+	}
+
 }

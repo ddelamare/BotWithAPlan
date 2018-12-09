@@ -26,7 +26,7 @@ public:
 			assignedHarvesters += th->assigned_harvesters;
 			idealHarvesters += th->ideal_harvesters;
 		}
-		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_PROBE_CAP, .2, 1);
+		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_PROBE_CAP, .2, .5);
 		auto food = obs->GetFoodArmy();
 		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
 		if ((idealHarvesters + 20) > Constants::HARD_PROBE_CAP) return 0;

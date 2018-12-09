@@ -15,7 +15,7 @@
 #include "sc2utils/sc2_arg_parser.h"
 using namespace sc2;
 #define LADDER_MODE 1
-#define DEBUG_MODE 	0
+#define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME false
 class PlanBotBase : public Agent
@@ -31,8 +31,8 @@ public:
 	void OnUnitDestroyed(const Unit* unit) = 0;
 	void OnGameEnd() = 0;
 	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors) = 0;
-
-	bool Lost;
+	void DebugWriteInView(string message, Point2D relativePosition, DebugInterface* debug, const ObservationInterface* obs);
+    bool Lost;
 protected:
 	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers);
 	bool virtual ShouldSurrender(const sc2::ObservationInterface * obs) = 0;

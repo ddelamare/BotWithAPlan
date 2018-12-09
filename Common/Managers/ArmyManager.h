@@ -20,6 +20,7 @@ private:
 	void SneakToTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	Units cachedEnemyArmy;
 	Units cachedEnemies;
+	bool HasThermalLance;
 public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();
