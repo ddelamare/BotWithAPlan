@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\project;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -252,10 +252,6 @@
     <ClInclude Include="Goals\Army\StarGate.h" />
     <ClInclude Include="Goals\Army\VoidRay.h" />
     <ClInclude Include="Common\Managers\WorkerManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="cogfiles.txt" />
-    <Text Include="deps.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

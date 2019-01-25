@@ -182,12 +182,4 @@
     <None Include="Goals\Army\Stalker.h" />
     <None Include="Goals\Army\HighTemplar.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="cogfiles.txt">
-      <Filter>Templates</Filter>
-    </Text>
-    <Text Include="deps.txt">
-      <Filter>Templates</Filter>
-    </Text>
-  </ItemGroup>
 </Project>
