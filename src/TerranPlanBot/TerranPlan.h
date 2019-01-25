@@ -14,13 +14,13 @@
 #include "sc2utils/sc2_arg_parser.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
-#define LADDER_MODE 1
-#define DEBUG_MODE 	0
+#define LADDER_MODE 0
+#define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME false	 
-class BotWithAPlan : public Agent {
+class TerranPlan : public Agent {
 public:
-	BotWithAPlan();
+	TerranPlan();
 	void OnGameStart();
 	void OnStep();
 	void OnBuildingConstructionComplete(const Unit *);

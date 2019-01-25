@@ -55,7 +55,7 @@ namespace Util {
 		// Only assign gas after minerals have been filled
 		if (!hallNeedingMiners)
 		{
-			auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
+			auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsGasBuilding());
 			for (auto assim : assimilators)
 			{
 				if (assim->ideal_harvesters > assim->assigned_harvesters)

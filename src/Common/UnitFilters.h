@@ -21,6 +21,17 @@ struct IsAttackable {
 		}
 	}
 };
+
+struct IsGasBuilding {
+	bool operator()(const Unit& unit) {
+		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::PROTOSS_ASSIMILATOR: return true;
+		case UNIT_TYPEID::TERRAN_REFINERY: return true;
+		case UNIT_TYPEID::ZERG_EXTRACTOR: return true;
+		}
+	}
+};
+
 struct IsBuilding {
 	bool operator()(const sc2::Unit & unit)
 	{

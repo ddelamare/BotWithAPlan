@@ -5,7 +5,7 @@
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_arg_parser.h"
 #include "LadderInterface.h"
-#include "BotWithAPlan.h"
+#include "TerranPlan.h"
 #include "Common\Util.h"
 using namespace sc2;
 const char* kAcidPlant = "Ladder/(2)AcidPlantLE.SC2Map";
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	{
 		LOG(4) << argv[i] << endl;
 	}
-	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
+	RunBot(argc, argv, new TerranPlan(), sc2::Race::Terran);
 
 	return 0;
 #elif PLANNER_MODE
@@ -56,13 +56,13 @@ int main(int argc, char* argv[]) {
 				coordinator.SetRealtime(REALTIME);
 				coordinator.SetStepSize(10);
 				//coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
-				BotWithAPlan bot;
-				BotWithAPlan bot2;
+				TerranPlan bot;
+				TerranPlan bot2;
 				coordinator.SetParticipants({
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::VeryHard)
+					CreateComputer(race, sc2::Difficulty::Easy)
 					});
 
 				coordinator.LaunchStarcraft();

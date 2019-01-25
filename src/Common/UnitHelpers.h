@@ -120,7 +120,7 @@ namespace Util {
 
 	bool static TryBuildBuilding(AbilityID build_ability, UNIT_TYPEID unitType, const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return TryBuildBuilding(build_ability, unitType, obs, actions, query, debug,  state, new SpiralStrategy(build_ability, true, true));
+		return TryBuildBuilding(build_ability, unitType, obs, actions, query, debug,  state, new SpiralStrategy(build_ability, true, true, obs->GetGameInfo().player_info[0].race_actual));
 	}
 
 	// Taken from sc2api/sc2libs/sc2_search and modfied with unit sizes

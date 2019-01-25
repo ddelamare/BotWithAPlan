@@ -71,7 +71,7 @@ public:
 				continue;
 			}
 			auto furtherst = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
-			if (!furtherst) return buildPos;
+			if (!furtherst) continue;
 			auto otherFurthest = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, furtherst->pos);
 			Point3D averagePoint;
 			if (furtherst && otherFurthest)

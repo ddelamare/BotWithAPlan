@@ -8,8 +8,11 @@ using namespace sc2;
 class PylonStrategy :
 	public BuildingStrategy
 {
+private:
+	UNIT_TYPEID unittype;
+	Race race;
 public:
-	PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon);
+	PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, Race race);
 	~PylonStrategy();
 	sc2::Point3D virtual FindPlacement(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 };

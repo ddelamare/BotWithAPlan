@@ -6,7 +6,7 @@
 #include <tuple>
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
-#include "Goals\Economy\Expand.h"
+#include "Goals\Economy\ExpandNexus.h"
 #include "Goals\Economy\Chrono.h"
 #include "Goals\Economy\Assimilator.h"
 #include "Goals\Army\Zealot.h"

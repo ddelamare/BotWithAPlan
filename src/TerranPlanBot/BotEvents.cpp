@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "BotWithAPlan.h"
+#include "TerranPlan.h"
 #include "Common\UnitFilters.h"
 #include "Common\Util.h"
-void BotWithAPlan::OnBuildingConstructionComplete(const Unit*)
+void TerranPlan::OnBuildingConstructionComplete(const Unit*)
 {
 	shouldRecalcuate = true;
 }
 
-void::BotWithAPlan::OnUnitCreated(const Unit* unit)							   
+void::TerranPlan::OnUnitCreated(const Unit* unit)							   
 {
 	if (unit->unit_type == UNIT_TYPEID::PROTOSS_NEXUS)
 	{
@@ -19,7 +19,7 @@ void::BotWithAPlan::OnUnitCreated(const Unit* unit)
 
 //! Called whenever one of the player's units has been destroyed.
 //!< \param unit The destroyed unit.
-void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
+void TerranPlan::OnUnitDestroyed(const Unit* unit) {
 	state.CurrentUnits[unit->unit_type]--;
 	if (VectorHelpers::FoundInVector(state.ScoutingUnits, unit))
 	{
@@ -35,12 +35,12 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 }
 
 
-void BotWithAPlan::OnUnitEnterVision(const Unit* unit) 
+void TerranPlan::OnUnitEnterVision(const Unit* unit) 
 {
 	state.ObservedUnits[unit->unit_type] = 1;
 }
 
-void BotWithAPlan::OnGameStart() {
+void TerranPlan::OnGameStart() {
 	LOG(1) << "Bot initialized" << endl;
 
 	auto players = Observation()->GetGameInfo().player_info;
@@ -129,7 +129,7 @@ void BotWithAPlan::OnGameStart() {
 #endif
 }
 
-void BotWithAPlan::OnGameEnd()
+void TerranPlan::OnGameEnd()
 {
 	  // If we have no town halls, we probably lost
 	auto th = Observation()->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
@@ -157,7 +157,7 @@ std::string ClientErrorToString(sc2::ClientError error)
 	return "Unknown ClientError";
 }
 
-void BotWithAPlan::OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors)
+void TerranPlan::OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors)
 {
 	for (const auto & error : protocol_errors)
 	{

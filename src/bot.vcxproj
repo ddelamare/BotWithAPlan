@@ -143,6 +143,7 @@
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
+    <ClCompile Include="Goals\Army\Mothership.cpp" />
     <ClCompile Include="Planner\Actions\BaseAction.cpp" />
     <ClCompile Include="Planner\Conditions\BaseCondition.cpp" />
     <ClCompile Include="Planner\Planner.cpp" />
@@ -181,12 +182,14 @@
     <ClInclude Include="Common\VectorHelpers.h" />
     <ClInclude Include="Goals\Army\Adept.h" />
     <ClInclude Include="Goals\Army\Archon.h" />
+    <ClInclude Include="Goals\Army\Barracks.h" />
     <ClInclude Include="Goals\Army\Carrier.h" />
     <ClInclude Include="Goals\Army\Collossus.h" />
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Army\Disrupter.h" />
     <ClInclude Include="Goals\Army\Gateway.h" />
     <ClInclude Include="Goals\Army\Immortal.h" />
+    <ClInclude Include="Goals\Army\Marine.h" />
     <ClInclude Include="Goals\Army\Observer.h" />
     <ClInclude Include="Goals\Army\Oracle.h" />
     <ClInclude Include="Goals\Army\Phoenix.h" />
@@ -196,7 +199,12 @@
     <ClInclude Include="Goals\Army\ShieldBattery.h" />
     <ClInclude Include="Goals\Army\Tempest.h" />
     <ClInclude Include="Goals\Army\WarpPrism.h" />
+    <ClInclude Include="Goals\Economy\ExpandCC.h" />
+    <ClInclude Include="Goals\Economy\Probe.h" />
     <ClInclude Include="Goals\Economy\ProxyPylon.h" />
+    <ClInclude Include="Goals\Economy\Refinery.h" />
+    <ClInclude Include="Goals\Economy\SCV.h" />
+    <ClInclude Include="Goals\Economy\SupplyDepot.h" />
     <ClInclude Include="Goals\Tactics\4Gate.h" />
     <ClInclude Include="Goals\Tactics\AttackProxy.h" />
     <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
@@ -212,9 +220,8 @@
     <ClInclude Include="Goals\Tech\RoboticsBay.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
-    <ClInclude Include="Goals\Economy\Expand.h" />
+    <ClInclude Include="Goals\Economy\ExpandNexus.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
-    <ClInclude Include="Goals\Economy\Probe.h" />
     <ClInclude Include="Goals\Economy\Pylon.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
     <ClInclude Include="Goals\Tactics\AllOut.h" />

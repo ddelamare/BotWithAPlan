@@ -4,12 +4,12 @@
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
 #include "Common\Constants.h"
-class ProbeGoal : public BaseAction
+class SCVGoal : public BaseAction
 {
 public:
-	ProbeGoal() : BaseAction() {
-		name = "Build Probe";
-		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PROBE, 1));
+	SCVGoal() : BaseAction() {
+		name = "Build SCV";
+		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::TERRAN_SCV, 1));
 
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
@@ -24,7 +24,7 @@ public:
 			score += needed;
 			units.push_back(th);	
 		}
-		auto gasHaverstBuilding = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
+		auto gasHaverstBuilding = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_REFINERY));
 		for (auto ghb : gasHaverstBuilding)
 		{
 			auto needed = ghb->ideal_harvesters - ghb->assigned_harvesters;
@@ -46,7 +46,7 @@ public:
 		for (auto th : units) {
 			if (th->orders.size() == 0)
 			{
-				actions->UnitCommand(th, ABILITY_ID::TRAIN_PROBE);
+				actions->UnitCommand(th, ABILITY_ID::TRAIN_SCV);
 				builtProbe = true;
 			}
 		}

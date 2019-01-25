@@ -18,7 +18,7 @@ AssimilatorStrategy::~AssimilatorStrategy()
 sc2::Point3D AssimilatorStrategy::FindPlacement(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {
 	foundUnit = nullptr;
-	auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_NEXUS));
+	auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
 	Point3D buildPos;
 	double distance = DBL_MAX;
 	for (auto nexus : nexuses)

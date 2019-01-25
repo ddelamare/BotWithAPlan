@@ -1,11 +1,29 @@
 #include "SpiralStrategy.h"
 using namespace sc2;
+SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, double radialDistance, Race race) : BuildingStrategy(unit, needsClearance, needsPylon)
+{
+	this->_RadialDistance = radialDistance;
+	unittype = UNIT_TYPEID::PROTOSS_PYLON;
+	if (race == Race::Terran)
+		unittype = UNIT_TYPEID::TERRAN_SUPPLYDEPOT;
+
+	
+}
 SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, double radialDistance) : BuildingStrategy(unit, needsClearance, needsPylon)
 {
 	this->_RadialDistance = radialDistance;
+	unittype = UNIT_TYPEID::PROTOSS_PYLON;
+
 }
 SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon) : BuildingStrategy(unit, needsClearance, needsPylon)
 {
+}
+
+SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, Race race) : BuildingStrategy(unit, needsClearance, needsPylon)
+{
+	unittype = UNIT_TYPEID::PROTOSS_PYLON;
+	if (race == Race::Terran)
+		unittype = UNIT_TYPEID::TERRAN_SUPPLYDEPOT;
 }
 
 SpiralStrategy::~SpiralStrategy()
@@ -15,7 +33,7 @@ SpiralStrategy::~SpiralStrategy()
 
 sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 {
-	auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
+	auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(unittype));
 	Point3D buildPos;
 	Point3D offset = Point3D(1, 0, 0);
 	int rotationDir = 1;

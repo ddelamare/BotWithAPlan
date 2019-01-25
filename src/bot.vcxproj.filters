@@ -46,6 +46,7 @@
     <ClCompile Include="Common\Managers\ArmyManager.cpp" />
     <ClCompile Include="Common\Managers\WorkerManager.cpp" />
     <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
+    <ClCompile Include="Goals\Army\Mothership.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -87,10 +88,8 @@
     <ClInclude Include="Common\UnitFilters.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Goals\Economy\Probe.h" />
     <ClInclude Include="Goals\Economy\Pylon.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
-    <ClInclude Include="Goals\Economy\Expand.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
     <ClInclude Include="Common\Util.h" />
@@ -174,6 +173,14 @@
     <ClInclude Include="Common\BotBase\PlanBotBase.h" />
     <ClInclude Include="Common\Strategy\Attacks\OracleAttack.h" />
     <ClInclude Include="Goals\Army\Mothership.h" />
+    <ClInclude Include="Goals\Economy\ExpandNexus.h" />
+    <ClInclude Include="Goals\Economy\ExpandCC.h" />
+    <ClInclude Include="Goals\Economy\SCV.h" />
+    <ClInclude Include="Goals\Economy\Probe.h" />
+    <ClInclude Include="Goals\Economy\Refinery.h" />
+    <ClInclude Include="Goals\Economy\SupplyDepot.h" />
+    <ClInclude Include="Goals\Army\Barracks.h" />
+    <ClInclude Include="Goals\Army\Marine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

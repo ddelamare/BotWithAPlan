@@ -8,21 +8,21 @@
 #include "Common\UnitHelpers.h"
 
 using namespace sc2;
-class PylonGoal : public BaseAction
+class SupplyDepotGoal : public BaseAction
 {
 public:
-	PylonGoal() : BaseAction() {
-		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_PYLON, 1));
-		name = "Build Pylon";
+	SupplyDepotGoal() : BaseAction() {
+		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::TERRAN_SUPPLYDEPOT, 1));
+		name = "Build Supply Depot";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 20.0f;
 		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
-		//Add food from building pylons
-		auto pylonsInProgress = obs->GetUnits(Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_PYLON));
-		foodLeft += pylonsInProgress.size() * 8;
-		if (Util::IsAnyWorkerCommitted(ABILITY_ID::BUILD_PYLON, obs))
+		//Add food from building SupplyDepots
+		auto SupplyDepotsInProgress = obs->GetUnits(Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::TERRAN_SUPPLYDEPOT));
+		foodLeft += SupplyDepotsInProgress.size() * 8;
+		if (Util::IsAnyWorkerCommitted(ABILITY_ID::BUILD_SUPPLYDEPOT, obs))
 		{
 			foodLeft += 8;
 		}
@@ -33,7 +33,7 @@ public:
 		}
 		else if (foodLeft <= 0)
 		{
-			// If we are in the red, we really want that pylon.
+			// If we are in the red, we really want that SupplyDepot.
 			score = 50;
 		}
 
@@ -47,7 +47,7 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		auto buildingStrat = new PylonStrategy(ABILITY_ID::BUILD_PYLON,false,false, (Race)GetAgentRace());
-		return Util::TryBuildBuilding(ABILITY_ID::BUILD_PYLON, UNIT_TYPEID::PROTOSS_PYLON, obs, actions, query, debug, state, buildingStrat);
+		auto buildingStrat = new PylonStrategy(ABILITY_ID::BUILD_SUPPLYDEPOT,false,false, (Race)GetAgentRace());
+		return Util::TryBuildBuilding(ABILITY_ID::BUILD_SUPPLYDEPOT, UNIT_TYPEID::TERRAN_SUPPLYDEPOT, obs, actions, query, debug, state, buildingStrat);
 	}
 };
