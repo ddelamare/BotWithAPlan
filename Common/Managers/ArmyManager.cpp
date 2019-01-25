@@ -9,10 +9,12 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 	}
 
 	PartitionGroups(obs, query, action, state, debug);
+	this->cachedHighPriorityEnemies = obs->GetUnits(IsHighPrioirtyEnemy());
 	this->cachedEnemyArmy = obs->GetUnits(IsEnemyArmy());
 	this->cachedEnemies = obs->GetUnits(IsEnemy());	// includes buildings
 	for (auto group : battleGroups)
 	{
+
 		if (group.mode == BattleMode::Attack)
 		{
 			if (IsClustered(&group, obs, query, action, state, debug))
@@ -96,7 +98,13 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	//action->UnitCommand(group->units, ABILITY_ID::ATTACK, group->target);
 
 	auto averagePoint = Util::GetAveragePoint(group->units);
-	auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 20);
+	auto enemyUnits = Util::FindNearbyUnits(IsHighPrioirtyEnemy(), averagePoint, obs, 20);
+	// No High Priority? Then look for all
+	if (enemyUnits.size() == 0)
+	{
+		enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 20);
+	}
+
 	// This point should be where the sqishy units go. AKA not the front lines
 	auto enemyAvgPoint = Util::GetAveragePoint(enemyUnits);
 	auto vectorAway = averagePoint - enemyAvgPoint;
@@ -119,6 +127,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			//move unit to back of cluster
 			auto unitType = state->UnitInfo[unit->unit_type];
 			double range = 1;
+
 			auto closestUnit = Util::FindClosetOfType(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), unit->pos, obs, query);
 			if (unitType.weapons.size())
 			{
@@ -181,6 +190,7 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 	{
 		battleGroups.push_back(BattleGroup());
 		battleGroups[0].mode = BattleMode::Defend;
+
 		battleGroups.push_back(BattleGroup());
 		battleGroups[1].mode = BattleMode::Harrass;
 		battleGroups[1].target = state->EnemyBase;
@@ -246,13 +256,24 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 	auto unitType = (*unitData)[unit->unit_type];	
 	if (unitType.weapons.size())
 	{
-		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, unitType.weapons[0].range * 2.0);
+		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedHighPriorityEnemies, unit->pos, obs, unitType.weapons[0].range * 2.0);
+		bool isHighPriority = true;
+		if (nearbyEnemies.size() == 0)
+		{
+			nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, unitType.weapons[0].range * 2.0);
+			isHighPriority = false;
+		}
 		double minPercent = DBL_MAX;
 		const Unit* weakestUnit = nullptr;
+
+		// Sort by tag to prevent units from switching too quickly between units with the same health percentage. Otherwise, they change targets so much they can't attack.
+		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_tag());
+
 		for (auto eu : nearbyEnemies)
 		{
 			auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
-			if (percentHealth < minPercent && percentHealth < 1.0)
+			// Find weakest unit below full health, unless it's high priority, in which case include full health. This is so we can target pylons even if there's observers or something near by
+			if (percentHealth < minPercent && (isHighPriority ||  percentHealth < 1.0))
 			{
 				weakestUnit = eu;
 				minPercent = percentHealth;

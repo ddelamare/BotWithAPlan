@@ -173,6 +173,7 @@
     <ClInclude Include="Common\Managers\WorkerManager.h" />
     <ClInclude Include="Common\BotBase\PlanBotBase.h" />
     <ClInclude Include="Common\Strategy\Attacks\OracleAttack.h" />
+    <ClInclude Include="Goals\Army\Mothership.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

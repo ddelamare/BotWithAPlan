@@ -92,6 +92,37 @@ struct IsBuilding {
 	}
 };
 
+struct IsLowPriorityArmy {
+	bool operator()(const sc2::Unit & unit)
+	{
+		switch (unit.unit_type.ToType())
+		{
+		case UNIT_TYPEID::TERRAN_MULE: return true;
+		case UNIT_TYPEID::TERRAN_RAVEN: return true;
+		case UNIT_TYPEID::TERRAN_SCV: return true;
+		case UNIT_TYPEID::ZERG_BROODLORDCOCOON: return true;
+		case UNIT_TYPEID::ZERG_CHANGELING: return true;
+		case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return true;
+		case UNIT_TYPEID::ZERG_CHANGELINGMARINESHIELD: return true;
+		case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return true;
+		case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return true;
+		case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return true;
+		case UNIT_TYPEID::ZERG_CORRUPTOR: return true;	
+		case UNIT_TYPEID::ZERG_INFESTEDTERRANSEGG: return true;
+		case UNIT_TYPEID::ZERG_OVERLORD: return true;
+		case UNIT_TYPEID::ZERG_OVERSEER: return true;
+		case UNIT_TYPEID::ZERG_SPINECRAWLERUPROOTED: return true;
+		case UNIT_TYPEID::ZERG_SPORECRAWLERUPROOTED: return true;
+		case UNIT_TYPEID::ZERG_TRANSPORTOVERLORDCOCOON: return true;
+		case UNIT_TYPEID::PROTOSS_INTERCEPTOR: return true;
+		case UNIT_TYPEID::PROTOSS_OBSERVER: return true;
+		case UNIT_TYPEID::PROTOSS_PROBE: return true;
+		case UNIT_TYPEID::PROTOSS_WARPPRISM: return true;
+		default: return false;
+		}
+	}
+};
+
 struct IsArmy {
 	bool operator()(const sc2::Unit & unit)
 	{
@@ -296,6 +327,18 @@ struct IsEnemyArmy
 			return false;
 		}
 		else return !IsWorker()(unit) && IsAttackable()(unit) && IsArmy()(unit);
+	}
+};
+
+
+struct IsHighPrioirtyEnemy {
+	bool operator()(const sc2::Unit & unit)
+	{
+		if (unit.alliance != Unit::Alliance::Enemy)
+		{
+			return false;
+		}
+		else return !IsWorker()(unit) && IsAttackable()(unit) && !IsLowPriorityArmy()(unit) && IsArmy()(unit);
 	}
 };
 

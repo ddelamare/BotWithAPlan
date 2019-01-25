@@ -288,4 +288,11 @@ struct Sorters
 		}
 	};
 
+	struct sort_by_tag {
+		bool operator()(Unit const * lhs, Unit const * rhs)
+		{
+			return lhs->tag < rhs->tag;
+		}
+	};
+
 };

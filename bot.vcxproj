@@ -231,6 +231,7 @@
     <ClInclude Include="Goals\Upgrades\Shields.h" />
     <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
     <ClInclude Include="Goals\Upgrades\WarpGate.h" />
+    <ClInclude Include="Goals\Army\Mothership.h" />
     <ClInclude Include="Planner\Actions\BaseAction.h" />
     <ClInclude Include="Planner\Actions\BuildResource.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h" />

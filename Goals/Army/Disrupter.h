@@ -45,7 +45,7 @@ public:
 			score /= 2;
 		}
 
-		return score;
+		return score * 4;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
