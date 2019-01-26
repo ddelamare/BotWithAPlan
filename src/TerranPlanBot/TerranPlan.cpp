@@ -9,7 +9,14 @@
 #include "Goals\Economy\ExpandCC.h"
 #include "Goals\Economy\Refinery.h"
 #include "Goals\Army\Barracks.h"
+#include "Goals\Army\Reactor.h"
 #include "Goals\Army\Marine.h"
+#include "Goals\Tactics\AllOut.h"
+#include "Goals\Tactics\JustDoIt.h"
+#include "Goals\Tactics\ScoutSweep.h"
+#include "Goals\Tactics\PickOffExpo.h"
+#include "Goals\Tactics\AttackProxy.h"
+#include "Goals\Tactics\DefendWithWorkers.h"
 #include "Common\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -25,6 +32,8 @@ TerranPlan::TerranPlan()
 	EconomyGoals.push_back(new SCVGoal());
 	EconomyGoals.push_back(new RefineryGoal());
 	EconomyGoals.push_back(new ExpandGoal());
+	EconomyGoals.push_back(new BarracksGoal());
+	EconomyGoals.push_back(new ReactorGoal());
 
 	// Build Because we Can
 	ArmyGoals.push_back(new MarineGoal());
@@ -32,9 +41,9 @@ TerranPlan::TerranPlan()
 	// Tactics and Upgrade Goals
 
 	//TacticsGoals.push_back(new AllOutGoal());
-	//TacticsGoals.push_back(new ScoutSweepGoal());
-	//TacticsGoals.push_back(new PickOffExpoGoal());
-	//TacticsGoals.push_back(new JustDoitGoal());
+	TacticsGoals.push_back(new ScoutSweepGoal());
+	TacticsGoals.push_back(new PickOffExpoGoal());
+	TacticsGoals.push_back(new JustDoitGoal());
 	//TacticsGoals.push_back(new AttackProxyGoal());
 	//TacticsGoals.push_back(new DefendWithUnitsGoal());
 	//TacticsGoals.push_back(new ForgeFastExpandGoal());
@@ -151,7 +160,7 @@ void TerranPlan::OnStep() {
 	//	}
 	//}
 
-	//armyManager.ManageGroups(obs,query,actions,&state,Debug());
+	armyManager.ManageGroups(obs,query,actions,&state,Debug());
 
 
 	// Blink micro

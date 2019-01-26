@@ -181,6 +181,7 @@
     <ClInclude Include="Goals\Economy\SupplyDepot.h" />
     <ClInclude Include="Goals\Army\Barracks.h" />
     <ClInclude Include="Goals\Army\Marine.h" />
+    <ClInclude Include="Goals\Army\Reactor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

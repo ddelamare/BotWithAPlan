@@ -259,6 +259,7 @@
     <ClInclude Include="Goals\Army\StarGate.h" />
     <ClInclude Include="Goals\Army\VoidRay.h" />
     <ClInclude Include="Common\Managers\WorkerManager.h" />
+    <ClInclude Include="Goals\Army\Reactor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

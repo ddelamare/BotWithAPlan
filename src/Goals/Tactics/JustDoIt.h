@@ -9,7 +9,7 @@ class JustDoitGoal : public BaseAction
 {
 public:
 	JustDoitGoal() : BaseAction() {
-		this->conditions.push_back(new HaveBigArmy(100));
+		this->conditions.push_back(new HaveBigArmy(50));
 		this->BaseAction::name = "Just Do It";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
@@ -21,7 +21,7 @@ public:
 		bool madeStaker = false;
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
 		auto visibleBuildings = obs->GetUnits(Unit::Alliance::Enemy, IsVisibleArmy());
-		auto enemyStuff = obs->GetUnits(Unit::Alliance::Enemy);
+		auto enemyStuff = obs->GetUnits(Unit::Alliance::Enemy, IsNotFiller());
 		auto attackPoint = state->EnemyBase;
 		if (visibleBuildings.size())
 		{

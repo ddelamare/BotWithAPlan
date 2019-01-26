@@ -165,11 +165,11 @@ struct IsArmy {
 		case UNIT_TYPEID::ZERG_BROODLORD: return true;
 		case UNIT_TYPEID::ZERG_BROODLORDCOCOON: return true;
 		case UNIT_TYPEID::ZERG_CHANGELING: return true;
-		case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return true;
-		case UNIT_TYPEID::ZERG_CHANGELINGMARINESHIELD: return true;
-		case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return true;
-		case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return true;
-		case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return true;
+		//case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return true;
+		//case UNIT_TYPEID::ZERG_CHANGELINGMARINESHIELD: return true;
+		//case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return true;
+		//case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return true;
+		//case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return true;
 		case UNIT_TYPEID::ZERG_CORRUPTOR: return true;
 		case UNIT_TYPEID::ZERG_DRONE: return true;
 		case UNIT_TYPEID::ZERG_HYDRALISK: return true;
@@ -415,5 +415,36 @@ struct CompletedUnits
 		return false;
 	}
 private: sc2::UNIT_TYPEID unitType;
+};
+
+struct IsReactor
+{
+	bool operator()(const Unit& unit) {
+		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::TERRAN_REACTOR:
+		case UNIT_TYPEID::TERRAN_BARRACKSREACTOR:
+		case UNIT_TYPEID::TERRAN_FACTORYREACTOR:
+		case UNIT_TYPEID::TERRAN_STARPORTREACTOR:
+			return IsIdle()(unit);
+		default: return false;
+		}
+	}
+};
+
+struct IsNotFiller
+{
+	bool operator()(const Unit& unit)
+	{
+		// Ignore units that can be ignored. Changelings mess with the army manager
+		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return false;
+		case UNIT_TYPEID::ZERG_CHANGELINGMARINESHIELD: return false;
+		case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return false;
+		case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return false;
+		case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return false;
+		default: return true;
+		}
+
+	}
 };
 #endif // UNIT_FILTERS

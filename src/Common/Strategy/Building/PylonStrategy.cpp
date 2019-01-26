@@ -8,8 +8,17 @@ PylonStrategy::PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPyl
 	if (race == Race::Terran)
 		unittype = UNIT_TYPEID::TERRAN_SUPPLYDEPOT;
 	this->race = race;
+	this->radius = 6;
 }
 
+PylonStrategy::PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, double radius, Race race = Race::Protoss) : BuildingStrategy(unit, needsClearance, needsPylon)
+{
+	unittype = UNIT_TYPEID::PROTOSS_PYLON;
+	if (race == Race::Terran)
+		unittype = UNIT_TYPEID::TERRAN_SUPPLYDEPOT;
+	this->race = race;
+	this->radius = radius;
+}
 
 PylonStrategy::~PylonStrategy()
 {
@@ -42,7 +51,7 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 	if (pylons.size())
 	{
 		//TODO: BUild next to nexuses without pylons
-		auto spiralizer = SpiralStrategy(buildingAction, useClearance, needsPower, 6, race);
+		auto spiralizer = SpiralStrategy(buildingAction, useClearance, needsPower, radius, race);
 		return spiralizer.FindPlacement(obs, actions, query, debug, state);
 
 	}

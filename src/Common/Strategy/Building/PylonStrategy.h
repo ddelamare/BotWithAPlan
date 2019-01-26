@@ -11,8 +11,10 @@ class PylonStrategy :
 private:
 	UNIT_TYPEID unittype;
 	Race race;
+	double radius;
 public:
 	PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, Race race);
+	PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, double radius, Race race);
 	~PylonStrategy();
 	sc2::Point3D virtual FindPlacement(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state);
 };

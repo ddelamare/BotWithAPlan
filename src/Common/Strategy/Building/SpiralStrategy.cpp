@@ -5,7 +5,8 @@ SpiralStrategy::SpiralStrategy(ABILITY_ID unit, bool needsClearance, bool needsP
 	this->_RadialDistance = radialDistance;
 	unittype = UNIT_TYPEID::PROTOSS_PYLON;
 	if (race == Race::Terran)
-		unittype = UNIT_TYPEID::TERRAN_SUPPLYDEPOT;
+		unittype = UNIT_TYPEID::TERRAN_SUPPLYDEPOT;
+
 
 	
 }

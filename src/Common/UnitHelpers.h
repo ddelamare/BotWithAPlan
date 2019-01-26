@@ -24,7 +24,16 @@ namespace Util {
 		bool madeUnit = false;
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(buildingType));
 		for (auto building : buildings) {
-			if (building->orders.size() == 0 && building->build_progress >= 1.0)
+			if (building->build_progress < 1.0)
+			{
+				continue;
+			}
+			if (building->orders.size() == 0)
+			{
+				actions->UnitCommand(building, train_unit_ability);
+				madeUnit = true;
+			}
+			else if (building->add_on_tag && IsReactor()(*obs->GetUnit(building->add_on_tag)) && building->orders.size() < 2)
 			{
 				actions->UnitCommand(building, train_unit_ability);
 				madeUnit = true;

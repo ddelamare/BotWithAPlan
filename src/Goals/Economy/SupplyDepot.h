@@ -47,7 +47,7 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		auto buildingStrat = new PylonStrategy(ABILITY_ID::BUILD_SUPPLYDEPOT,false,false, (Race)GetAgentRace());
+		auto buildingStrat = new PylonStrategy(ABILITY_ID::BUILD_SUPPLYDEPOT,false,false,1, (Race)GetAgentRace());
 		return Util::TryBuildBuilding(ABILITY_ID::BUILD_SUPPLYDEPOT, UNIT_TYPEID::TERRAN_SUPPLYDEPOT, obs, actions, query, debug, state, buildingStrat);
 	}
 };
