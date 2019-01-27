@@ -124,7 +124,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\project;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
