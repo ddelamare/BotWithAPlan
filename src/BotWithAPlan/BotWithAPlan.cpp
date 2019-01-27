@@ -92,7 +92,7 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new VoidRayGoal());
 	ArmyGoals.push_back(new ImmortalGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
-	//ArmyGoals.push_back(new DisruptorGoal());
+	ArmyGoals.push_back(new DisruptorGoal());
 	ArmyGoals.push_back(new HighTemplarGoal());
 	ArmyGoals.push_back(new ArchonGoal());
 	ArmyGoals.push_back(new ObserverGoal());

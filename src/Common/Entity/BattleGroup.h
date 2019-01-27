@@ -17,5 +17,6 @@ struct BattleGroup
 	BattleMode mode;
 	Units units;
 	Point2D target;
+	bool isClustered;
 };
 															   

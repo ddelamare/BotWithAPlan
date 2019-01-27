@@ -23,10 +23,11 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 				{
 					AttackTarget(&group, obs, query, action, state, debug);
 				}
+				ClusterUnits(&group,false, obs, query, action, state, debug);
 			}
 			else
 			{
-				ClusterUnits(&group, obs, query, action, state, debug);
+				ClusterUnits(&group,true, obs, query, action, state, debug);
 			}
 		}
 		else if (group.mode == BattleMode::Defend)
@@ -61,6 +62,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 // Checks if a group is close enough together
 bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
+	return true;
 	if (group->units.size() <= 5) return false;
 	//return true;
 	//see if units are clustered well enough
@@ -68,15 +70,26 @@ bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* ob
 	int outsideOfCluster = 0;
 	for (auto unit : group->units)
 	{
-		if (Distance2D(unit->pos, averagePoint) > CLUSTER_DISTANCE_THRESHOLD)
+		auto dis = Distance2D(unit->pos, averagePoint);
+		if (dis > CLUSTER_DISTANCE_THRESHOLD_MIN && dis < CLUSTER_DISTANCE_THRESHOLD_MAX)
 		{
 			outsideOfCluster++;
 		}
 	}
-	auto clusterRatio = (double)outsideOfCluster / (double)(group->units.size());
-	return clusterRatio <= CLUSTER_PERCENT_THRESHOLD;
+	auto clusterRatio = 1.0 - ((double)outsideOfCluster / (double)(group->units.size()));
+
+	if (clusterRatio <= CLUSTER_PERCENT_THRESHOLD_MIN)
+	{
+		group->isClustered = false;
+	}
+	if (clusterRatio >= CLUSTER_PERCENT_THRESHOLD_MAX)
+	{
+		group->isClustered = true;
+	}
+
+	return group->isClustered;
 }
-void ArmyManager::ClusterUnits(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
+void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	//TODO: Based on where they're going, meet up in a sane spot.
 	if (group->units.size() <= 1) return;
@@ -85,7 +98,10 @@ void ArmyManager::ClusterUnits(BattleGroup* group, const ObservationInterface* o
 	Units unitsToMove;
 	for (auto unit : group->units)
 	{
+		auto dis = Distance2D(unit->pos, averagePoint);
+
 		//if (abs(unit->pos.x - averagePoint.x) > CLUSTER_MOVE_THRESHOLD || abs(unit->pos.y - averagePoint.y) > CLUSTER_MOVE_THRESHOLD)
+		if (includeAll || (dis > CLUSTER_DISTANCE_THRESHOLD_MAX))
 		{
 			unitsToMove.push_back(unit);
 		}
