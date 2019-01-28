@@ -182,6 +182,8 @@
     <ClInclude Include="Goals\Army\Barracks.h" />
     <ClInclude Include="Goals\Army\Marine.h" />
     <ClInclude Include="Goals\Army\Reactor.h" />
+    <ClInclude Include="Goals\Upgrades\AirWeapons.h" />
+    <ClInclude Include="Goals\Upgrades\AirArmor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

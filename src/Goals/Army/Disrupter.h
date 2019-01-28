@@ -39,13 +39,14 @@ public:
 		//	score *= 3.5;
 		//}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0 
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_CARRIER] > 0
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] >= 5)
 		{
 			score /= 2;
 		}
 
-		return score * 4;
+		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

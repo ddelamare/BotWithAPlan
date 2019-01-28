@@ -125,7 +125,7 @@ void TerranPlan::OnGameStart() {
 	state.UnitInfo = Observation()->GetUnitTypeData();
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 1.5");
+	Actions()->SendChat("Bot version: 0.1");
 #endif
 }
 

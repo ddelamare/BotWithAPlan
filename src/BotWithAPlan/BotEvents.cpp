@@ -32,6 +32,21 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 		// Killed but no nearby enemies? Must be cloaked
 		this->state.HasCloakedUnits = true;
 	}
+
+	// Estimate resources lost on both sides
+	if (unit->alliance == Unit::Alliance::Self)
+	{
+		mineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
+		gasLost += state.UnitInfo[unit->unit_type].vespene_cost;
+		buildTimeLost += state.UnitInfo[unit->unit_type].build_time;
+	}
+	else
+	{
+		enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
+		enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
+		enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;
+	}
+
 }
 
 
@@ -125,7 +140,7 @@ void BotWithAPlan::OnGameStart() {
 	state.UnitInfo = Observation()->GetUnitTypeData();
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 1.5");
+	Actions()->SendChat("Bot version: 1.6");
 #endif
 }
 

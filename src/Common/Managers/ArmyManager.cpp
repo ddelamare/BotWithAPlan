@@ -90,6 +90,7 @@ bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* ob
 	return group->isClustered;
 }
 void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
+
 {
 	//TODO: Based on where they're going, meet up in a sane spot.
 	if (group->units.size() <= 1) return;
@@ -269,14 +270,20 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 {
 	auto unitData = &state->UnitInfo;
 	if (!unitData->size()) return nullptr;
-	auto unitType = (*unitData)[unit->unit_type];	
+	auto unitType = (*unitData)[unit->unit_type];
+	auto range = 2.0;
 	if (unitType.weapons.size())
 	{
-		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedHighPriorityEnemies, unit->pos, obs, unitType.weapons[0].range * 2.0);
+		// Prevent long range units from going too deep and dying.
+		if (unitType.weapons[0].range > 8)
+		{
+			range = 1.2;
+		}
+		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedHighPriorityEnemies, unit->pos, obs, unitType.weapons[0].range * range);
 		bool isHighPriority = true;
 		if (nearbyEnemies.size() == 0)
 		{
-			nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, unitType.weapons[0].range * 2.0);
+			nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, unitType.weapons[0].range * range);
 			isHighPriority = false;
 		}
 		double minPercent = DBL_MAX;
@@ -297,7 +304,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		}
 		if (!weakestUnit)
 		{
-		   auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, unitType.weapons[0].range * 2.0);
+		   auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, unitType.weapons[0].range * range);
 		   int pylons = 0;
 		   int poweredBuildings = 0;
 		   auto isPylon = IsUnit(UNIT_TYPEID::PROTOSS_PYLON);

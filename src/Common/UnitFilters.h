@@ -402,6 +402,13 @@ struct UnitsInProgress
 private: sc2::UNIT_TYPEID unitType;
 };
 
+struct InProgressUnits
+{
+	bool operator()(const Unit& unit) {
+		return unit.build_progress < 1;
+	}
+};
+
 struct CompletedUnits
 {
 	CompletedUnits(UNIT_TYPEID type)
@@ -443,6 +450,8 @@ struct IsNotFiller
 		case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return false;
 		case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return false;
 		case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return false;
+		case UNIT_TYPEID::ZERG_OVERSEER: return false;
+		case UNIT_TYPEID::ZERG_OVERLORD: return false;
 		default: return true;
 		}
 

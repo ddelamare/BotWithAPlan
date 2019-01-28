@@ -56,6 +56,8 @@
 #include "Goals\Upgrades\ThermalLance.h"
 #include "Goals\Upgrades\PsiStorm.h"
 #include "Goals\Upgrades\WarpGate.h"
+#include "Goals\Upgrades\AirWeapons.h"
+#include "Goals\Upgrades\AirArmor.h"
 #include "Common\Strategy\Attacks\BlinkStalker.h"
 #include "Common\Strategy\Attacks\DisruptorAttack.h"
 #include "Common\Strategy\Attacks\Templar.h"
@@ -125,6 +127,8 @@ BotWithAPlan::BotWithAPlan()
 	UpgradeGoals.push_back(new ShieldUpgradeGoal());
 	UpgradeGoals.push_back(new GlaivesGoal());
 	UpgradeGoals.push_back(new WarpGateGoal());
+	UpgradeGoals.push_back(new AirWeaponsGoal());
+	UpgradeGoals.push_back(new AirArmorsGoal());
 
 	// Steps the planner will consider to fufill goals
 	AvailableActions.push_back(new AdeptGoal());
@@ -210,7 +214,7 @@ void BotWithAPlan::OnStep() {
 		StepCounter = 0;
 	}
 	StepCounter++;
-
+	goalCategory = 0;
 	//
 	auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 	Units extraWorkers;
@@ -253,7 +257,7 @@ void BotWithAPlan::OnStep() {
 	auto nexuses = Observation()->GetUnits(Unit::Alliance::Self, IsTownHall());
 	for (auto th : nexuses)
 	{
-		auto nearbyUnits = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsEnemyArmy(), th->pos, obs, 25);
+		auto nearbyUnits = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsNotFiller(), th->pos, obs, 25);
 		if (nearbyUnits.size())
 		{
 			// RALLY THE TROOPS!
@@ -284,6 +288,22 @@ void BotWithAPlan::OnStep() {
 	auto gateways = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
 	actions->UnitCommand(gateways, ABILITY_ID::MORPH_WARPGATE);
 
+	// Cancel all buildings that are close to being killed
+	auto inProgess = obs->GetUnits(InProgressUnits());
+	for (auto ipBuilding : inProgess)
+	{
+		if (ipBuilding->build_progress > .1)
+		{
+			auto hp = ipBuilding->shield + ipBuilding->health;
+			auto hpMax = (ipBuilding->shield_max + ipBuilding->shield_max) * ipBuilding->build_progress;
+			if (hp / hpMax < .2)
+			{
+				actions->UnitCommand(ipBuilding, ABILITY_ID::CANCEL);
+			}
+		}
+	}
+
+
 #if LADDER_MODE
 	// This does not seem to work in local tests
 
@@ -302,9 +322,15 @@ void BotWithAPlan::OnStep() {
 	auto endTime = Clock::now();
 	for (auto message : debugMessages)
 	{
-		Debug()->DebugTextOut(message);
+		//Debug()->DebugTextOut(message);
 	}
-	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
+	//Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
+
+	//Output minerals lost and estiamte threat.
+	Debug()->DebugTextOut("Minerals Lost:" + std::to_string(mineralsLost) + " Enemy Minerals Lost:" + std::to_string(enemyMineralsLost), Point2D(0,0.4));
+	Debug()->DebugTextOut("Gas Lost:" + std::to_string(gasLost) + " Enemy Gas Lost:" + std::to_string(enemyGasLost), Point2D(0, .42));
+	Debug()->DebugTextOut("Time Lost:" + std::to_string(buildTimeLost) + " Enemy Time Lost:" + std::to_string(enemyBuildTimeLost), Point2D(0, .44));
+
 #if DEBUG_MODE	
 	Debug()->SendDebug();
 #endif
@@ -320,12 +346,16 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 	BaseAction* nextInPlan = nullptr;
 	auto actionList = goalPicker.GetGoals(goals, obs, &state);
 	bool allowDependencies = true;
+	Debug()->DebugTextOut(name + " Goals:", Point2D(.2 * goalCategory, 0), Colors::White, 8);
+
 	for (int i = 0; i < actionList.size(); i++)
 	{
 		if (get<0>(actionList[i]) <= 0) break; // Don't do goals with score 0;
 
 		auto goal = std::get<1>(actionList[i]);
 		auto resState = planner.GetResourceState(obs);
+
+		Debug()->DebugTextOut(goal->GetName() + ":" + std::to_string(get<0>(actionList[i])) , Point2D(.2 * goalCategory, .01 + (i*.01)), Colors::White, 8);
 
 		auto plan = planner.CalculatePlan(resState, goal);
 		if (plan.size() == 1)
@@ -349,7 +379,7 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 				goal = nullptr;
 				break;
 			}
-			else if (goal->HoldOtherGoals(obs))
+			else if (get<0>(actionList[i]) > 10 || goal->HoldOtherGoals(obs))
 			{
 				stopOthers = true;
 				break;
@@ -360,6 +390,7 @@ void BotWithAPlan::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::O
 		// Only allow the top choice to build it's dependencies. Otherwise we build one of everything
 		allowDependencies = false;
 	}
+	goalCategory++;
 }
 
 bool BotWithAPlan::ShouldSurrender(const sc2::ObservationInterface * obs)
