@@ -296,7 +296,7 @@ void BotWithAPlan::OnStep() {
 		{
 			auto hp = ipBuilding->shield + ipBuilding->health;
 			auto hpMax = (ipBuilding->shield_max + ipBuilding->shield_max) * ipBuilding->build_progress;
-			if (hp / hpMax < .2)
+			if (hp / hpMax < .15)
 			{
 				actions->UnitCommand(ipBuilding, ABILITY_ID::CANCEL);
 			}
@@ -327,9 +327,10 @@ void BotWithAPlan::OnStep() {
 	//Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
 
 	//Output minerals lost and estiamte threat.
-	Debug()->DebugTextOut("Minerals Lost:" + std::to_string(mineralsLost) + " Enemy Minerals Lost:" + std::to_string(enemyMineralsLost), Point2D(0,0.4));
-	Debug()->DebugTextOut("Gas Lost:" + std::to_string(gasLost) + " Enemy Gas Lost:" + std::to_string(enemyGasLost), Point2D(0, .42));
-	Debug()->DebugTextOut("Time Lost:" + std::to_string(buildTimeLost) + " Enemy Time Lost:" + std::to_string(enemyBuildTimeLost), Point2D(0, .44));
+	Debug()->DebugTextOut("Minerals Lost:" + std::to_string(threat.mineralsLost) + " Enemy Minerals Lost:" + std::to_string(threat.enemyMineralsLost), Point2D(0,0.4));
+	Debug()->DebugTextOut("Gas Lost:" + std::to_string(threat.gasLost) + " Enemy Gas Lost:" + std::to_string(threat.enemyGasLost), Point2D(0, .42));
+	Debug()->DebugTextOut("Time Lost:" + std::to_string(threat.buildTimeLost) + " Enemy Time Lost:" + std::to_string(threat.enemyBuildTimeLost), Point2D(0, .44));
+	Debug()->DebugTextOut("Threat Score: " + std::to_string(threatAnalyzer.GetThreat(&threat)), Point2D(0, .46));
 
 #if DEBUG_MODE	
 	Debug()->SendDebug();

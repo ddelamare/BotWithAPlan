@@ -106,7 +106,7 @@ namespace Util {
 
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
 
-		auto worker = FindClosestAvailableWorker(buildPos, obs, query, state);
+		auto worker = FindClosestAvailableBuilder(buildPos, obs, query, state);
 		if (DistanceSquared3D(buildPos, Point3D()) > 0)
 		{
 			// For vespene collectors, build ability must target geyser
@@ -118,7 +118,7 @@ namespace Util {
 			// Standard Placement
 			else
 			{
-				actions->UnitCommand(worker, build_ability, buildPos);
+				actions->UnitCommand(worker, build_ability, buildPos, IsBuildingStructure()(*worker, state));
 			}
 			debug->DebugSphereOut(buildPos, 3, Colors::Purple);
 			return true;

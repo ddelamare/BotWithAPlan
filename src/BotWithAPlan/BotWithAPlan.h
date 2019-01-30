@@ -8,13 +8,14 @@
 #include "sc2api/sc2_api.h"
 #include "Common\GameState.h"
 #include <iostream>
+#include "Common\Analyzers\ThreatAnalyzer.h"
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_arg_parser.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
-#define LADDER_MODE 0
+#define LADDER_MODE 1
 #define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME false	 
@@ -48,12 +49,8 @@ private:
 	const int STEPS_PER_GOAL = 1;
 	vector<string> debugMessages;
 	int goalCategory = 0;
-	int mineralsLost = 0;
-	int gasLost = 0;
-	int buildTimeLost = 0;
-	int enemyMineralsLost = 0;
-	int enemyGasLost = 0;
-	int enemyBuildTimeLost = 0;
+	ThreatModel threat;
+	ThreatAnalyzer threatAnalyzer;
 };
 
 

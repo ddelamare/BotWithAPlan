@@ -20,7 +20,7 @@ public:
 
 		this->conditions.push_back(new BaseCondition("Build Forge", 2, sc2::UNIT_TYPEID::PROTOSS_FORGE, 1));
 		this->results.push_back(new BaseResult((sc2::UNIT_TYPEID)sc2::ABILITY_ID::RESEARCH_PROTOSSGROUNDARMORLEVEL1, 1));
-		this->BaseAction::name = "Research Armor Weapons";
+		this->BaseAction::name = "Research Ground Armor";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;

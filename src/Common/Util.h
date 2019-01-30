@@ -73,7 +73,7 @@ namespace Util {
 		return hallNeedingMiners;
 	}
 
-	const static Unit* FindClosestAvailableWorker(Point3D point, const ObservationInterface* obs, QueryInterface* query, GameState* state)
+	const static Unit* FindClosestAvailableBuilder(Point3D point, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 	{
 		auto units = obs->GetUnits(Unit::Alliance::Self, IsWorker());
 		double distance = DBL_MAX;

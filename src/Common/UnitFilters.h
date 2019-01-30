@@ -1,6 +1,7 @@
 #pragma once
 #ifndef UNIT_FILTERS
 #include "GameState.h"
+#include "VectorHelpers.h"
 
 using namespace sc2;
 
@@ -8,6 +9,22 @@ struct IsIdle
 {
 	bool operator()(const Unit& unit) {
 		return unit.orders.size() == 0;
+	}
+};
+
+struct IsBuildingStructure
+{
+	bool operator()(const Unit& unit, GameState* state) {
+		if (unit.orders.size() == 0) return false;
+		// Possibly cache this if it's slow
+		for (auto type : state->UnitInfo)
+		{
+			if (VectorHelpers::FoundInVector(type.attributes, Attribute::Structure))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 };
 

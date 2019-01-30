@@ -8,8 +8,8 @@ class ArmyManager
 {
 	const double CLUSTER_DISTANCE_THRESHOLD_MIN = 10; // This value determines the threshold for being considered clustered
 	const double CLUSTER_DISTANCE_THRESHOLD_MAX = 30; // Ignore units too far away from center 
-	const double CLUSTER_PERCENT_THRESHOLD_MIN = 0.50; // If clusterinf percentage drops below this mark, flag as unclustered
-	const double CLUSTER_PERCENT_THRESHOLD_MAX = 0.80; // Once not clustered, has to reach this percentage to be considered clustered again
+	const double CLUSTER_PERCENT_THRESHOLD_MIN = 0.30; // If clusterinf percentage drops below this mark, flag as unclustered
+	const double CLUSTER_PERCENT_THRESHOLD_MAX = 0.50; // Once not clustered, has to reach this percentage to be considered clustered again
 	const double CLUSTER_MOVE_THRESHOLD = 2.5; //If unit with this distance of target and has not specfic target, don't move
 	std::vector<UnitTypeID> backLineUnits;
 private:

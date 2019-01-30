@@ -62,7 +62,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 // Checks if a group is close enough together
 bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
-	return true;
+	//return true;
 	if (group->units.size() <= 5) return false;
 	//return true;
 	//see if units are clustered well enough
@@ -107,7 +107,18 @@ void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const Observa
 			unitsToMove.push_back(unit);
 		}
 	}
-	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, averagePoint);
+	auto adjustedTarget = Point2D();
+	if (HasTarget(group) && includeAll)
+	{
+		// Try and pick a spot that will move the units to their target
+		adjustedTarget = ((group->target - averagePoint) * .1) + averagePoint;
+	}
+	else
+	{
+		adjustedTarget = averagePoint;
+	}
+
+	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, adjustedTarget);
 }
 void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {

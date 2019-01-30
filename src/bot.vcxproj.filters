@@ -47,6 +47,7 @@
     <ClCompile Include="Common\Managers\WorkerManager.cpp" />
     <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
     <ClCompile Include="Goals\Army\Mothership.cpp" />
+    <ClCompile Include="Common\Analyzers\ThreatAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -184,6 +185,8 @@
     <ClInclude Include="Goals\Army\Reactor.h" />
     <ClInclude Include="Goals\Upgrades\AirWeapons.h" />
     <ClInclude Include="Goals\Upgrades\AirArmor.h" />
+    <ClInclude Include="Common\Analyzers\ThreatAnalyzer.h" />
+    <ClInclude Include="Common\Entity\ThreatModel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

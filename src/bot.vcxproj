@@ -150,6 +150,7 @@
     <ClCompile Include="Planner\Results\BaseResult.cpp" />
     <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\PylonStrategy.cpp" />
+    <ClCompile Include="Common\Analyzers\ThreatAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
@@ -262,6 +263,8 @@
     <ClInclude Include="Goals\Army\VoidRay.h" />
     <ClInclude Include="Common\Managers\WorkerManager.h" />
     <ClInclude Include="Goals\Army\Reactor.h" />
+    <ClInclude Include="Common\Analyzers\ThreatAnalyzer.h" />
+    <ClInclude Include="Common\Entity\ThreatModel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,6 +14,7 @@ void::BotWithAPlan::OnUnitCreated(const Unit* unit)
 		// Clear Rally Point
 		Actions()->UnitCommand(unit, ABILITY_ID::RALLY_WORKERS, unit->pos);
 	}
+	auto type = state.UnitInfo[unit->unit_type];
 	state.CurrentUnits[unit->unit_type]++;
 }
 
@@ -36,15 +37,15 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 	// Estimate resources lost on both sides
 	if (unit->alliance == Unit::Alliance::Self)
 	{
-		mineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
-		gasLost += state.UnitInfo[unit->unit_type].vespene_cost;
-		buildTimeLost += state.UnitInfo[unit->unit_type].build_time;
+		threat.mineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
+		threat.gasLost += state.UnitInfo[unit->unit_type].vespene_cost;
+		threat.buildTimeLost += state.UnitInfo[unit->unit_type].build_time;
 	}
 	else
 	{
-		enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
-		enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
-		enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;
+		threat.enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
+		threat.enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
+		threat.enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;
 	}
 
 }

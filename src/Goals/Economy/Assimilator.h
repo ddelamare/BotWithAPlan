@@ -16,7 +16,7 @@ public:
 		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
 		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
 		auto nexs = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(UNIT_TYPEID::PROTOSS_NEXUS));
-		if (assimilators.size() >= 2 * nexs.size() || pylons.size() == 0 || assimilators.size() == 1 && obs->GetGameLoop()  < 1000)
+		if (assimilators.size() >= 2 * nexs.size() || pylons.size() == 0 || (assimilators.size() == 1 && obs->GetGameLoop() < 5000))
 			return 0;
 		else
 		{
