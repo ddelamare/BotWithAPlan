@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "sc2api\sc2_api.h"
+#include "Entity\ThreatModel.h"
 #include <vector>
 using namespace sc2;
 
@@ -33,4 +34,5 @@ struct GameState
 	UnitTypes UnitInfo;
 	int MaxEnemyFood;
 	Race opponentRace;
+	ThreatModel threat;
 };

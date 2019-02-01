@@ -26,6 +26,10 @@ public:
 		{
 			return 5;
 		}
+		else if (totalGates == 1 && obs->GetMinerals() > 150)
+		{
+			return 3;
+		}
 		else if (totalGates >= ((2 * nexus.size())))
 		{
 			return 0;

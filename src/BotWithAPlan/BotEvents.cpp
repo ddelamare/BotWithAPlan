@@ -37,15 +37,15 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 	// Estimate resources lost on both sides
 	if (unit->alliance == Unit::Alliance::Self)
 	{
-		threat.mineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
-		threat.gasLost += state.UnitInfo[unit->unit_type].vespene_cost;
-		threat.buildTimeLost += state.UnitInfo[unit->unit_type].build_time;
+		state.threat.mineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
+		state.threat.gasLost += state.UnitInfo[unit->unit_type].vespene_cost;
+		state.threat.buildTimeLost += state.UnitInfo[unit->unit_type].build_time;
 	}
 	else
 	{
-		threat.enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
-		threat.enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
-		threat.enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;
+		state.threat.enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
+		state.threat.enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
+		state.threat.enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;
 	}
 
 }

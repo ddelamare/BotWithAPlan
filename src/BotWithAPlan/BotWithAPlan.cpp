@@ -40,6 +40,7 @@
 #include "Goals\Tactics\AllOut.h"
 #include "Goals\Tactics\JustDoIt.h"
 #include "Goals\Tactics\ScoutSweep.h"
+#include "Goals\Tactics\ScoutMain.h"
 #include "Goals\Tactics\PickOffExpo.h"
 #include "Goals\Tactics\Rush.h"
 #include "Goals\Tactics\AttackProxy.h"
@@ -108,6 +109,7 @@ BotWithAPlan::BotWithAPlan()
 
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
+	//TacticsGoals.push_back(new ScoutMainGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
 	TacticsGoals.push_back(new JustDoitGoal());
 	TacticsGoals.push_back(new AttackProxyGoal());
@@ -116,7 +118,6 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new OracleHarrassGoal());
 	//TacticsGoals.push_back(new RushGoal());
 	//TacticsGoals.push_back(new Do4GateGoal());
-	//TacticsGoals.push_back(new RushGoal());
 
 	UpgradeGoals.push_back(new ChargelotGoal());
 	UpgradeGoals.push_back(new BlinkGoal());
@@ -327,10 +328,10 @@ void BotWithAPlan::OnStep() {
 	//Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()));
 
 	//Output minerals lost and estiamte threat.
-	Debug()->DebugTextOut("Minerals Lost:" + std::to_string(threat.mineralsLost) + " Enemy Minerals Lost:" + std::to_string(threat.enemyMineralsLost), Point2D(0,0.4));
-	Debug()->DebugTextOut("Gas Lost:" + std::to_string(threat.gasLost) + " Enemy Gas Lost:" + std::to_string(threat.enemyGasLost), Point2D(0, .42));
-	Debug()->DebugTextOut("Time Lost:" + std::to_string(threat.buildTimeLost) + " Enemy Time Lost:" + std::to_string(threat.enemyBuildTimeLost), Point2D(0, .44));
-	Debug()->DebugTextOut("Threat Score: " + std::to_string(threatAnalyzer.GetThreat(&threat)), Point2D(0, .46));
+	Debug()->DebugTextOut("Minerals Lost:" + std::to_string(state.threat.mineralsLost) + " Enemy Minerals Lost:" + std::to_string(state.threat.enemyMineralsLost), Point2D(0,0.4));
+	Debug()->DebugTextOut("Gas Lost:" + std::to_string(state.threat.gasLost) + " Enemy Gas Lost:" + std::to_string(state.threat.enemyGasLost), Point2D(0, .42));
+	Debug()->DebugTextOut("Time Lost:" + std::to_string(state.threat.buildTimeLost) + " Enemy Time Lost:" + std::to_string(state.threat.enemyBuildTimeLost), Point2D(0, .44));
+	Debug()->DebugTextOut("Threat Score: " + std::to_string(threatAnalyzer.GetThreat(&state.threat)), Point2D(0, .46));
 
 #if DEBUG_MODE	
 	Debug()->SendDebug();

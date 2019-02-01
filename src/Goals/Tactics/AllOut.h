@@ -7,13 +7,14 @@
 
 class AllOutGoal : public BaseAction
 {
+	ThreatAnalyzer threatAnalyzer;
+	bool hasSpoken = false;
 public:
 	AllOutGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Mass Units", 6, sc2::UNIT_TYPEID::PROTOSS_STALKER, 10, sc2::UNIT_TYPEID::PROTOSS_ROBOTICSBAY, 1, sc2::UNIT_TYPEID::PROTOSS_COLOSSUS, 4));
 		this->BaseAction::name = "All In";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 0;// obs->GetArmyCount() > 1;
+		return 50 * (threatAnalyzer.GetThreat(&state->threat) > 1.6);
 	};
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
@@ -32,7 +33,11 @@ public:
 			attackPoint = enemyStuff[0]->pos;
 		}
 		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
-
+		if (!hasSpoken)
+		{
+			actions->SendChat("GERONIMO!!!");
+			hasSpoken = true;
+		}
 		return madeStaker;
 	}
 };

@@ -23,7 +23,7 @@ public:
 		else
 		{
 			// No enemy army, find if theres a harrassing worker
-			auto enemyWorkers = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsArmy(), Util::ToPoint3D(state->StartingLocation), obs, 4);
+			auto enemyWorkers = Util::FindNearbyUnits(Unit::Alliance::Enemy, IsNotFlying(), Util::ToPoint3D(state->StartingLocation), obs, 20);
 			if (enemyWorkers.size())
 			{
 				return 5;

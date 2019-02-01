@@ -2,6 +2,7 @@
 #include "Common/Util.h"
 #include "Common/UnitHelpers.h"
 #include "Common\Entity\BattleGroup.h"
+#include "Common\Analyzers\ThreatAnalyzer.h"
 using namespace sc2;
 
 class ArmyManager
@@ -24,6 +25,7 @@ private:
 	Units cachedEnemies;  
 	Units cachedHighPriorityEnemies;
 	bool HasThermalLance;
+	ThreatAnalyzer threatAnalyzer;
 public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();

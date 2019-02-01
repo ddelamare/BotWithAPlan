@@ -49,7 +49,6 @@ private:
 	const int STEPS_PER_GOAL = 1;
 	vector<string> debugMessages;
 	int goalCategory = 0;
-	ThreatModel threat;
 	ThreatAnalyzer threatAnalyzer;
 };
 

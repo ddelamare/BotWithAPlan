@@ -474,4 +474,29 @@ struct IsNotFiller
 
 	}
 };
+
+struct IsNotFlying
+{
+	bool operator()(const Unit& unit)
+	{
+		return !unit.is_flying;
+	}
+};
+
+struct CombineFilters
+{
+	int numFilters;
+	Filter* filters;
+	CombineFilters(Filter first, Filter second)
+	{
+		numFilters = 2;
+		filters = new Filter[numFilters];
+		filters[0] = first;
+		filters[1] = second;
+	}
+	bool operator()(const Unit& unit)
+	{
+		return filters[0](unit) && filters[1](unit);
+	}
+};
 #endif // UNIT_FILTERS

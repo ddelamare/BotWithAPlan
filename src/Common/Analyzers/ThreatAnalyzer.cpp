@@ -14,6 +14,6 @@ double ThreatAnalyzer::GetThreat(ThreatModel* model)
 	auto selfCombinedScore = model->mineralsLost + model->gasLost + model->buildTimeLost;
 	auto diff = enemyCombinedScore - selfCombinedScore;
 	// if diff is negative, score will be less than 1
-	return 1.0 + (diff / ((selfCombinedScore + 1.0) * 4.0));
+	return 1.0 + (diff / ((selfCombinedScore + 1.0) * 5.0));
 }
 

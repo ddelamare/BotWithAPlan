@@ -62,6 +62,8 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 // Checks if a group is close enough together
 bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
+	if (threatAnalyzer.GetThreat(&state->threat) > 1.6)
+		return true;
 	//return true;
 	if (group->units.size() <= 5) return false;
 	//return true;
@@ -356,4 +358,6 @@ ArmyManager::ArmyManager()
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_CARRIER);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_TEMPEST);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_SENTRY);
+
+	threatAnalyzer = ThreatAnalyzer();
 }

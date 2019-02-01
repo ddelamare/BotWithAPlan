@@ -158,6 +158,7 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Goals\Tactics\ScoutMain.h" />
     <ClInclude Include="Goals\Upgrades\AirArmor.h" />
     <ClInclude Include="Goals\Upgrades\AirWeapons.h" />
     <ClInclude Include="Common\BotBase\PlanBotBase.h" />

@@ -187,6 +187,7 @@
     <ClInclude Include="Goals\Upgrades\AirArmor.h" />
     <ClInclude Include="Common\Analyzers\ThreatAnalyzer.h" />
     <ClInclude Include="Common\Entity\ThreatModel.h" />
+    <ClInclude Include="Goals\Tactics\ScoutMain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">
