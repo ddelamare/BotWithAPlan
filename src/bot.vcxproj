@@ -143,7 +143,6 @@
     <ClCompile Include="Common\Resource.cpp" />
     <ClCompile Include="Common\Strategy\Building\BuildingStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\AssimilatorStrategy.cpp" />
-    <ClCompile Include="Goals\Army\Mothership.cpp" />
     <ClCompile Include="Planner\Actions\BaseAction.cpp" />
     <ClCompile Include="Planner\Conditions\BaseCondition.cpp" />
     <ClCompile Include="Planner\Planner.cpp" />
@@ -158,6 +157,8 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Goals\Army\Factory.h" />
+    <ClInclude Include="Goals\Army\Medivac.h" />
     <ClInclude Include="Goals\Tactics\ScoutMain.h" />
     <ClInclude Include="Goals\Upgrades\AirArmor.h" />
     <ClInclude Include="Goals\Upgrades\AirWeapons.h" />
@@ -266,6 +267,9 @@
     <ClInclude Include="Goals\Army\Reactor.h" />
     <ClInclude Include="Common\Analyzers\ThreatAnalyzer.h" />
     <ClInclude Include="Common\Entity\ThreatModel.h" />
+    <ClInclude Include="Goals\Tactics\SuperCannonDefense.h" />
+    <ClInclude Include="Common\Strategy\Attacks\UnitMicro.h" />
+    <ClInclude Include="Goals\Army\Starport.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

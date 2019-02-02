@@ -1,5 +1,12 @@
 #include "stdafx.h"
 #include "BotWithAPlan.h"
+#include "Common\Strategy\Attacks\BlinkStalker.h"
+#include "Common\Strategy\Attacks\DisruptorAttack.h"
+#include "Common\Strategy\Attacks\Templar.h"
+#include "Common\Strategy\Attacks\VoidRay.h"
+#include "Common\Strategy\Attacks\SentryMicro.h"
+#include "Common\Strategy\Attacks\Phoenix.h"
+#include "Common\Strategy\Attacks\OracleAttack.h"
 #include "Common\UnitFilters.h"
 #include "Common\Util.h"
 void BotWithAPlan::OnBuildingConstructionComplete(const Unit*)
@@ -21,33 +28,7 @@ void::BotWithAPlan::OnUnitCreated(const Unit* unit)
 //! Called whenever one of the player's units has been destroyed.
 //!< \param unit The destroyed unit.
 void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
-	state.CurrentUnits[unit->unit_type]--;
-	if (VectorHelpers::FoundInVector(state.ScoutingUnits, unit))
-	{
-		VectorHelpers::RemoveFromVector(&state.ScoutingUnits, unit);
-	}
-
-	if (!state.HasCloakedUnits &&
-		Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemy(), unit->pos, Observation(), 20.0).size() == 0)
-	{
-		// Killed but no nearby enemies? Must be cloaked
-		this->state.HasCloakedUnits = true;
-	}
-
-	// Estimate resources lost on both sides
-	if (unit->alliance == Unit::Alliance::Self)
-	{
-		state.threat.mineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
-		state.threat.gasLost += state.UnitInfo[unit->unit_type].vespene_cost;
-		state.threat.buildTimeLost += state.UnitInfo[unit->unit_type].build_time;
-	}
-	else
-	{
-		state.threat.enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
-		state.threat.enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
-		state.threat.enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;
-	}
-
+	PlanBotBase::OnUnitDestroyed(unit);
 }
 
 
@@ -57,88 +38,20 @@ void BotWithAPlan::OnUnitEnterVision(const Unit* unit)
 }
 
 void BotWithAPlan::OnGameStart() {
-	LOG(1) << "Bot initialized" << endl;
+	auto obs = Observation();
+	auto query = Query();
 
-	auto players = Observation()->GetGameInfo().player_info;
-	LOG(1) << Util::GetStringFromRace(players[0].race_actual) << endl;
-	LOG(1) << Util::GetStringFromRace(players[1].race_actual) << endl;
+	PlanBotBase::OnGameStart();
 
-	auto nexus = Observation()->GetUnits(IsTownHall())[0];
-	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
-	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
-	if (enemyLocations.size() == 1)
-		state.EnemyBase = enemyLocations[0];
-	else if (enemyLocations.size() == 4)
-		state.EnemyBase = enemyLocations[0];
-	else
-		state.EnemyBase = enemyLocations[0];
+	// Init Micro
+	microManagers.push_back(new BlinkStalker(obs, query, &state));
+	microManagers.push_back(new DisruptorAttack(obs, query, &state));
+	microManagers.push_back(new TemplarMicro(obs, query, &state));
+	microManagers.push_back(new VoidRayAttack(obs, query, &state));
+	microManagers.push_back(new SentryMicro(obs, query, &state));
+	microManagers.push_back(new PhoenixLift(obs, query, &state));
+	microManagers.push_back(new OracleBeam(obs, query, &state));
 
-	state.StartingLocation = nexus->pos;
-
-	// Get all minerals and sort by x , then y pos
-	auto minerals = Observation()->GetUnits(Unit::Alliance::Neutral, IsMineralField());
-	int count = 0;
-	Point3D sum = Point3D();
-	const int MINERAL_DISTANCE_THRESHOLD = 150;
-	while (minerals.size() > 0)
-	{
-		Point3D origMineral = minerals[0]->pos;
-		sum = Point3D();
-		count = 0;
-		for (int j = 0; j < minerals.size();)
-		{
-			auto cluster = std::vector<Point3D>();
-			auto dis = DistanceSquared3D(origMineral, minerals[j]->pos);
-			if (dis < MINERAL_DISTANCE_THRESHOLD)
-			{
-				sum += minerals[j]->pos;
-				count++;
-				// Erase this element
-				minerals.erase(minerals.begin() + j, minerals.begin() + j + 1);
-			}
-			else
-			{
-				j++;
-			}
-		}
-
-		state.ExpansionLocations.push_back(sum / count);
-	}
-	// Remove starting pos as expansion location
-	auto closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, nexus->pos);
-	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
-	closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, Point3D(state.EnemyBase.x, state.EnemyBase.y, 0));
-	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
-    
-	// Sort expansions by distance to home base
-	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.StartingLocation));
-
-
-	// Calculate building offset
-	auto nearMinerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);
-
-	//Calc mineral vector and normalize
-	int visibleMinerals = 0;
-	Point3D nearSum;
-	for (auto min : nearMinerals)
-	{
-		if (min->display_type == Unit::DisplayType::Visible)
-		{
-			nearSum += min->pos;
-			visibleMinerals++;
-		}
-	}
-	if (visibleMinerals > 0)
-	{
-		nearSum /= visibleMinerals;
-		nearSum = nearSum - nexus->pos;
-		nearSum.z = 0;
-		Normalize3D(nearSum);
-		state.MineralDirection = nearSum;
-	}
-
-	//Cache unit info
-	state.UnitInfo = Observation()->GetUnitTypeData();
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");
 	Actions()->SendChat("Bot version: 1.6");

@@ -13,13 +13,14 @@
 #include "sc2lib/sc2_lib.h"
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_arg_parser.h"
+#include "Common\BotBase\PlanBotBase.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
 #define LADDER_MODE 1
 #define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME false	 
-class BotWithAPlan : public Agent {
+class BotWithAPlan : public PlanBotBase {
 public:
 	BotWithAPlan();
 	void OnGameStart();
@@ -30,26 +31,8 @@ public:
 	void OnUnitDestroyed(const Unit* unit);
 	void OnGameEnd();
 	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors);
-
-	bool Lost;
 private:
-	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers);
-	bool ShouldSurrender(const sc2::ObservationInterface * obs);
 
-	GoalPicker goalPicker;
-	Planner    planner;
-	ArmyManager armyManager;
-	vector<BaseAction*> EconomyGoals;
-	vector<BaseAction*> ArmyGoals;
-	vector<BaseAction*> TacticsGoals;
-	vector<BaseAction*> UpgradeGoals;
-	bool shouldRecalcuate;
-	GameState  state;
-	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 1;
-	vector<string> debugMessages;
-	int goalCategory = 0;
-	ThreatAnalyzer threatAnalyzer;
 };
 
 

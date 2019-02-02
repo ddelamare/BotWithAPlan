@@ -1,9 +1,10 @@
 #pragma once
 #include "Common/Util.h"
+#include "Common\Strategy\Attacks\UnitMicro.h"
 #include <vector>
 using namespace sc2;
 
-class OracleBeam
+class OracleBeam   : public UnitMicro
 {
 	UnitTypeData unitInfo;
 	UnitTypes* allUnitInfo;

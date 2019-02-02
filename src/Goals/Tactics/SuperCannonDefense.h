@@ -6,18 +6,20 @@
 #include "Common/Resource.h"
 #include "Common/Util.h"
 
-class ForgeFastExpandGoal : public BaseAction
+class CannonDefenseGoal : public BaseAction
 {
+	BaseCondition* cannons;
 public:
-	ForgeFastExpandGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Forge Nexus", 4, UNIT_TYPEID::PROTOSS_FORGE, 1, UNIT_TYPEID::PROTOSS_NEXUS, 2));
-		this->BaseAction::name = "Forge Fast Expand";
+	CannonDefenseGoal() : BaseAction() {
+		cannons = new BaseCondition("Static Defenses", 4, UNIT_TYPEID::PROTOSS_PHOTONCANNON, 7, UNIT_TYPEID::PROTOSS_SHIELDBATTERY, 3);
+		this->conditions.push_back(cannons);
+		this->BaseAction::name = "Build me some cannons";
+		holdOtherGoals = true;
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		if (state->opponentRace == Race::Zerg)
+		if (!cannons->IsMet(state))
 		{
-			if (state->CurrentUnits[sc2::UNIT_TYPEID::PROTOSS_NEXUS] == 1 && obs->GetGameLoop() < 4000)
-				return 5;
+			return 20;
 		}
 		else
 			return 0;
@@ -25,7 +27,6 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		// Nothing to do here
 		return false;
 	}
 };

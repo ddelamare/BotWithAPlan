@@ -1,8 +1,10 @@
 #pragma once
 #include "Common/Util.h"
+#include "Common\Strategy\Attacks\UnitMicro.h"
+
 using namespace sc2;
 
-class PhoenixLift
+class PhoenixLift : public UnitMicro
 {
 	UnitTypeData unitInfo;
 	UnitTypes* allUnitInfo;

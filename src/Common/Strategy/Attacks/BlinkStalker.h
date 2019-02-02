@@ -1,8 +1,9 @@
 #pragma once
 #include "Common/Util.h"
+#include "Common\Strategy\Attacks\UnitMicro.h"
 using namespace sc2;
 
-class BlinkStalker
+class BlinkStalker	: public UnitMicro
 {
 	UnitTypeData unitInfo;
 	const int STALKER_SHIELD_THRESH = 10;

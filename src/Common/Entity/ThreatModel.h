@@ -8,5 +8,6 @@ public:
 	int enemyMineralsLost = 0;
 	int enemyGasLost = 0;
 	int enemyBuildTimeLost = 0;
+	int gameTime = 0;
 };
 

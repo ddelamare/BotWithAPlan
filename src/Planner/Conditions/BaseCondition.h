@@ -34,6 +34,7 @@ public:
 		}
 		va_end(vl);
 	}
+	virtual bool IsMet(GameState* gs);
 	virtual bool IsMet(ResourceState*);
 	virtual ResourceMap GetRequiredResources(ResourceState* state);
 	ResourceMap UnmetResources(ResourceState* state);

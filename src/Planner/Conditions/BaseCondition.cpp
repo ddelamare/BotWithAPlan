@@ -1,6 +1,13 @@
 #pragma once
 #include "BaseCondition.h"
 
+bool BaseCondition::IsMet(GameState* gs)
+{
+	auto state = ResourceState();
+	state.resources = gs->CurrentUnits;
+	return IsMet(&state);
+}
+
 bool BaseCondition::IsMet(ResourceState* state)
 {
 	return HasAllResources(state);

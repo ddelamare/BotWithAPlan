@@ -116,7 +116,7 @@ namespace Util {
 				actions->UnitCommand(worker, ABILITY_ID::STOP, true); // Send worker to idle pool to be reassigned
 			}
 			// Standard Placement
-			else
+			else if (worker)
 			{
 				actions->UnitCommand(worker, build_ability, buildPos, IsBuildingStructure()(*worker, state));
 			}
@@ -129,7 +129,7 @@ namespace Util {
 
 	bool static TryBuildBuilding(AbilityID build_ability, UNIT_TYPEID unitType, const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return TryBuildBuilding(build_ability, unitType, obs, actions, query, debug,  state, new SpiralStrategy(build_ability, true, true, obs->GetGameInfo().player_info[0].race_actual));
+		return TryBuildBuilding(build_ability, unitType, obs, actions, query, debug,  state, new SpiralStrategy(build_ability, true, true, state->selfRace));
 	}
 
 	// Taken from sc2api/sc2libs/sc2_search and modfied with unit sizes

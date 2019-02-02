@@ -1,10 +1,11 @@
 #pragma once
 #include "Common/Util.h"
+#include "Common\Strategy\Attacks\UnitMicro.h"
 #include "sc2lib\sc2_search.h"
 #include <iostream>
 using namespace sc2;
 
-class DisruptorAttack
+class DisruptorAttack : public UnitMicro
 {
 	UnitTypeData unitInfo;
 	std::map<Tag, long> OrbMap;

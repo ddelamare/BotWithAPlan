@@ -33,6 +33,7 @@ struct GameState
 	bool HasCloakedUnits;
 	UnitTypes UnitInfo;
 	int MaxEnemyFood;
+	Race selfRace;
 	Race opponentRace;
 	ThreatModel threat;
 };

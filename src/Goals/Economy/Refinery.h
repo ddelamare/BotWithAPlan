@@ -16,7 +16,7 @@ public:
 		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_REFINERY));
 		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SCV));
 		auto nexs = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(UNIT_TYPEID::TERRAN_COMMANDCENTER));
-		if (assimilators.size() >= 2 * nexs.size() || pylons.size() == 0)
+		if (assimilators.size() >= 1 * nexs.size() || pylons.size() == 0)
 			return 0;
 		else
 		{
