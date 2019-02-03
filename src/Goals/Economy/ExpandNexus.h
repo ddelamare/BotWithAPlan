@@ -39,10 +39,13 @@ public:
 				score *= 1.1; // If we are nearing probe capacity we might expand
 			else
 				return 0;
-
-			if (score < CLAMP)
+			auto threatAnalyzer = ThreatAnalyzer();
+			auto threat = threatAnalyzer.GetThreat(&state->threat);
+			score *= threat;
+			if (score < CLAMP || threat < 0) // If we are losing a lot of units, don't expand
 				return 0;
 			else
+				// If we are ahead, we can expand more.  
 				return score;
 		}
 		else										 

@@ -184,6 +184,23 @@ namespace Util {
 		return false;
 	}
 
+	Units static GetUnitsWithOrder(Units units, ABILITY_ID ability)
+	{
+		Units unitsWithAbility;
+		for (auto unit : units)
+		{
+			if (unit->orders.size())
+			{
+				for (auto order : unit->orders)
+				{
+					if (order.ability_id == ability)
+						unitsWithAbility.push_back(unit);
+				}
+			}
+		}
+		return unitsWithAbility;
+	}
+
 
 	bool static DoesAnyUnitHaveOrder(Filter filter, ABILITY_ID ability, const ObservationInterface* obs)
 	{
@@ -216,6 +233,40 @@ namespace Util {
 		case sc2::Race::Zerg:	return "Zerg";
 		default: return "Random";
 		}
+	}
+
+	// This is a naive implementation since traveling salesman in npHard 
+	std::vector<Point3D> static FindShortestPath(Point3D startingPoint, std::vector<Point3D> pointsToVisit)
+	{
+		auto alreadyVisited = std::vector<Point3D>();
+		alreadyVisited.push_back(startingPoint);
+		auto currentPoint = &startingPoint;
+		for (int i = 0; i < pointsToVisit.size(); i++)
+		{
+			if (VectorHelpers::FoundInVector(alreadyVisited,pointsToVisit[i]) || &pointsToVisit[i] == currentPoint)
+			{
+				continue;
+			}
+			double min = DBL_MAX;
+			Point3D* min_point = 0;
+			for (int j = 0; j < pointsToVisit.size(); j++)
+			{
+				if (VectorHelpers::FoundInVector(alreadyVisited, pointsToVisit[j]) || &pointsToVisit[j] == currentPoint)
+				{
+					continue;
+				}
+				auto dis = DistanceSquared3D(*currentPoint, pointsToVisit[j]);
+				if (dis < min)
+				{
+					min = dis;
+					min_point = &pointsToVisit[j];
+				}
+			}
+			currentPoint = min_point;
+			alreadyVisited.push_back(*min_point);
+		}
+
+		return alreadyVisited;
 	}
 
 };

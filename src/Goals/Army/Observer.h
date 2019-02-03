@@ -22,7 +22,7 @@ public:
 			state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] > 0
 			|| state->HasCloakedUnits)
 		{
-			score = Util::FeedbackFunction(percent, .05, 3);
+			score = Util::FeedbackFunction(percent, .03, 3);
 		}
 
 		if (percent >= 1 && score < .1)	 // We really don;t need that many

@@ -22,12 +22,15 @@ public:
 	{
 		bool queuedScouting = false;
 		auto idleWorkers = obs->GetUnits(sc2::Unit::Alliance::Self, IsIdleWorker());
+
 		if (idleWorkers.size() && !state->ScoutingUnits.size())
 		{
+			auto start = state->ExpansionLocations[(rotation) % state->ExpansionLocations.size()];
+			auto shortestPath = Util::FindShortestPath(start, state->ExpansionLocations);
 			// Send it to every expo
-			for (int i = state->ExpansionLocations.size() - 1; i >= 0; i--)
+			for (int i = shortestPath.size() - 1; i >= 0; i--)
 			{
-				actions->UnitCommand(idleWorkers[0], ABILITY_ID::SMART, state->ExpansionLocations[(i + rotation) % state->ExpansionLocations.size()], true);
+				actions->UnitCommand(idleWorkers[0], ABILITY_ID::SMART, shortestPath[i], true);
 			}
 			state->ScoutingUnits.push_back(idleWorkers[0]);
 			rotation++;

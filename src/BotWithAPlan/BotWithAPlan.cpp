@@ -48,6 +48,7 @@
 #include "Goals\Tactics\ForgeFastExpand.h"
 #include "Goals\Tactics\OracleHarrass.h"
 #include "Goals\Tactics\SuperCannonDefense.h"
+#include "Goals\Tactics\ScoutEverything.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\GroundArmor.h"
@@ -97,6 +98,7 @@ BotWithAPlan::BotWithAPlan()
 
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
+	TacticsGoals.push_back(new ScoutEverythingGoal());
 	//TacticsGoals.push_back(new ScoutMainGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
 	TacticsGoals.push_back(new JustDoitGoal());

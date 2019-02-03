@@ -14,4 +14,5 @@ namespace VectorHelpers
 		if (item != list->end())
 			list->erase(item);
 	}
+
 }

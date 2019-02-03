@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="Goals\Army\Factory.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />
+    <ClInclude Include="Goals\Tactics\ScoutEverything.h" />
     <ClInclude Include="Goals\Tactics\ScoutMain.h" />
     <ClInclude Include="Goals\Upgrades\AirArmor.h" />
     <ClInclude Include="Goals\Upgrades\AirWeapons.h" />

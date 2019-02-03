@@ -192,6 +192,7 @@
     <ClInclude Include="Goals\Army\Factory.h" />
     <ClInclude Include="Goals\Army\Starport.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />
+    <ClInclude Include="Goals\Tactics\ScoutEverything.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

@@ -35,7 +35,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			if (HasTarget(&group))
 			{
 				AttackTarget(&group, obs, query, action, state, debug);
-			}
+			}								    
 		}
 		else if (group.mode == BattleMode::Retreat)
 		{
