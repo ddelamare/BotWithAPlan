@@ -10,7 +10,7 @@
 #include "Common\Strategy\Attacks\SentryMicro.h"
 #include "Common\Strategy\Attacks\Phoenix.h"
 #include <iostream>
-std::string testMap = "Test/OracleHarrass.SC2Map";
+std::string testMap = "Test/ColossusKite.SC2Map";
 using namespace sc2;
 class MicroBot : public Agent {
 public:
@@ -20,18 +20,12 @@ public:
 	}
 	void OnGameStart()
  	{
-		Debug()->DebugGiveAllTech();
+		//Debug()->DebugGiveAllTech();
 		Debug()->SendDebug();
 		
 		state.UnitInfo = Observation()->GetUnitTypeData();
 
-		auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
-		if (enemyLocations.size() == 1)
-			state.EnemyBase = enemyLocations[0];
-		else if (enemyLocations.size() == 4)
-			state.EnemyBase = enemyLocations[0];
-		else
-			state.EnemyBase = enemyLocations[0];
+
 	}
 
 	void OnStep() {
@@ -75,13 +69,13 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	coordinator.SetRealtime(true);
+	coordinator.SetRealtime(false);
 
 	// Add the custom bot, it will control the player.
 	MicroBot bot;
 	coordinator.SetParticipants({
 		CreateParticipant(sc2::Race::Protoss, &bot),
-		CreateComputer(sc2::Race::Zerg),
+		CreateComputer(sc2::Race::Protoss),
 		});
 
 	// Start the game.

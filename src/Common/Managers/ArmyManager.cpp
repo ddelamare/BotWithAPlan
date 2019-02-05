@@ -19,10 +19,9 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		{
 			if (IsClustered(&group, obs, query, action, state, debug))
 			{
-				if (HasTarget(&group))
-				{
-					AttackTarget(&group, obs, query, action, state, debug);
-				}
+				// Moves toward the target or attacks optimal units
+				AttackTarget(&group, obs, query, action, state, debug);
+				// Move units not in the cluster
 				ClusterUnits(&group,false, obs, query, action, state, debug);
 			}
 			else
@@ -32,10 +31,8 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		}
 		else if (group.mode == BattleMode::Defend)
 		{
-			if (HasTarget(&group))
-			{
-				AttackTarget(&group, obs, query, action, state, debug);
-			}								    
+			// Moves toward the target or attacks optimal units
+			AttackTarget(&group, obs, query, action, state, debug);
 		}
 		else if (group.mode == BattleMode::Retreat)
 		{
@@ -138,10 +135,8 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	// This point should be where the sqishy units go. AKA not the front lines
 	auto enemyAvgPoint = Util::GetAveragePoint(enemyUnits);
 	auto vectorAway = averagePoint - enemyAvgPoint;
+	vectorAway.z = 0;
 	Normalize3D(vectorAway);
-	Point3D vectorTowardTarget = Util::ToPoint3D(group->target) - averagePoint ;
-	vectorTowardTarget.z = 0;
-	vectorTowardTarget /= 2;
 	//Normalize3D(vectorTowardTarget);
 	Units unitsToMove;
 	float minSpeed = 0;
@@ -191,10 +186,11 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 		}
 	}
 	//if (query->PathingDistance(averagePoint, averagePoint + vectorTowardTarget) > 0)
-	{
+	//{
 	//	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, averagePoint + vectorTowardTarget);
-	}
+	//}
 	//else
+	if (HasTarget(group))
 	{
 		action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, group->target);
 	}
@@ -303,7 +299,9 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		const Unit* weakestUnit = nullptr;
 
 		// Sort by tag to prevent units from switching too quickly between units with the same health percentage. Otherwise, they change targets so much they can't attack.
-		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_tag());
+		//std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_tag());
+		// DIstance is a beter metric for ranged units and it reasonably unique.
+		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_distance(unit->pos));
 
 		for (auto eu : nearbyEnemies)
 		{
@@ -351,6 +349,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 
 ArmyManager::ArmyManager()
 {
+	// These units will also kite
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_COLOSSUS);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_DISRUPTOR);
@@ -358,6 +357,8 @@ ArmyManager::ArmyManager()
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_CARRIER);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_TEMPEST);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_SENTRY);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_STALKER);
+	backLineUnits.push_back(UNIT_TYPEID::TERRAN_MARINE);
 
 	threatAnalyzer = ThreatAnalyzer();
 }
