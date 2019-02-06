@@ -17,17 +17,14 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 
 		if (group.mode == BattleMode::Attack)
 		{
-			if (IsClustered(&group, obs, query, action, state, debug))
-			{
-				// Moves toward the target or attacks optimal units
-				AttackTarget(&group, obs, query, action, state, debug);
-				// Move units not in the cluster
-				ClusterUnits(&group,false, obs, query, action, state, debug);
-			}
-			else
-			{
-				ClusterUnits(&group,true, obs, query, action, state, debug);
-			}
+
+			// Moves toward the target or attacks optimal units
+			AttackTarget(&group, obs, query, action, state, debug);
+			// Move units not in the cluster
+			ClusterUnits(&group, 
+				!IsClustered(&group, obs, query, action, state, debug)
+				, obs, query, action, state, debug);
+
 		}
 		else if (group.mode == BattleMode::Defend)
 		{
