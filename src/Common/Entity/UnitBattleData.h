@@ -7,4 +7,5 @@ public:
 	std::string name;
 	int maxHealth;
 	int maxShields;
+	int movementType;
 };

@@ -24,8 +24,9 @@ public:
 	double CalculateWeaponHitDamage(Weapon* weapon, UnitTypeData* enemyType);
 	int GetEstimatedAttacksToKill(double damage, UnitTypeData * enemyType);
 	void LoadConfigFromFile(string filepath, bool forceClear);
-	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount);
-	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount);
+	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitTypeData* lhsUnit, UnitTypeData* rhsUnit);
+	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitTypeData* lhsUnit, UnitTypeData* rhsUnit);
+	double CalcuateExponent(UnitTypeData * lhsUnit, int lhsCount);
 	double PredictSurvivorsAlt(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount);
 };
 

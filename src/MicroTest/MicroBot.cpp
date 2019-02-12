@@ -11,7 +11,7 @@
 #include "Common\Strategy\Attacks\Phoenix.h"
 #include "Common\Analyzers\BattleAnalyzer.h"
 #include <iostream>
-std::string testMap = "Test/MarineZealot.SC2Map";
+std::string testMap = "Test/Empty.SC2Map";
 using namespace sc2;
 class MicroBot : public Agent {
 public:
@@ -34,8 +34,10 @@ public:
 
 		state.UnitInfo = Observation()->GetUnitTypeData();
 	}
-	UNIT_TYPEID lhsUnit = UNIT_TYPEID::PROTOSS_STALKER;	int lhsCount = 50;	UNIT_TYPEID rhsUnit = UNIT_TYPEID::TERRAN_SIEGETANK;
-	int rhsCount = 25;
+	UNIT_TYPEID lhsUnit = UNIT_TYPEID::PROTOSS_TEMPEST;
+	int lhsCount = 25;
+	UNIT_TYPEID rhsUnit = UNIT_TYPEID::PROTOSS_VOIDRAY;
+	int rhsCount = 45;
 	void OnStep() {
 		//manager.ManageGroups(Observation(), Query(), Actions(), &state, Debug());
 
@@ -64,12 +66,15 @@ public:
 				Debug()->DebugCreateUnit(lhsUnit, Point2D(40, 50), 1, lhsCount);
 				Debug()->DebugCreateUnit(rhsUnit, Point2D(80, 50), 2, rhsCount);
 
+				auto lhsUnitData = state.UnitInfo[(int)lhsUnit];
+				auto rhsUnitData = state.UnitInfo[(int)rhsUnit];
+
 				auto ab = new BattleAnalyzer("C:\\Users\\ddelam\\Documents\\Git\\BotWithAPlan\\src\\MicroTest\\Debug\\data\\unitinfo.json");
 				auto lhsRelStr = ab->GetRelativeStrength(lhsUnit, rhsUnit, &state);
 				auto rhsRelStr = ab->GetRelativeStrength(rhsUnit, lhsUnit, &state);
-				auto predictedWinner = ab->PredictWinner(lhsRelStr, lhsCount, rhsRelStr, rhsCount);
-				auto predictedSurviorsLhs = ab->PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount);
-				auto predictedSurviorsRhs = ab->PredictSurvivors(rhsRelStr, rhsCount, lhsRelStr, lhsCount);
+				auto predictedWinner = ab->PredictWinner(lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData);
+				auto predictedSurviorsLhs = ab->PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData);
+				auto predictedSurviorsRhs = ab->PredictSurvivors(rhsRelStr, rhsCount, lhsRelStr, lhsCount, &rhsUnitData, &lhsUnitData);
 
 				printf("Predicted Results: %f %f %d %f %f\n", lhsRelStr, rhsRelStr, predictedWinner, predictedSurviorsLhs, predictedSurviorsRhs);
 			}
@@ -105,7 +110,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	coordinator.SetRealtime(true);
+	coordinator.SetRealtime(false);
 
 	// Add the custom bot, it will control the player.
 	MicroBot bot;

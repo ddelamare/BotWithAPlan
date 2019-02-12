@@ -20,6 +20,7 @@ def GetDictFields (unit):
 	cleanUnit = {}
 	cleanUnit['maxHealth'] = subUnit["life"]["@max"]
 	cleanUnit['maxShields'] = subUnit["shields"]["@max"] if "shields" in subUnit else "0"
+	cleanUnit['movementType'] = subUnit["movement"]["@type"] if "movement" in subUnit else "None"
 	return cleanUnit
 
 directory = "Balance\\"
@@ -42,5 +43,6 @@ for unit in stableIds['Units']:
 		unitData = units[key]
 		unit["maxHealth"] = int(unitData["maxHealth"])
 		unit["maxShields"] = int(unitData["maxShields"])
+		unit["movementType"] = 2 if unitData["movementType"] == "Fly" else 1
 
 json.dump(stableIds['Units'], jsonfile)
