@@ -13,10 +13,10 @@ class BattleAnalyzer
 	// These will store the unit currently in battle 
 	UnitMap leftSideUnits;
 	UnitMap rightSideUnits;
-	static std::map<int, UnitBattleData> unitData;
 public:
 	BattleAnalyzer(string filepath);
 	~BattleAnalyzer();
+	static std::map<int, UnitBattleData> unitData;
 
 
 	double GetRelativeStrength(UnitTypeID leftUnit, UnitTypeID right_Unit, GameState* state);
@@ -24,9 +24,11 @@ public:
 	double CalculateWeaponHitDamage(Weapon* weapon, UnitTypeData* enemyType);
 	int GetEstimatedAttacksToKill(double damage, UnitTypeData * enemyType);
 	void LoadConfigFromFile(string filepath, bool forceClear);
-	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitTypeData* lhsUnit, UnitTypeData* rhsUnit);
-	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitTypeData* lhsUnit, UnitTypeData* rhsUnit);
-	double CalcuateExponent(UnitTypeData * lhsUnit, int lhsCount);
+	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit);
+	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit);
+	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData * lhsUnit, UnitBattleData * rhsUnit, double lhsExp, double rhsExp);
+	double CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount);
 	double PredictSurvivorsAlt(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount);
+	double EstimateActualExponent(int actualSurvivorsLeft, int actualSurviorsRight, double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData * lhsUnit, UnitBattleData * rhsUnit, int depth);
 };
 

@@ -92,12 +92,11 @@ int BattleAnalyzer::GetEstimatedAttacksToKill(double damage, UnitTypeData* enemy
 	return ceil(hitsToKill);
 }
 
-double exponent = 1.7;
 // For optimized for ranged units
 // TODO: Confidence interval?
 // TODO: Could be a toss up
 // TODO: Dynamic exponent based on unit range and stackability (including size and flying or not)
-int BattleAnalyzer::PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitTypeData* lhsUnit, UnitTypeData* rhsUnit)
+int BattleAnalyzer::PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit)
 {
 	auto lhsArmyStr = lhsRelStr * pow(lhsCount, CalcuateExponent(lhsUnit, lhsCount));
 	auto rhsArmyStr = rhsRelStr * pow(rhsCount, CalcuateExponent(rhsUnit, rhsCount));
@@ -118,7 +117,7 @@ int BattleAnalyzer::PredictWinner(double lhsRelStr, int lhsCount, double rhsRelS
 // - Dynamic exponent based on unit range and stackability (including size and flying or not)
 // TODO: Add pessimistic, mid, and optimistic results.
 // TODO: Calculate actual exponent based on survivors
-double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitTypeData* lhsUnit, UnitTypeData* rhsUnit)
+double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit)
 {
 	if (lhsRelStr == 0.0) return 0;
 	if (rhsRelStr == 0.0) return lhsCount;
@@ -126,37 +125,47 @@ double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double r
 	auto lhsExp = CalcuateExponent(lhsUnit, lhsCount);
 	auto rhsExp = CalcuateExponent(rhsUnit, rhsCount);
 
+	return PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, lhsUnit, rhsUnit, lhsExp,rhsExp);
+}
+
+double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, double lhsExp, double rhsExp)
+{
 	auto survivorsSqaured = pow(lhsCount, lhsExp) - ((rhsRelStr / lhsRelStr)*pow(rhsCount, rhsExp));
-	
+
 	// If we modified the exponent, it's more accureate to use average exp for root
 	auto combinedExp = (1 / (((lhsExp + rhsExp) / 2)));
-	auto combinedExp2 = (2 / (lhsExp + rhsExp));
 
-	// They'd lose thier imaginary army
- 	if (survivorsSqaured < 0) return -pow(-survivorsSqaured, combinedExp);
-	
+	// They'd lose their imaginary army
+	if (survivorsSqaured < 0) return -pow(-survivorsSqaured, combinedExp);
+
 	return pow(survivorsSqaured, combinedExp);
 }
 
-double BattleAnalyzer::CalcuateExponent(UnitTypeData* lhsUnit, int lhsCount)
+double BattleAnalyzer::CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount)
 {
-	if (lhsUnit->unit_type_id == UNIT_TYPEID::ZERG_ROACH)
+	double exponent = 2.0;
+
+	if (lhsUnit->movementType != 2) //Flying
+	{
+		exponent = 1.7;
+	}
+
+	if (lhsUnit->id == (int)UNIT_TYPEID::ZERG_ROACH)
 	{
 		return exponent - .05;
 	}
-	if (lhsUnit->unit_type_id == UNIT_TYPEID::ZERG_ZERGLING)
+	if (lhsUnit->id == (int)UNIT_TYPEID::ZERG_ZERGLING)
 	{
 		return 1.4;
 	}
-	// Melee units
-	if (lhsUnit->weapons[0].range < 1)
-	{
-		return 1.5;
-	}
+	//// Melee units
+	//if (lhsUnit->weapons[0].range < 1)
+	//{
+	//	return 1.4;
+	//}
 
 	return exponent;
 }
-
 
 void BattleAnalyzer::LoadConfigFromFile(string filepath, bool forceClear)
 {
@@ -194,7 +203,7 @@ void BattleAnalyzer::LoadConfigFromFile(string filepath, bool forceClear)
 		unitBattleData.name = name;
 		unitBattleData.maxHealth = maxHealth;
 		unitBattleData.maxShields = maxShields;
-		unitBattleData.movementType = movementType;
+		unitBattleData.movementType = movementType;
 
 		unitData[id] = unitBattleData;
 		//for (Value::ConstMemberIterator itr2 = itr->MemberBegin();
@@ -206,4 +215,36 @@ void BattleAnalyzer::LoadConfigFromFile(string filepath, bool forceClear)
 	}
 	LOG(1) << "Loaded Unit Data\n";
 
+}
+
+
+double BattleAnalyzer::EstimateActualExponent(int actualSurvivorsLeft, int actualSurviorsRight, double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, int depth)
+{
+	//Preconditions: actualSurvivors > 0
+	if (lhsCount == 1) return 0;
+	auto lhsExp = CalcuateExponent(lhsUnit, lhsCount);
+	auto rhsExp = CalcuateExponent(rhsUnit, rhsCount);
+	double expVariance = 2.0;
+	for (int i = 0; i < depth; i++)
+	{
+		double predictedLeft = PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, lhsUnit, rhsUnit, lhsExp, rhsExp);
+
+		if (predictedLeft < actualSurviorsRight)
+		{
+			// increase exponent
+			lhsExp += expVariance;
+		}
+		else if (predictedLeft == actualSurviorsRight)
+		{
+			return lhsExp;
+		}
+		else if (predictedLeft > actualSurviorsRight)
+		{
+			 // decrease exponent
+			lhsExp -= expVariance;
+		}
+		// Shrink the window every time
+		expVariance /= 2;
+	}
+	return lhsExp;
 }
