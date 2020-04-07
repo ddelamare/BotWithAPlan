@@ -28,7 +28,7 @@ double BattleAnalyzer::GetRelativeStrength(UnitTypeID leftUnit, UnitTypeID right
 	auto ruType = state->UnitInfo[rightUnit];
 
 
-	Weapon* bestWeapon = GetBestWeapon(&luType, &ruType, state);
+	Weapon* bestWeapon  = GetBestWeapon(&luType, &ruType);
 
 	// Fail conditions
 	if (bestWeapon == nullptr) return 0;
@@ -44,8 +44,8 @@ double BattleAnalyzer::GetRelativeStrength(UnitTypeID leftUnit, UnitTypeID right
 	return  relStr;
 }
 
-// Get the correct weapon to use. TODO: Find a way to do flying vs not
-Weapon* BattleAnalyzer::GetBestWeapon(UnitTypeData* luType, UnitTypeData* ruType, GameState* state)
+// Get the correct weapon to use.
+Weapon* BattleAnalyzer::GetBestWeapon(UnitTypeData* luType, UnitTypeData* ruType)
 {
 	Weapon* bestWeapon = nullptr;
 	double maxDamage = 0.0;
@@ -96,10 +96,10 @@ int BattleAnalyzer::GetEstimatedAttacksToKill(double damage, UnitTypeData* enemy
 // TODO: Confidence interval?
 // TODO: Could be a toss up
 // TODO: Dynamic exponent based on unit range and stackability (including size and flying or not)
-int BattleAnalyzer::PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit)
+int BattleAnalyzer::PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, GameState* state)
 {
-	auto lhsArmyStr = lhsRelStr * pow(lhsCount, CalcuateExponent(lhsUnit, lhsCount));
-	auto rhsArmyStr = rhsRelStr * pow(rhsCount, CalcuateExponent(rhsUnit, rhsCount));
+	auto lhsArmyStr = lhsRelStr * pow(lhsCount, CalcuateExponent(lhsUnit, lhsCount, rhsUnit, rhsCount, state));
+	auto rhsArmyStr = rhsRelStr * pow(rhsCount, CalcuateExponent(rhsUnit, rhsCount, lhsUnit, lhsCount, state));
 
 	//Extra explicit cases;
 	if (lhsArmyStr == rhsArmyStr) return 0;
@@ -117,18 +117,18 @@ int BattleAnalyzer::PredictWinner(double lhsRelStr, int lhsCount, double rhsRelS
 // - Dynamic exponent based on unit range and stackability (including size and flying or not)
 // TODO: Add pessimistic, mid, and optimistic results.
 // TODO: Calculate actual exponent based on survivors
-double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit)
+double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, GameState* state)
 {
 	if (lhsRelStr == 0.0) return 0;
 	if (rhsRelStr == 0.0) return lhsCount;
 
-	auto lhsExp = CalcuateExponent(lhsUnit, lhsCount);
-	auto rhsExp = CalcuateExponent(rhsUnit, rhsCount);
+	auto lhsExp = CalcuateExponent(lhsUnit, lhsCount, rhsUnit, rhsCount, state);
+	auto rhsExp = CalcuateExponent(rhsUnit, rhsCount, lhsUnit, lhsCount, state);
 
-	return PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, lhsUnit, rhsUnit, lhsExp,rhsExp);
+	return PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, lhsUnit, rhsUnit, lhsExp,rhsExp, state);
 }
 
-double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, double lhsExp, double rhsExp)
+double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, double lhsExp, double rhsExp, GameState* state)
 {
 	auto survivorsSqaured = pow(lhsCount, lhsExp) - ((rhsRelStr / lhsRelStr)*pow(rhsCount, rhsExp));
 
@@ -141,7 +141,7 @@ double BattleAnalyzer::PredictSurvivors(double lhsRelStr, int lhsCount, double r
 	return pow(survivorsSqaured, combinedExp);
 }
 
-double BattleAnalyzer::CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount)
+double BattleAnalyzer::CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount, UnitBattleData* rhsUnit, int rhsCount, GameState* state)
 {
 	double exponent = 2.0;
 
@@ -150,19 +150,27 @@ double BattleAnalyzer::CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount)
 		exponent = 1.7;
 	}
 
-	if (lhsUnit->id == (int)UNIT_TYPEID::ZERG_ROACH)
+	Weapon* bestWeapon = GetBestWeapon(&state->UnitInfo[lhsUnit->id], &state->UnitInfo[rhsUnit->id]);
+	Weapon* enemyWeapon = GetBestWeapon(&state->UnitInfo[rhsUnit->id], &state->UnitInfo[lhsUnit->id]);
+
+	if (!bestWeapon || !enemyWeapon) return exponent;
+
+	auto rangeDifference = bestWeapon->range - enemyWeapon->range;
+	
+	// increase the exponent only if the lhsUnit has a packing efficiency advantage. EG, more units can attack when units are at maximum engagment distance
+	// The idea here is that when two ranged armies engage, more of the units with longer range will be able to fire. Test marines vs adepts to see diference.
+	if (rangeDifference > 0 && lhsUnit->movementType != 2)
 	{
-		return exponent - .05;
+		// Seems to overestimate strength against melee
+		auto rowsFiring = ceil(rangeDifference / lhsUnit->radius);
+		exponent += rowsFiring / 55;    //magic number that seems to work 
 	}
-	if (lhsUnit->id == (int)UNIT_TYPEID::ZERG_ZERGLING)
+	
+	//// Melee units
+	if (bestWeapon->range <= 1)
 	{
 		return 1.4;
 	}
-	//// Melee units
-	//if (lhsUnit->weapons[0].range < 1)
-	//{
-	//	return 1.4;
-	//}
 
 	return exponent;
 }
@@ -198,12 +206,16 @@ void BattleAnalyzer::LoadConfigFromFile(string filepath, bool forceClear)
 		if (itr->HasMember("maxShields"))
 			maxShields = itr->FindMember("maxShields")->value.GetInt();
 		movementType = itr->FindMember("movementType")->value.GetInt();
+		float radius;
+		if (itr->HasMember("radius"))
+			radius = itr->FindMember("radius")->value.GetFloat();
 		auto unitBattleData = UnitBattleData();
 		unitBattleData.id = id;
 		unitBattleData.name = name;
 		unitBattleData.maxHealth = maxHealth;
 		unitBattleData.maxShields = maxShields;
 		unitBattleData.movementType = movementType;
+		unitBattleData.radius = radius;
 
 		unitData[id] = unitBattleData;
 		//for (Value::ConstMemberIterator itr2 = itr->MemberBegin();
@@ -218,27 +230,27 @@ void BattleAnalyzer::LoadConfigFromFile(string filepath, bool forceClear)
 }
 
 
-double BattleAnalyzer::EstimateActualExponent(int actualSurvivorsLeft, int actualSurviorsRight, double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, int depth)
+double BattleAnalyzer::EstimateActualExponent(int actualSurvivorsLeft, int actualSurviorsRight, double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, int depth, GameState* state)
 {
 	//Preconditions: actualSurvivors > 0
-	if (lhsCount == 1) return 0;
-	auto lhsExp = CalcuateExponent(lhsUnit, lhsCount);
-	auto rhsExp = CalcuateExponent(rhsUnit, rhsCount);
+	if (lhsCount <= 1) return 0;
+	auto lhsExp = CalcuateExponent(lhsUnit, lhsCount, rhsUnit, rhsCount, state);
+	auto rhsExp = CalcuateExponent(rhsUnit, rhsCount, lhsUnit, lhsCount, state);
 	double expVariance = 2.0;
 	for (int i = 0; i < depth; i++)
 	{
-		double predictedLeft = PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, lhsUnit, rhsUnit, lhsExp, rhsExp);
+		double predictedLeft = PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, lhsUnit, rhsUnit, lhsExp, rhsExp, state);
 
-		if (predictedLeft < actualSurviorsRight)
+		if (predictedLeft < actualSurvivorsLeft)
 		{
 			// increase exponent
 			lhsExp += expVariance;
 		}
-		else if (predictedLeft == actualSurviorsRight)
+		else if (predictedLeft == actualSurvivorsLeft)
 		{
 			return lhsExp;
 		}
-		else if (predictedLeft > actualSurviorsRight)
+		else if (predictedLeft > actualSurvivorsLeft)
 		{
 			 // decrease exponent
 			lhsExp -= expVariance;

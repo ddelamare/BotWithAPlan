@@ -20,8 +20,9 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto gateways = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
 		auto warpgates = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_WARPGATE));
-		int totalGates = gateways.size() + warpgates.size();
+		unsigned int totalGates = gateways.size() + warpgates.size();
 		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		bool capped = totalGates >= (3 * nexus.size());
 		if (!totalGates)
 		{
 			return 5;
@@ -30,13 +31,13 @@ public:
 		{
 			return 3;
 		}
-		else if (totalGates >= ((2 * nexus.size())))
+		if (capped)
 		{
 			return 0;
 		}
 		else if (obs->GetFoodArmy() > 0)
 		{
-			return obs->GetFoodArmy() / (int)(3 * totalGates);
+			return obs->GetFoodArmy() / (int)(4 * totalGates);
 		}
 		return 0;
 	}

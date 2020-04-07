@@ -19,7 +19,7 @@ public:
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_ROBOTICSBAY), ABILITY_ID::RESEARCH_EXTENDEDTHERMALLANCE, obs))
 			return 0;
 		int unitCount = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_COLOSSUS)).size();
-		score = Util::ExponentialIncrease(unitCount, .25);
+		score = Util::ExponentialIncrease(unitCount, .45);
 
 		return score;
 	};

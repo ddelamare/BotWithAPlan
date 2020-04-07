@@ -20,7 +20,8 @@ public:
 		score = Util::FeedbackFunction(percent, .3, 1.0);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
-			||state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] >= 6)
+			//||state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] >= 6
+			)
 		{
 			score *= 2.5;
 		}

@@ -36,9 +36,9 @@ public:
 		// If we are below ideal harvesters, give it more weight
 		if (score > 0)
 		{
-			score += 5; 
+			score += 1; 
 		}
-		return score;
+		return score * .5;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

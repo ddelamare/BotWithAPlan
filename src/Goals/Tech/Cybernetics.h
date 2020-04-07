@@ -18,6 +18,8 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildBuilding(ABILITY_ID::BUILD_CYBERNETICSCORE, UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, obs, actions, query, debug, state);
+		if (!Util::IsAnyWorkerCommitted(ABILITY_ID::BUILD_CYBERNETICSCORE, obs)) {
+			return Util::TryBuildBuilding(ABILITY_ID::BUILD_CYBERNETICSCORE, UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, obs, actions, query, debug, state);
+		}
 	}
 };

@@ -7,6 +7,7 @@
 
 class PickOffExpoGoal : public BaseAction
 {
+	ThreatAnalyzer threatAnalyzer;
 public:
 	PickOffExpoGoal() : BaseAction() {
 		this->BaseAction::name = "Pick Off Expo";
@@ -20,7 +21,8 @@ public:
 		{
 			score += Distance2D(expo->pos, state->EnemyBase);
 		}
-		score = score / 10;
+		score = score / 200;
+		score *= threatAnalyzer.GetThreat(&state->threat);
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

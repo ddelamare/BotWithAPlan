@@ -14,7 +14,7 @@ public:
 		this->BaseAction::name = "All In";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 50 * (threatAnalyzer.GetThreat(&state->threat) > 1.6);
+		return 50 * (threatAnalyzer.GetThreat(&state->threat) > 1.4);
 	};
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

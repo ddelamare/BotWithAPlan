@@ -39,22 +39,27 @@ public:
 
 		state.UnitInfo = Observation()->GetUnitTypeData();
 
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 10, UNIT_TYPEID::PROTOSS_ADEPT, 5));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 10, UNIT_TYPEID::PROTOSS_ADEPT, 5));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 20, UNIT_TYPEID::PROTOSS_ADEPT, 10));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 40, UNIT_TYPEID::PROTOSS_ADEPT, 20));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 40, UNIT_TYPEID::PROTOSS_ADEPT, 20));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 80, UNIT_TYPEID::PROTOSS_ADEPT, 40));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 160, UNIT_TYPEID::PROTOSS_ADEPT, 80));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 160, UNIT_TYPEID::PROTOSS_ADEPT, 80));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::ZERG_ZERGLING, 240));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 150));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_PHOENIX, 30));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
+		/*testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
 		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
 		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 5, UNIT_TYPEID::TERRAN_MARINE, 30));
 		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
 		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 30, UNIT_TYPEID::TERRAN_MARINE, 180));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ARCHON, 25, UNIT_TYPEID::PROTOSS_VOIDRAY, 25));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 1, UNIT_TYPEID::PROTOSS_VOIDRAY, 1));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_SIEGETANKSIEGED, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 30, UNIT_TYPEID::TERRAN_MARINE, 180));*/
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ARCHON, 25, UNIT_TYPEID::PROTOSS_VOIDRAY, 25));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 1, UNIT_TYPEID::PROTOSS_VOIDRAY, 1));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_SIEGETANKSIEGED, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
 
 
 	}
@@ -84,11 +89,11 @@ public:
 				double estimatedExp;
 				if (winner == 1)
 				{
-					estimatedExp = ab->EstimateActualExponent(selfUnits.size(), enemyUnits.size(), lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData, 10);
+					estimatedExp = ab->EstimateActualExponent(selfUnits.size(), enemyUnits.size(), lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData, 10, &state);
 				}
 				else
 				{
-					estimatedExp = ab->EstimateActualExponent(enemyUnits.size(), selfUnits.size(), rhsRelStr, rhsCount, lhsRelStr, lhsCount, &lhsUnitData, &rhsUnitData, 10);
+					estimatedExp = ab->EstimateActualExponent(enemyUnits.size(), selfUnits.size(), rhsRelStr, rhsCount, lhsRelStr, lhsCount, &lhsUnitData, &rhsUnitData, 10, &state);
 				}
 				cout << "Estimated Exponent: " << estimatedExp << endl;
 
@@ -116,9 +121,9 @@ public:
 
 				lhsRelStr = ab->GetRelativeStrength(lhsUnit, rhsUnit, &state);
 				rhsRelStr = ab->GetRelativeStrength(rhsUnit, lhsUnit, &state);
-				predictedWinner = ab->PredictWinner(lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData);
-				predictedSurviorsLhs = ab->PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData);
-				predictedSurviorsRhs = ab->PredictSurvivors(rhsRelStr, rhsCount, lhsRelStr, lhsCount, &rhsUnitData, &lhsUnitData);
+				predictedWinner = ab->PredictWinner(lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData, &state);
+				predictedSurviorsLhs = ab->PredictSurvivors(lhsRelStr, lhsCount, rhsRelStr, rhsCount, &lhsUnitData, &rhsUnitData, &state);
+				predictedSurviorsRhs = ab->PredictSurvivors(rhsRelStr, rhsCount, lhsRelStr, lhsCount, &rhsUnitData, &lhsUnitData, &state);
 
 				cout << "Matchup: " << state.UnitInfo[(int)lhsUnit].name << ": " << lhsCount <<" vs. "<< state.UnitInfo[(int)rhsUnit].name << ": " << rhsCount << endl;
 				cout << "Predicted Results: " << lhsRelStr << " " << rhsRelStr << " " << predictedWinner << " " << predictedSurviorsLhs << " " << predictedSurviorsRhs << endl;

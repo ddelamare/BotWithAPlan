@@ -274,6 +274,7 @@
     <ClInclude Include="Goals\Tactics\SuperCannonDefense.h" />
     <ClInclude Include="Common\Strategy\Attacks\UnitMicro.h" />
     <ClInclude Include="Goals\Army\Starport.h" />
+    <ClInclude Include="Goals\Tactics\RetreatGoal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

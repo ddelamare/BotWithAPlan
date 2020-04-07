@@ -20,15 +20,15 @@ public:
 
 
 	double GetRelativeStrength(UnitTypeID leftUnit, UnitTypeID right_Unit, GameState* state);
-	Weapon* GetBestWeapon(UnitTypeData* leftUnit, UnitTypeData* rightUnit, GameState* state);
+	Weapon* GetBestWeapon(UnitTypeData* leftUnit, UnitTypeData* rightUnit);
 	double CalculateWeaponHitDamage(Weapon* weapon, UnitTypeData* enemyType);
 	int GetEstimatedAttacksToKill(double damage, UnitTypeData * enemyType);
 	void LoadConfigFromFile(string filepath, bool forceClear);
-	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit);
-	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit);
-	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData * lhsUnit, UnitBattleData * rhsUnit, double lhsExp, double rhsExp);
-	double CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount);
+	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, GameState* state);
+	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, GameState* state);
+	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData * lhsUnit, UnitBattleData * rhsUnit, double lhsExp, double rhsExp, GameState* state);
+	double CalcuateExponent(UnitBattleData* lhsUnit, int lhsCount, UnitBattleData* rhsUnit, int rhsCount, GameState* state);
 	double PredictSurvivorsAlt(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount);
-	double EstimateActualExponent(int actualSurvivorsLeft, int actualSurviorsRight, double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData * lhsUnit, UnitBattleData * rhsUnit, int depth);
+	double EstimateActualExponent(int actualSurvivorsLeft, int actualSurviorsRight, double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, int depth, GameState* state);
 };
 

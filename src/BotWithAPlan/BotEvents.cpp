@@ -60,10 +60,7 @@ void BotWithAPlan::OnGameStart() {
 
 void BotWithAPlan::OnGameEnd()
 {
-	  // If we have no town halls, we probably lost
-	auto th = Observation()->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-	this->Lost |= (th.size() == 0);
-	auto gameResults = Observation()->GetResults();
+
 }
 
 std::string ClientErrorToString(sc2::ClientError error)

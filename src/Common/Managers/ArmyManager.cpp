@@ -1,4 +1,5 @@
 #include "Common/Managers/ArmyManager.h"
+#include <iostream>
 using namespace sc2;
 void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
@@ -15,9 +16,9 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 	for (auto group : battleGroups)
 	{
 
+
 		if (group.mode == BattleMode::Attack)
 		{
-
 			// Moves toward the target or attacks optimal units
 			AttackTarget(&group, obs, query, action, state, debug);
 			// Move units not in the cluster
@@ -300,14 +301,29 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		// DIstance is a beter metric for ranged units and it reasonably unique.
 		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_distance(unit->pos));
 
-		for (auto eu : nearbyEnemies)
+		// Units needing to get sniped RIGHT NOW
+		for (auto eu : nearbyEnemies) 
 		{
-			auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
-			// Find weakest unit below full health, unless it's high priority, in which case include full health. This is so we can target pylons even if there's observers or something near by
-			if (percentHealth < minPercent && (isHighPriority ||  percentHealth < 1.0))
+		
+			// Infestors must die
+			if (IsUnit(UNIT_TYPEID::ZERG_INFESTOR)(*eu))
 			{
 				weakestUnit = eu;
-				minPercent = percentHealth;
+			}
+		}
+
+		// If there are no priority targets, then find unit with least health.
+		if (!weakestUnit)
+		{
+			for (auto eu : nearbyEnemies)
+			{
+				auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
+				// Find weakest unit below full health, unless it's high priority, in which case include full health. This is so we can target pylons even if there's observers or something near by
+				if (percentHealth < minPercent && (isHighPriority || percentHealth < 1.0))
+				{
+					weakestUnit = eu;
+					minPercent = percentHealth;
+				}
 			}
 		}
 		if (!weakestUnit)

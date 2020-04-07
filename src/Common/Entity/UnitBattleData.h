@@ -8,4 +8,5 @@ public:
 	int maxHealth;
 	int maxShields;
 	int movementType;
+	float radius;
 };

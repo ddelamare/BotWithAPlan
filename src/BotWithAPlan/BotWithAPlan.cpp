@@ -49,6 +49,7 @@
 #include "Goals\Tactics\OracleHarrass.h"
 #include "Goals\Tactics\SuperCannonDefense.h"
 #include "Goals\Tactics\ScoutEverything.h"
+#include "Goals\Tactics\RetreatGoal.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\GroundArmor.h"
@@ -79,20 +80,21 @@ BotWithAPlan::BotWithAPlan()
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
-	ArmyGoals.push_back(new AdeptGoal());
+	//ArmyGoals.push_back(new AdeptGoal());
 	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new VoidRayGoal());
 	ArmyGoals.push_back(new ImmortalGoal());
 	ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
 	ArmyGoals.push_back(new HighTemplarGoal());
-	ArmyGoals.push_back(new ArchonGoal());
+	//ArmyGoals.push_back(new ArchonGoal());
 	ArmyGoals.push_back(new ObserverGoal());
 	ArmyGoals.push_back(new PhoenixGoal());
 	ArmyGoals.push_back(new SentryGoal());
 	ArmyGoals.push_back(new CarrierGoal());
 	ArmyGoals.push_back(new TempestGoal());
 	ArmyGoals.push_back(new OracleGoal());
+	ArmyGoals.push_back(new PhotonCannonGoal());
 
 	// Tactics and Upgrade Goals
 
@@ -108,7 +110,8 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new OracleHarrassGoal());
 	//TacticsGoals.push_back(new CannonDefenseGoal());
 	//TacticsGoals.push_back(new RushGoal());
-	//TacticsGoals.push_back(new Do4GateGoal());
+	TacticsGoals.push_back(new Do4GateGoal());
+	TacticsGoals.push_back(new RetreatGoal());
 
 	UpgradeGoals.push_back(new ChargelotGoal());
 	UpgradeGoals.push_back(new BlinkGoal());
@@ -182,9 +185,12 @@ void BotWithAPlan::OnStep() {
 #if LADDER_MODE
 	// This does not seem to work in local tests
 
-	if (ShouldSurrender(obs))
+	if (!this->Lost && PlanBotBase::ShouldSurrender(obs))
 	{
-		auto y = Control()->RequestLeaveGame();
+		this->Lost = true;
+		//auto y = Control()->RequestLeaveGame();
+		Actions()->SendChat("My plan has failed...");
+		Actions()->SendChat("gg");
 	}
 #endif
 
