@@ -26,12 +26,18 @@ public:
 			score *= 2;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPT] > 1 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPTPHASESHIFT] > 1
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] > 3
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5
 			)
 		{
-			score /= 4;
+			score /= 3;
+		}
+
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPT] > 1 
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPTPHASESHIFT] > 1
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] >= 2
+			)
+		{
+			score /= 6;
 		}
 		return score;
 	};

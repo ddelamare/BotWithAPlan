@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 
 				Coordinator coordinator;
 				coordinator.LoadSettings(argc, argv);
-				coordinator.SetMultithreaded(true);
+				coordinator.SetMultithreaded(false);
 				coordinator.SetRealtime(REALTIME);
 				coordinator.SetStepSize(10);
 				//coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::VeryHard)
+					CreateComputer(race, sc2::Difficulty::HardVeryHard)
 					});
 
 				coordinator.LaunchStarcraft();

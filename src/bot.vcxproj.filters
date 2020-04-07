@@ -47,6 +47,7 @@
     <ClCompile Include="Common\Managers\WorkerManager.cpp" />
     <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
     <ClCompile Include="Common\Analyzers\ThreatAnalyzer.cpp" />
+    <ClCompile Include="Common\Analyzers\BattleAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -152,7 +153,6 @@
     <ClInclude Include="Goals\Army\Carrier.h" />
     <ClInclude Include="Goals\Army\Tempest.h" />
     <ClInclude Include="Goals\Tactics\AttackProxy.h" />
-    <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
     <ClInclude Include="Common\Entity\BattleGroup.h" />
     <ClInclude Include="Common\Managers\ArmyManager.h" />
     <ClInclude Include="Goals\Army\PhotonCannon.h" />
@@ -193,6 +193,10 @@
     <ClInclude Include="Goals\Army\Starport.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />
     <ClInclude Include="Goals\Tactics\ScoutEverything.h" />
+    <ClInclude Include="Common\Analyzers\BattleAnalyzer.h" />
+    <ClInclude Include="Common\Entity\UnitBattleData.h" />
+    <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
+    <ClInclude Include="Goals\Tactics\RetreatGoal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

@@ -64,11 +64,12 @@ namespace Util {
 	{
 		// All the abilities for the warp version of train are exactly 497 from the ability of the regular train
 		const int WARPCONVERSION_DIFFERENCE = 497;
-		bool madeUnit = false;
+		int madeUnit = 0;
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(UNIT_TYPEID::PROTOSS_WARPGATE));
 		auto unitTypes = &state->UnitInfo;
 		UnitTypeData unittype = (*unitTypes)[(int)unit_type];
 		auto warpAbility = (ABILITY_ID) ((int)unittype.ability_id + WARPCONVERSION_DIFFERENCE);
+		int MAX_BUILD_PER_FRAME = 2;
 		for (auto building : buildings) {
 			auto abilities = query->GetAbilitiesForUnit(building).abilities;
 
@@ -86,8 +87,11 @@ namespace Util {
 			{
 				GridStrategy strat(warpAbility, false, false, 1);
 				actions->UnitCommand(building, warpAbility, strat.FindPlacement(obs,actions,query,debug, state));
-				madeUnit = true;
+				madeUnit++;
 			}
+
+			if (madeUnit >= MAX_BUILD_PER_FRAME)
+				break;
 		}
 		if (!madeUnit)
 			return TryBuildUnit(unit_type, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions, query);

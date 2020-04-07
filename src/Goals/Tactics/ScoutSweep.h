@@ -23,7 +23,7 @@ public:
 		bool queuedScouting = false;
 		auto idleWorkers = obs->GetUnits(sc2::Unit::Alliance::Self, IsIdleWorker());
 
-		if (idleWorkers.size() && !state->ScoutingUnits.size())
+		if (idleWorkers.size() && !state->ScoutingUnits.size() && state->KilledScouts < 3)
 		{
 			auto start = state->ExpansionLocations[(rotation) % state->ExpansionLocations.size()];
 			auto shortestPath = Util::FindShortestPath(start, state->ExpansionLocations);

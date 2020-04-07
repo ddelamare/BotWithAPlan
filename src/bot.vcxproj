@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\src;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;;../include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\rapidjson\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Common\Analyzers\BattleAnalyzer.cpp" />
     <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
     <ClCompile Include="Common\Managers\ArmyManager.cpp" />
@@ -157,6 +158,8 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\Analyzers\BattleAnalyzer.h" />
+    <ClInclude Include="Common\Entity\UnitBattleData.h" />
     <ClInclude Include="Goals\Army\Factory.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />
     <ClInclude Include="Goals\Tactics\ScoutEverything.h" />
@@ -271,6 +274,7 @@
     <ClInclude Include="Goals\Tactics\SuperCannonDefense.h" />
     <ClInclude Include="Common\Strategy\Attacks\UnitMicro.h" />
     <ClInclude Include="Goals\Army\Starport.h" />
+    <ClInclude Include="Goals\Tactics\RetreatGoal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

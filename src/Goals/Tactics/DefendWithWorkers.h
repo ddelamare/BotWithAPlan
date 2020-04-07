@@ -56,7 +56,7 @@ public:
 			auto attackingWorkers = Util::GetUnitsWithOrder(workers, ABILITY_ID::ATTACK);
 			if (attackingWorkers.size())
 			{
-				int numLeftWorkers = min((int)attackingWorkers.size() - 1, numWorkers);
+				int numLeftWorkers = max(min((int)attackingWorkers.size() - 1, numWorkers),0);
 
 				army.insert(army.begin(), attackingWorkers.begin(), attackingWorkers.begin() + numLeftWorkers);
 				numWorkers -= attackingWorkers.size();

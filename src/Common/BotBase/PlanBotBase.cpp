@@ -80,9 +80,9 @@ bool PlanBotBase::ShouldSurrender(const sc2::ObservationInterface * obs)
 {
 	auto probes = obs->GetFoodWorkers();
 	auto minerals = obs->GetMinerals();
-	auto armyCount = obs->GetArmyCount();
+	auto armyCount = obs->GetFoodArmy();
 
-	return probes == 0 && minerals < 50 && armyCount == 0;
+	return probes == 0 && minerals < 50 && armyCount <= 2;
 }
 
 void PlanBotBase::DebugWriteInView(string message, Point2D relativePosition, DebugInterface* debug, const ObservationInterface* obs)
@@ -267,11 +267,12 @@ void PlanBotBase::OnUnitDestroyed(const Unit* unit)
 {
 	if (VectorHelpers::FoundInVector(state.ScoutingUnits, unit))
 	{
+		this->state.KilledScount++;
 		VectorHelpers::RemoveFromVector(&state.ScoutingUnits, unit);
 	}
 
 	if (!state.HasCloakedUnits &&
-		Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemy(), unit->pos, Observation(), 20.0).size() == 0)
+		Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemy(), unit->pos, Observation(), 10.0).size() == 0)
 	{
 		// Killed but no nearby enemies? Must be cloaked
 		this->state.HasCloakedUnits = true;

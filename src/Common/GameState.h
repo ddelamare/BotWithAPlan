@@ -36,4 +36,5 @@ struct GameState
 	Race selfRace;
 	Race opponentRace;
 	ThreatModel threat;
+	int KilledScouts = 0;
 };

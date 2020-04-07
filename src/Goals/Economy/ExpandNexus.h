@@ -26,6 +26,13 @@ public:
 			assignedHarvesters += th->assigned_harvesters;
 			idealHarvesters += th->ideal_harvesters;
 		}
+		auto gas = obs->GetUnits(sc2::Unit::Alliance::Self, IsGasBuilding());
+		for (auto th : gas)
+		{
+			assignedHarvesters += th->assigned_harvesters;
+			idealHarvesters += th->ideal_harvesters;
+		}
+
 		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_WORKER_CAP, .2, .5);
 		auto food = obs->GetFoodArmy();
 		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
@@ -42,7 +49,7 @@ public:
 			auto threatAnalyzer = ThreatAnalyzer();
 			auto threat = threatAnalyzer.GetThreat(&state->threat);
 			score *= threat;
-			if (score < CLAMP || threat < 0) // If we are losing a lot of units, don't expand
+			if (score < CLAMP) // If we are losing a lot of units, don't expand
 				return 0;
 			else
 				// If we are ahead, we can expand more.  
