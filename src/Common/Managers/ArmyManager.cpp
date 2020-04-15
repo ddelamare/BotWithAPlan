@@ -302,15 +302,15 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_distance(unit->pos));
 
 		// Units needing to get sniped RIGHT NOW
-		for (auto eu : nearbyEnemies) 
-		{
-		
-			// Infestors must die
-			if (IsUnit(UNIT_TYPEID::ZERG_INFESTOR)(*eu))
-			{
-				weakestUnit = eu;
-			}
-		}
+		//for (auto eu : nearbyEnemies) 
+		//{
+		//
+		//	// Infestors must die
+		//	if (IsUnit(UNIT_TYPEID::ZERG_INFESTOR)(*eu))
+		//	{
+		//		weakestUnit = eu;
+		//	}
+		//}
 
 		// If there are no priority targets, then find unit with least health.
 		if (!weakestUnit)

@@ -18,7 +18,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto score = 0.0;
 
-		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOTONCANNON)).size();
+		int unitFood = 6 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOTONCANNON)).size();
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] >= 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] >= 2)	

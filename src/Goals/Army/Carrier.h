@@ -24,7 +24,7 @@ public:
 			state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3 ||
 			state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 3)
 		{
-			score *= 2;
+			score *= 3;
 		}
 
 		return score;

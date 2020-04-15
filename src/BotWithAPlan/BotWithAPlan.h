@@ -16,10 +16,7 @@
 #include "Common\BotBase\PlanBotBase.h"
 #define DllExport __declspec( dllexport ) 
 using namespace sc2;
-#define LADDER_MODE 0
-#define DEBUG_MODE 	1
-#define PLANNER_MODE 0
-#define REALTIME 0	 
+
 class BotWithAPlan : public PlanBotBase {
 public:
 	BotWithAPlan();

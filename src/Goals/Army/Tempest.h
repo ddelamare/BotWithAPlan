@@ -31,7 +31,9 @@ public:
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BATTLECRUISER] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_COLOSSUS] >= 2
-			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 2)
+			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 2
+			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3
+			)
 		{
 			score *= 3;
 		}

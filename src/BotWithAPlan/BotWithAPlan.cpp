@@ -87,7 +87,7 @@ BotWithAPlan::BotWithAPlan()
 	ArmyGoals.push_back(new DarkTemplarGoal());
 	ArmyGoals.push_back(new DisruptorGoal());
 	ArmyGoals.push_back(new HighTemplarGoal());
-	//ArmyGoals.push_back(new ArchonGoal());
+	ArmyGoals.push_back(new ArchonGoal());
 	ArmyGoals.push_back(new ObserverGoal());
 	ArmyGoals.push_back(new PhoenixGoal());
 	ArmyGoals.push_back(new SentryGoal());
@@ -101,7 +101,7 @@ BotWithAPlan::BotWithAPlan()
 	TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
 	TacticsGoals.push_back(new ScoutEverythingGoal());
-	//TacticsGoals.push_back(new ScoutMainGoal());
+	TacticsGoals.push_back(new ScoutMainGoal());
 	TacticsGoals.push_back(new PickOffExpoGoal());
 	TacticsGoals.push_back(new JustDoitGoal());
 	TacticsGoals.push_back(new AttackProxyGoal());

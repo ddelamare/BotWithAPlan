@@ -21,25 +21,26 @@ public:
 		auto gateways = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_GATEWAY));
 		auto warpgates = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_WARPGATE));
 		unsigned int totalGates = gateways.size() + warpgates.size();
-		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-		bool capped = totalGates >= (3 * nexus.size());
+
 		if (!totalGates)
 		{
 			return 5;
 		}
-		else if (totalGates == 1 && obs->GetMinerals() > 150)
+
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		int assignedHarvesters = 0;
+		for (auto th : townhalls)
 		{
-			return 3;
+			assignedHarvesters += th->assigned_harvesters;
 		}
-		if (capped)
+		auto gas = obs->GetUnits(sc2::Unit::Alliance::Self, IsGasBuilding());
+		for (auto th : gas)
 		{
-			return 0;
+			assignedHarvesters += th->assigned_harvesters;
 		}
-		else if (obs->GetFoodArmy() > 0)
-		{
-			return obs->GetFoodArmy() / (int)(4 * totalGates);
-		}
-		return 0;
+		// Ideally should have 3 gates per fully mining base
+		return assignedHarvesters / ((1 + totalGates) * (22.0 / 1.5));
+
 	}
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

@@ -116,6 +116,8 @@ void PlanBotBase::UpdateGameState()
 	auto actions = Actions();
 
 	state.threat.gameTime = obs->GetGameLoop();
+	state.threat.friendlyBases = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()).size();
+	state.threat.enemyBases = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall()).size();
 
 	// Store the number of each unit they have
 	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy);
@@ -203,7 +205,7 @@ void PlanBotBase::BalanceWorkerAssignments()
 		else
 		{
 			// Send to scout
-			if (state.ScoutingUnits.size() == 0)
+			if (state.ScoutingUnits.size() == 0 && state.KilledScouts < 3)
 			{
 				actions->UnitCommand(idleUnits[i], ABILITY_ID::MOVE, state.EnemyBase);
 				state.ScoutingUnits.push_back(idleUnits[i]);
@@ -267,7 +269,7 @@ void PlanBotBase::OnUnitDestroyed(const Unit* unit)
 {
 	if (VectorHelpers::FoundInVector(state.ScoutingUnits, unit))
 	{
-		this->state.KilledScount++;
+		this->state.KilledScouts++;
 		VectorHelpers::RemoveFromVector(&state.ScoutingUnits, unit);
 	}
 
@@ -303,82 +305,88 @@ void PlanBotBase::OnGameStart()
 	LOG(1) << Util::GetStringFromRace(players[0].race_actual) << endl;
 	LOG(1) << Util::GetStringFromRace(players[1].race_actual) << endl;
 
-	auto nexus = Observation()->GetUnits(IsTownHall())[0];
-	Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
-	auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
-	if (enemyLocations.size() == 1)
-		state.EnemyBase = enemyLocations[0];
-	else if (enemyLocations.size() == 4)
-		state.EnemyBase = enemyLocations[0];
-	else
-		state.EnemyBase = enemyLocations[0];
-
-	state.StartingLocation = nexus->pos;
-
-	// Get all minerals and sort by x , then y pos
-	auto minerals = Observation()->GetUnits(Unit::Alliance::Neutral, IsMineralField());
-	int count = 0;
-	Point3D sum = Point3D();
-	const int MINERAL_DISTANCE_THRESHOLD = 150;
-	while (minerals.size() > 0)
+	auto townhalls = Observation()->GetUnits(IsTownHall());
+	if (townhalls.size() > 0)
 	{
-		Point3D origMineral = minerals[0]->pos;
-		sum = Point3D();
-		count = 0;
-		for (int j = 0; j < minerals.size();)
+		auto nexus = townhalls[0];
+
+		Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
+		auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
+		if (enemyLocations.size() == 1)
+			state.EnemyBase = enemyLocations[0];
+		else if (enemyLocations.size() == 4)
+			state.EnemyBase = enemyLocations[0];
+		else
+			state.EnemyBase = enemyLocations[0];
+
+		state.StartingLocation = nexus->pos;
+
+		// Get all minerals and sort by x , then y pos
+		auto minerals = Observation()->GetUnits(Unit::Alliance::Neutral, IsMineralField());
+		int count = 0;
+		Point3D sum = Point3D();
+		const int MINERAL_DISTANCE_THRESHOLD = 150;
+		while (minerals.size() > 0)
 		{
-			auto cluster = std::vector<Point3D>();
-			auto dis = DistanceSquared3D(origMineral, minerals[j]->pos);
-			if (dis < MINERAL_DISTANCE_THRESHOLD)
+			Point3D origMineral = minerals[0]->pos;
+			sum = Point3D();
+			count = 0;
+			for (int j = 0; j < minerals.size();)
 			{
-				sum += minerals[j]->pos;
-				count++;
-				// Erase this element
-				minerals.erase(minerals.begin() + j, minerals.begin() + j + 1);
+				auto cluster = std::vector<Point3D>();
+				auto dis = DistanceSquared3D(origMineral, minerals[j]->pos);
+				if (dis < MINERAL_DISTANCE_THRESHOLD)
+				{
+					sum += minerals[j]->pos;
+					count++;
+					// Erase this element
+					minerals.erase(minerals.begin() + j, minerals.begin() + j + 1);
+				}
+				else
+				{
+					j++;
+				}
 			}
-			else
+
+			state.ExpansionLocations.push_back(sum / count);
+		}
+		// Remove starting pos as expansion location
+		auto closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, nexus->pos);
+		state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
+		closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, Point3D(state.EnemyBase.x, state.EnemyBase.y, 0));
+		state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
+
+		// Sort expansions by distance to home base
+		std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.StartingLocation));
+
+
+		// Calculate building offset
+		auto nearMinerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);
+
+		//Calc mineral vector and normalize
+		int visibleMinerals = 0;
+		Point3D nearSum;
+		for (auto min : nearMinerals)
+		{
+			if (min->display_type == Unit::DisplayType::Visible)
 			{
-				j++;
+				nearSum += min->pos;
+				visibleMinerals++;
 			}
 		}
-
-		state.ExpansionLocations.push_back(sum / count);
-	}
-	// Remove starting pos as expansion location
-	auto closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, nexus->pos);
-	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
-	closest_mineral = Util::FindClosestPoint(state.ExpansionLocations, Point3D(state.EnemyBase.x, state.EnemyBase.y, 0));
-	state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
-
-	// Sort expansions by distance to home base
-	std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.StartingLocation));
-
-
-	// Calculate building offset
-	auto nearMinerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);
-
-	//Calc mineral vector and normalize
-	int visibleMinerals = 0;
-	Point3D nearSum;
-	for (auto min : nearMinerals)
-	{
-		if (min->display_type == Unit::DisplayType::Visible)
+		if (visibleMinerals > 0)
 		{
-			nearSum += min->pos;
-			visibleMinerals++;
+			nearSum /= visibleMinerals;
+			nearSum = nearSum - nexus->pos;
+			nearSum.z = 0;
+			Normalize3D(nearSum);
+			state.MineralDirection = nearSum;
 		}
-	}
-	if (visibleMinerals > 0)
-	{
-		nearSum /= visibleMinerals;
-		nearSum = nearSum - nexus->pos;
-		nearSum.z = 0;
-		Normalize3D(nearSum);
-		state.MineralDirection = nearSum;
 	}
 
 	//Cache unit info
 	state.UnitInfo = Observation()->GetUnitTypeData();
+
 
 	auto obs = Observation();
 	auto query = Query();

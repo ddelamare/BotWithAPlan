@@ -17,8 +17,19 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto robos = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY));
 		if (!robos.size()) return 0; // Don;t build it unless we need it
-		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-		return (nexus.size() + 1) / (robos.size() + 2);
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		int assignedHarvesters = 0;
+		for (auto th : townhalls)
+		{
+			assignedHarvesters += th->assigned_harvesters;
+		}
+		auto gas = obs->GetUnits(sc2::Unit::Alliance::Self, IsGasBuilding());
+		for (auto th : gas)
+		{
+			assignedHarvesters += th->assigned_harvesters;
+		}
+		// Ideally should have robo per fully mining  base
+		return assignedHarvesters / ( (1 + robos.size()) * 22.0);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

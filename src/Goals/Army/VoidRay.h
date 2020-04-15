@@ -18,6 +18,12 @@ public:
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
 		score = Util::FeedbackFunction(percent, .2, 1);
 
+		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SCV] > 0)
+		{
+			score *= 2.1;
+		}
+
+
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
 			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0
 			//|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 2

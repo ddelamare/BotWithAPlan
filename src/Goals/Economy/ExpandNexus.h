@@ -33,10 +33,10 @@ public:
 			idealHarvesters += th->ideal_harvesters;
 		}
 
-		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_WORKER_CAP, .2, .5);
+		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_WORKER_CAP, .25, .5);
 		auto food = obs->GetFoodArmy();
 		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
-		if ((idealHarvesters + 20) > Constants::HARD_WORKER_CAP) return 0;
+		if ((idealHarvesters + 22) > Constants::HARD_WORKER_CAP) return 0;
 		if (townhalls.size())
 		{
 			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
@@ -48,7 +48,7 @@ public:
 				return 0;
 			auto threatAnalyzer = ThreatAnalyzer();
 			auto threat = threatAnalyzer.GetThreat(&state->threat);
-			score *= threat;
+			//score *= threat * 2 ;
 			if (score < CLAMP) // If we are losing a lot of units, don't expand
 				return 0;
 			else

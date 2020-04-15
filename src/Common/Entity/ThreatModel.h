@@ -9,5 +9,7 @@ public:
 	int enemyGasLost = 0;
 	int enemyBuildTimeLost = 0;
 	int gameTime = 0;
+	int enemyBases = 0;
+	int friendlyBases = 0;
 };
 

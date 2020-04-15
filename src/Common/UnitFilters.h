@@ -17,9 +17,11 @@ struct IsBuildingStructure
 	bool operator()(const Unit& unit, GameState* state) {
 		if (unit.orders.size() == 0) return false;
 		// Possibly cache this if it's slow
-		for (auto type : state->UnitInfo)
+		for (auto order : unit.orders)
 		{
-			if (VectorHelpers::FoundInVector(type.attributes, Attribute::Structure))
+			// Look for protoss build ability numbers.
+			// TODO: Do it the right way
+			if (order.ability_id >= 880 && order.ability_id <= 900)
 			{
 				return true;
 			}

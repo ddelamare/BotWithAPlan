@@ -14,7 +14,7 @@ public:
 		this->BaseAction::name = "Just Do It";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 2 * (obs->GetFoodArmy() / 75) * threatAnalyzer.GetThreat(&state->threat);
+		return (obs->GetFoodArmy() / 75) * threatAnalyzer.GetThreat(&state->threat);
 	};
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

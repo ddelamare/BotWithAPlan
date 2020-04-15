@@ -10,6 +10,8 @@
 #include "Common\Strategy\Attacks\SentryMicro.h"
 #include "Common\Strategy\Attacks\Phoenix.h"
 #include "Common\Analyzers\BattleAnalyzer.h"
+#include "Common\BotBase\PlanBotBase.h"
+
 #include <iostream>
 #include <tuple>
 #include <vector>
@@ -17,7 +19,7 @@ std::string testMap = "Test/Empty.SC2Map";
 using namespace sc2;
 
 typedef vector<std::tuple<UNIT_TYPEID, int, UNIT_TYPEID, int>> TestSetup;
-class MicroBot : public Agent {
+class MicroBot : public PlanBotBase {
 public:
 	ArmyManager manager;
 	GameState state;
@@ -30,6 +32,32 @@ public:
 		lastLoop = 0;
 		minLoop = 100;
 	}
+
+	void OnBuildingConstructionComplete(const Unit*)
+	{
+	}
+
+	void OnUnitCreated(const Unit* unit)
+	{
+
+	}
+
+	//! Called whenever one of the player's units has been destroyed.
+	//!< \param unit The destroyed unit.
+	void OnUnitDestroyed(const Unit* unit) {
+	}
+
+
+	void OnUnitEnterVision(const Unit* unit)
+	{
+	}
+
+
+	void OnGameEnd()
+	{
+
+	}
+
 	void OnGameStart()
 	{
 		//Debug()->DebugGiveAllTech();
@@ -39,33 +67,45 @@ public:
 
 		state.UnitInfo = Observation()->GetUnitTypeData();
 
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 10, UNIT_TYPEID::PROTOSS_ADEPT, 5));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 10, UNIT_TYPEID::PROTOSS_ADEPT, 5));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 20, UNIT_TYPEID::PROTOSS_ADEPT, 10));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 40, UNIT_TYPEID::PROTOSS_ADEPT, 20));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 40, UNIT_TYPEID::PROTOSS_ADEPT, 20));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 80, UNIT_TYPEID::PROTOSS_ADEPT, 40));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 160, UNIT_TYPEID::PROTOSS_ADEPT, 80));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 160, UNIT_TYPEID::PROTOSS_ADEPT, 80));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::ZERG_ZERGLING, 240));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 150));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_PHOENIX, 30));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::ZERG_ZERGLING, 240));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 150));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_PHOENIX, 30));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		/*testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 5, UNIT_TYPEID::TERRAN_MARINE, 30));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 30, UNIT_TYPEID::TERRAN_MARINE, 180));*/
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 5, UNIT_TYPEID::TERRAN_MARINE, 30));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 30, UNIT_TYPEID::TERRAN_MARINE, 180));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ARCHON, 25, UNIT_TYPEID::PROTOSS_VOIDRAY, 25));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 1, UNIT_TYPEID::PROTOSS_VOIDRAY, 1));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_SIEGETANKSIEGED, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
 
+		auto obs = Observation();
+		auto query = Query();
+
+		microManagers.push_back(new BlinkStalker(obs, query, &state));
+		microManagers.push_back(new DisruptorAttack(obs, query, &state));
+		microManagers.push_back(new TemplarMicro(obs, query, &state));
+		microManagers.push_back(new VoidRayAttack(obs, query, &state));
+		microManagers.push_back(new SentryMicro(obs, query, &state));
+		microManagers.push_back(new PhoenixLift(obs, query, &state));
+
+		PlanBotBase::OnGameStart();
 
 	}
 
 	void OnStep() {
-		//manager.ManageGroups(Observation(), Query(), Actions(), &state, Debug());
+		manager.ManageGroups(Observation(), Query(), Actions(), &state, Debug());
+		ManageUnits();
 
 		if (Observation()->GetGameLoop() < minLoop)
 		{
@@ -130,14 +170,13 @@ public:
 			
 				trial++;
 			}
-
 			Actions()->UnitCommand(selfUnits, ABILITY_ID::ATTACK, Point2D(60, 50));
 			Actions()->UnitCommand(enemyUnits, ABILITY_ID::ATTACK, Point2D(60, 50));
 
-			Actions()->SendActions();
-			Debug()->SendDebug();
 			lastLoop = Observation()->GetGameLoop();
 		}
+		Actions()->SendActions();
+		Debug()->SendDebug();
 	}
 	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors)
 	{

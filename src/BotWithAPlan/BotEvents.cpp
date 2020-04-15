@@ -21,6 +21,15 @@ void::BotWithAPlan::OnUnitCreated(const Unit* unit)
 		// Clear Rally Point
 		Actions()->UnitCommand(unit, ABILITY_ID::RALLY_WORKERS, unit->pos);
 	}
+
+	if (state.UnitInfo.size() == 0)
+	{
+		// On Game Start Does not seem to get called some times
+		OnGameStart();
+		cout << "Ran Game Start after game has started...";
+	}
+
+
 	auto type = state.UnitInfo[unit->unit_type];
 	state.CurrentUnits[unit->unit_type]++;
 }
