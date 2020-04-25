@@ -26,7 +26,7 @@ public:
 			score = Util::FeedbackFunction(percent, .2, 2.5);
 		}
 
-		if (obs->GetMinerals() < 300 && obs->GetVespene() > 600)
+		if (obs->GetMinerals() < 400 && obs->GetVespene() > 500)
 		{
 			score *= 3;
 		}

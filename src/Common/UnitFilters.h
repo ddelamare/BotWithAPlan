@@ -131,6 +131,7 @@ struct IsLowPriorityArmy {
 		case UNIT_TYPEID::TERRAN_MULE: return true;
 		case UNIT_TYPEID::TERRAN_RAVEN: return true;
 		case UNIT_TYPEID::TERRAN_SCV: return true;
+		case UNIT_TYPEID::ZERG_BROODLING: return true;
 		case UNIT_TYPEID::ZERG_BROODLORDCOCOON: return true;
 		case UNIT_TYPEID::ZERG_CHANGELING: return true;
 		case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return true;

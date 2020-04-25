@@ -37,10 +37,7 @@ public:
 			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
 			score = Util::FeedbackFunction(percent, .35, 2.5);
 		}
-		if (obs->GetMinerals() < 300 && obs->GetVespene() > 600)
-		{
-			score *= 3;
-		}
+
 		return score;
 	};
 

@@ -107,6 +107,7 @@ void PlanBotBase::DebugDrawState(chrono::time_point<chrono::steady_clock> startT
 	Debug()->DebugTextOut("Game Loop:" + std::to_string(state.threat.gameTime), Point2D(0, .46));
 	Debug()->DebugTextOut("Threat Score: " + std::to_string(this->threatAnalyzer.GetThreat(&state.threat)), Point2D(0, .48));
 	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()), Point2D(0, .50));
+
 }
 
 void PlanBotBase::UpdateGameState()
@@ -225,7 +226,8 @@ void PlanBotBase::DefendBase()
 		if (nearbyUnits.size())
 		{
 			// RALLY THE TROOPS!
-			armyManager.SetTarget(&armyManager.battleGroups[0], nearbyUnits[0]->pos);
+			armyManager.RequestAction(nearbyUnits[0]->pos, BattleMode::Defend);
+
 		}
 	}
 }

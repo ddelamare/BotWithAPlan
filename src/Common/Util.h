@@ -90,14 +90,21 @@ namespace Util {
 		return foundUnit;
 	}
 
-	const static Unit* FindClosetOfType(Unit::Alliance alliance, Filter filter, Point3D point, const ObservationInterface* obs, QueryInterface* query)
+	const static Unit* FindClosetOfType(Units units, Point3D point, const ObservationInterface* obs, QueryInterface* query, bool usePathing)
 	{
-		auto units = obs->GetUnits(alliance, filter);
 		double distance = DBL_MAX;
 		const Unit* foundUnit = nullptr;
 		for (auto unit : units)
 		{
-			auto dis = query->PathingDistance(unit, point);
+			double dis = DBL_MAX;
+			if (usePathing)
+			{
+				dis = query->PathingDistance(unit, point);
+			}
+			else
+			{
+				dis = DistanceSquared2D(unit->pos, point);
+			}
 			if (dis < distance)
 			{
 				distance = dis;

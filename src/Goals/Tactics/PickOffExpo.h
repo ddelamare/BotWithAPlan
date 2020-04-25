@@ -34,8 +34,7 @@ public:
 		auto attackPoint = enemyExpos.back();
 
 		// Make a cluster of units
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint->pos);
-		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[0], BattleMode::Attack);
+		state->ArmyManager->RequestAction(attackPoint->pos, BattleMode::Attack);
 
 		return queuedScouting;
 	}

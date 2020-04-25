@@ -57,7 +57,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 // Checks if a group is close enough together
 bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
-	if (threatAnalyzer.GetThreat(&state->threat) > 1.6)
+	if (threatAnalyzer.GetThreat(&state->threat) > 1.4)
 		return true;
 	//return true;
 	if (group->units.size() <= 5) return false;
@@ -91,6 +91,12 @@ void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const Observa
 {
 	//TODO: Based on where they're going, meet up in a sane spot.
 	if (group->units.size() <= 1) return;
+	auto distMult = 1;
+	if (threatAnalyzer.GetThreat(&state->threat) > 1)
+	{
+		distMult = threatAnalyzer.GetThreat(&state->threat);
+	}
+		
 	auto averagePoint = Util::GetAveragePoint(group->units);
 	debug->DebugSphereOut(averagePoint, 5);
 	Units unitsToMove;
@@ -99,7 +105,7 @@ void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const Observa
 		auto dis = Distance2D(unit->pos, averagePoint);
 
 		//if (abs(unit->pos.x - averagePoint.x) > CLUSTER_MOVE_THRESHOLD || abs(unit->pos.y - averagePoint.y) > CLUSTER_MOVE_THRESHOLD)
-		if (includeAll || (dis > CLUSTER_DISTANCE_THRESHOLD_MAX))
+		if (includeAll || (dis > CLUSTER_DISTANCE_THRESHOLD_MAX * distMult))
 		{
 			unitsToMove.push_back(unit);
 		}
@@ -151,7 +157,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			auto unitType = state->UnitInfo[unit->unit_type];
 			double range = 1;
 
-			auto closestUnit = Util::FindClosetOfType(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), unit->pos, obs, query);
+			auto closestUnit = Util::FindClosetOfType(this->cachedEnemyArmy, unit->pos, obs, query, false);
 			if (unitType.weapons.size())
 			{
 				//TODO: Find range based on eligibile targets ie air vs ground
@@ -194,6 +200,13 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	}
 
 }
+
+void ArmyManager::RequestAction(Point2D target, BattleMode action)
+{
+	// TODO: add to request queue and partition accordingly
+	this->requestedActions.push_back(std::make_pair(target, action));
+}
+
 void ArmyManager::SetTarget(BattleGroup* group, Point2D location)
 {
 	group->target = location;
@@ -219,29 +232,44 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 		battleGroups[1].mode = BattleMode::Harrass;
 		battleGroups[1].target = state->EnemyBase;
 	}
-	if (battleGroups[0].units.size() == 0)
-	{
-		battleGroups[0].mode = BattleMode::Defend;
-		battleGroups[0].target = Point2D();
 
-	}
 	auto armyUnits = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-	auto isOracle = IsUnit(UNIT_TYPEID::PROTOSS_ORACLE);
-	for (auto& bg : battleGroups)
+
+	// If there are no new actions, add all new units to a group
+	if (!requestedActions.size())
 	{
-		bg.units.clear();
+		Units groupunits;
+		for (auto group : battleGroups)
+		{
+			groupunits.insert(groupunits.end(),group.units.begin(), group.units.end());
+		}
+
+		Units missing = VectorHelpers::FindMissingInVector(armyUnits, groupunits);
+
+		battleGroups[0].units.insert(battleGroups[0].units.end(), missing.begin(), missing.end());
+
+		return;
 	}
-	for (auto unit : armyUnits)
+
+	auto isHarrassUnit = IsUnit(UNIT_TYPEID::PROTOSS_ORACLE);
+
+	for (auto &group : battleGroups)
 	{
-		if (isOracle(*unit))
+		group.units.clear();
+
+		group.target = requestedActions[0].first;
+		group.mode = requestedActions[0].second;
+
+		for (auto unit : armyUnits)
 		{
-			battleGroups[1].units.push_back(unit);
-		}
-		else
-		{
-			battleGroups[0].units.push_back(unit);
+			if (group.mode != BattleMode::Harrass || isHarrassUnit(*unit))
+			{
+				group.units.push_back(unit);
+			}
 		}
 	}
+
+	requestedActions.clear();
 }
 void ArmyManager::SneakToTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
@@ -302,15 +330,15 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_distance(unit->pos));
 
 		// Units needing to get sniped RIGHT NOW
-		//for (auto eu : nearbyEnemies) 
-		//{
-		//
-		//	// Infestors must die
-		//	if (IsUnit(UNIT_TYPEID::ZERG_INFESTOR)(*eu))
-		//	{
-		//		weakestUnit = eu;
-		//	}
-		//}
+		for (auto eu : nearbyEnemies) 
+		{
+		
+			// Infestors must die
+			if (IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC)(*eu))
+			{
+				weakestUnit = eu;
+			}
+		}
 
 		// If there are no priority targets, then find unit with least health.
 		if (!weakestUnit)
@@ -374,4 +402,5 @@ ArmyManager::ArmyManager()
 	backLineUnits.push_back(UNIT_TYPEID::TERRAN_MARINE);
 
 	threatAnalyzer = ThreatAnalyzer();
+	HasThermalLance = false;
 }

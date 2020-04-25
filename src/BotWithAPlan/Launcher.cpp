@@ -22,7 +22,8 @@ int main(int argc, char* argv[]) {
 	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
 
 	return 0;
-#elif PLANNER_MODE
+#elif PLANNER_M
+	ODE
 	InitResources();
 
 	GenerateDependencyList();
@@ -62,7 +63,7 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::VeryHard)
+					CreateComputer(race, sc2::Difficulty::HardVeryHard)
 					});
 
 				coordinator.LaunchStarcraft();

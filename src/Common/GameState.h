@@ -19,6 +19,7 @@ struct GameState
 		ObservedUnits = UnitMap();
 		CurrentUnits = UnitMap();
 		MaxEnemyUnits = UnitMap();
+		PrecomputedStartLocations = std::vector<std::pair<Point3D, Point3D>>();
 	}
 	Units ScoutingUnits;
 	Units BuildingWorkers;
@@ -37,4 +38,6 @@ struct GameState
 	Race opponentRace;
 	ThreatModel threat;
 	int KilledScouts = 0;
+	std::vector<std::pair<Point3D, Point3D>> PrecomputedStartLocations;
+
 };

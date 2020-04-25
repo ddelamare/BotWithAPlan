@@ -32,7 +32,8 @@ public:
 		{
 			attackPoint = enemyStuff[0]->pos;
 		}
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
+		state->ArmyManager->RequestAction(attackPoint, BattleMode::Attack);
+
 		if (!hasSpoken)
 		{
 			actions->SendChat("GERONIMO!!!");

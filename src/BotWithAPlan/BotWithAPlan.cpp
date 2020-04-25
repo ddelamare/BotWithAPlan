@@ -158,6 +158,7 @@ BotWithAPlan::BotWithAPlan()
 	AvailableActions.push_back(new VoidRayGoal());
 	AvailableActions.push_back(new ZealotGoal());
 
+
 	PlanBotBase::Init();
 }
 
@@ -167,6 +168,7 @@ void BotWithAPlan::OnStep() {
 	auto obs = Observation();
 	auto query = Query();
 	auto actions = Actions();
+	auto debug = Debug();
 
 	UpdateGameState();
 	RemoveIdleScouts();

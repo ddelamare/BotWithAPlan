@@ -11,14 +11,20 @@ class ExpandGoal : public BaseAction
 {
 	double CLAMP = .25;
 	int MIN_ARMY_PER_EXPO = 3;
+	// Roughly this value means that it gets more greedy with time
+	float GREED_DAMPER = 2000.0;
 public:
 	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
 		name = "Expand";
 		holdOtherGoals = true;
 	}
-	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
+	double virtual CalculateScore(const sc2::ObservationInterface* obs, GameState* state) {
 		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		auto townHallsBuilding = obs->GetUnits(sc2::Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_NEXUS));
+
+		if (townHallsBuilding.size()) return 0;
+
 		int assignedHarvesters = 0;
 		int idealHarvesters = 0;
 		for (auto th : townhalls)
@@ -36,7 +42,7 @@ public:
 		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_WORKER_CAP, .25, .5);
 		auto food = obs->GetFoodArmy();
 		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
-		if ((idealHarvesters + 22) > Constants::HARD_WORKER_CAP) return 0;
+		if (idealHarvesters > Constants::HARD_WORKER_CAP) return 0;
 		if (townhalls.size())
 		{
 			int differance = (assignedHarvesters + obs->GetIdleWorkerCount()) - idealHarvesters;
@@ -49,22 +55,23 @@ public:
 			auto threatAnalyzer = ThreatAnalyzer();
 			auto threat = threatAnalyzer.GetThreat(&state->threat);
 			//score *= threat * 2 ;
+			score *= obs->GetGameLoop() / (GREED_DAMPER * townhalls.size());
 			if (score < CLAMP) // If we are losing a lot of units, don't expand
 				return 0;
 			else
 				// If we are ahead, we can expand more.  
 				return score;
 		}
-		else										 
+		else
 			return 0;
 	};
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
+	bool virtual Excecute(const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		auto strat = new ExpandStrategy(ABILITY_ID::BUILD_NEXUS, false, false);
 		return Util::TryBuildBuilding(ABILITY_ID::BUILD_NEXUS, UNIT_TYPEID::PROTOSS_NEXUS, obs, actions, query, debug, state, strat);
 	}
 
-	bool virtual HoldOtherGoals(const sc2::ObservationInterface *obs)
+	bool virtual HoldOtherGoals(const sc2::ObservationInterface* obs)
 	{
 		return holdOtherGoals && obs->GetMinerals() < 400;
 	}

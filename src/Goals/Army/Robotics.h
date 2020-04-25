@@ -14,7 +14,7 @@ public:
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, 1));
 		this->BaseAction::name = "Build Robo";
 	}
-	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
+	double virtual CalculateScore(const sc2::ObservationInterface* obs, GameState* state) {
 		auto robos = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY));
 		if (!robos.size()) return 0; // Don;t build it unless we need it
 		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
@@ -29,9 +29,15 @@ public:
 			assignedHarvesters += th->assigned_harvesters;
 		}
 		// Ideally should have robo per fully mining  base
-		return assignedHarvesters / ( (1 + robos.size()) * 22.0);
+		auto score = assignedHarvesters / ((1 + robos.size()) * (22.0 * 1.5));
+
+		double CLAMP = .45;
+		if (score < CLAMP)
+			return 0;
+
+		return score;
 	};
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
+	bool virtual Excecute(const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		return Util::TryBuildBuilding(ABILITY_ID::BUILD_ROBOTICSFACILITY, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions, query, debug, state);
 	}

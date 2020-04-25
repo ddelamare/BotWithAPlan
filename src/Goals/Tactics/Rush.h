@@ -22,18 +22,19 @@ public:
 
 		bool madeStaker = false;
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
-		auto visibleBuildings = obs->GetUnits(Unit::Alliance::Enemy, IsVisibleArmy());
+		auto visibleArmy = obs->GetUnits(Unit::Alliance::Enemy, IsVisibleArmy());
 		auto enemyStuff = obs->GetUnits(Unit::Alliance::Enemy);
 		auto attackPoint = state->EnemyBase;
-		if (visibleBuildings.size())
+		if (visibleArmy.size())
 		{
-			attackPoint = visibleBuildings[0]->pos;
+			attackPoint = visibleArmy[0]->pos;
 		}
 		else if (enemyStuff.size())
 		{
 			attackPoint = enemyStuff[0]->pos;
 		}
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
+
+		state->ArmyManager->RequestAction(attackPoint, BattleMode::Attack);
 
 		return madeStaker;
 	}

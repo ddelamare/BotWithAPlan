@@ -26,42 +26,11 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	auto disruptors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR));
 	auto enemyTargets = obs->GetUnits(Unit::Alliance::Enemy, IsEnemyGroundArmy());
 	auto enemyClusters = Util::FindClusters(enemyTargets, 3.5); //Find clusters the size of disruptor blast radius
-
+	auto targetedClusters = std::set<int>();
 	//Draw enemy clusters
 	for (auto cluster : enemyClusters)
 	{
 		debug->DebugSphereOut(cluster.first, .5, Colors::Yellow);
-	}
-
-	for (auto unit : disruptors)
-	{
-		//auto enemyUnits = Util::FindNearbyUnits(IsEnemyGroundArmy(), unit->pos, obs, Constants::DISRUPTOR_RANGE);
-
-		if (enemyClusters.size())
-		{
-			for (auto cluster : enemyClusters)
-			{
-				auto dis = Distance2D(unit->pos, cluster.first);
-				if ( dis < Constants::DISRUPTOR_RANGE + 1)
-				{
-					debug->DebugSphereOut(cluster.first, 2, Colors::Red);
-					actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, cluster.first);
-					break;
-				}
-
-			}
-		}
-		else
-		{
-			auto enemyUnits = Util::FindNearbyUnits(IsEnemyBuilding(), unit->pos, obs, 10);
-			if (enemyUnits.size())
-			{
-				auto targetPoint = Util::GetAveragePoint(enemyUnits);
-				// Subtract start minus end to get a vector away from the center
-				debug->DebugSphereOut(targetPoint, 2, Colors::Blue);
-				actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, targetPoint);
-			}
-		}
 	}
 
 	//TODO: Sort clusters by estimated minerals killed
@@ -77,10 +46,11 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	int ORB_TIME_TO_LIVE = 47; // 47 alive frames. Achieved by testing.	Also near frames 22.1 frames per sec times 2.1 ball life span
 	long gameLoop = obs->GetGameLoop();
 	// Assign orbs by best cluster first
-	for (auto cluster : enemyClusters)
+	for (int i = 0; i < enemyClusters.size(); i++)
 	{
 		const Unit* closestOrb = nullptr;
 		float distance = std::numeric_limits<float>::max();
+		auto cluster = enemyClusters[i];
 		for (auto orb : orbs)
 		{
 			// Keep Orb Map up to date
@@ -93,6 +63,13 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 			{
 				continue;
 			}
+
+			// Don't touble target
+			if (targetedClusters.find(i) != targetedClusters.end())
+			{
+				continue;
+			}
+
 			auto d = Distance2D(orb->pos, cluster.first);
 			auto firstFrame = OrbMap[orb->tag];
 			auto timeToLive = 1 - (((float)gameLoop - firstFrame) / ORB_TIME_TO_LIVE); // Get percent lifespan left
@@ -107,6 +84,42 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 		{
 			actions->UnitCommand(closestOrb, ABILITY_ID::ATTACK, cluster.first);
 			orbsDirectedAlready.push_back(closestOrb);
+			targetedClusters.insert(i);
+		}
+	}
+
+	// Fire off new shots
+	for (auto unit : disruptors)
+	{
+		if (enemyClusters.size())
+		{
+			for (int i = 0; i < enemyClusters.size();i++)
+			{
+				// Don't touble target
+				if (targetedClusters.find(i) != targetedClusters.end())
+					continue;
+				auto cluster = enemyClusters[i];
+				auto dis = Distance2D(unit->pos, cluster.first);
+				if ( dis < Constants::DISRUPTOR_RANGE + 1)
+				{
+					debug->DebugSphereOut(cluster.first, 2, Colors::Red);
+					actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, cluster.first);
+					targetedClusters.insert(i);
+					break;
+				}
+
+			}
+		}
+		else
+		{
+			auto enemyUnits = Util::FindNearbyUnits(IsEnemyBuilding(), unit->pos, obs, 10);
+			if (enemyUnits.size())
+			{
+				auto targetPoint = Util::GetAveragePoint(enemyUnits);
+
+				debug->DebugSphereOut(targetPoint, 2, Colors::Blue);
+				actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, targetPoint);
+			}
 		}
 	}
 

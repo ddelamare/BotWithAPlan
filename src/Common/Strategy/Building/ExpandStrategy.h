@@ -17,19 +17,45 @@ public:
 	{
 	}
 
-	sc2::Point3D GetFirstMatchingPlacement(Point3D startingPoint, Point3D direction,QueryInterface* query, DebugInterface* debug, int skipCount, int maxTries)
+	sc2::Point3D GetFirstMatchingPlacement(Point3D startingPoint, const  ObservationInterface* obs, QueryInterface* query, DebugInterface* debug, int skipCount, int maxTries)
 	{
 		std::vector<QueryInterface::PlacementQuery> queries;
+		bool foundSpot = false;
+		Point3D buildPos;
+		bool isVertical = false;
+		bool isHorizontal = false;
+
+		// Find the two furthest mineral patches from the expo point, then find the average poinnt
+		Point3D averagePoint;
+		auto furtherst = Util::FindFurthestInRadius(IsMineralField(), startingPoint, obs, query, 15, Point3D());
+		if (!furtherst)
+			return buildPos;
+		auto otherFurthest = Util::FindFurthestInRadius(IsMineralField(), startingPoint, obs, query, 15, furtherst->pos);
+		if (furtherst && otherFurthest)
+		{
+			averagePoint = (otherFurthest->pos + furtherst->pos) / 2;
+		}
+		else
+		{
+			return buildPos;
+		}
+
+		debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
+		debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);
+		debug->DebugSphereOut(startingPoint, 2, Colors::White);
+
+		// Calculate normalized direction vector 
+		auto direction = averagePoint - startingPoint;
+		direction.z = 0;
+		Normalize3D(direction);
+
 		// All buildings are placed at the exactly center of a square 
 		auto roundedPoint = Point3D(round(startingPoint.x) + .5 , round(startingPoint.y) + .5 , 10);
 		if (direction.x > 0) direction.x = 1;
 		else if (direction.x < 0) direction.x = -1;
 		if (direction.y > 0) direction.y = 1;
 		else if (direction.y < 0) direction.y = -1;
-		bool foundSpot = false;
-		Point3D buildPos;
-		bool isVertical = false;
-		bool isHorizontal = false;
+
 		if (direction.x == 0)
 		{
 			isVertical = true;
@@ -62,7 +88,6 @@ public:
 					continue;
 				}
 				auto offset = Point3D(i, j, 0);
-				debug->DebugSphereOut((roundedPoint + offset), 3, Colors::Yellow);
 				queries.push_back(QueryInterface::PlacementQuery(this->buildingAction, roundedPoint + offset));
 			}
 		}
@@ -84,43 +109,33 @@ public:
 		}
 		return buildPos;
 	}
+	int NEXUS_MAX_TRIES = 7;
 
 	sc2::Point3D FindPlacement(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		Point3D buildPos;
 
-		int NEXUS_MAX_TRIES = 7;
 
 		for (auto exp : state->ExpansionLocations)
 		{
 			// If enemy is too close don't expand there
-			if (Util::FindNearbyUnits(Unit::Alliance::Enemy, IsEnemy(), exp, obs, 15).size() 
+			if (Util::FindNearbyUnits(Unit::Alliance::Enemy, IsEnemy(), exp, obs, 15).size()
 				|| Util::FindNearbyUnits(Unit::Alliance::Self, IsTownHall(), exp, obs, 15).size())
 			{
 				continue;
 			}
-			auto furtherst = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, Point3D());
-			if (!furtherst) continue;
-			auto otherFurthest = Util::FindFurthestInRadius(IsMineralField(), exp, obs, query, 15, furtherst->pos);
-			Point3D averagePoint;
-			if (furtherst && otherFurthest)
-			{
-				averagePoint = (otherFurthest->pos + furtherst->pos) / 2;
-			}
-			else
-			{
-				return buildPos;
-			}
-			debug->DebugSphereOut(furtherst->pos, 2, Colors::Red);
-			debug->DebugSphereOut(otherFurthest->pos, 2, Colors::Red);
-			debug->DebugSphereOut(exp, 2, Colors::White);
 
-			auto direction = averagePoint - exp;
-			direction.z = 0;
-			Normalize3D(direction);
+			// If the precomputed spot is open, use it.
+			auto expandLocation = VectorHelpers::GetFromPairVector(state->PrecomputedStartLocations,exp);
+			if (expandLocation.x != 0 && query->Placement(this->buildingAction, expandLocation))
+			{
+				return expandLocation;
+			}
+
 			// Check for placement along the center vector
-			buildPos = GetFirstMatchingPlacement(exp, direction, query, debug, 5, NEXUS_MAX_TRIES);
+			buildPos = GetFirstMatchingPlacement(exp, obs, query, debug, 5, NEXUS_MAX_TRIES);
 
+			// If we found one near this expansion site, return it
 			if (buildPos.x != 0 || buildPos.y != 0)
 				return buildPos;
 		}

@@ -28,7 +28,6 @@ public:
 	void OnUnitDestroyed(const Unit* unit);
 	void OnGameEnd();
 	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors);
-private:
 
 };
 

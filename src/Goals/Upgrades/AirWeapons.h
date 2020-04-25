@@ -33,6 +33,7 @@ public:
 		if (idx > 0 && Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE), abilities[idx], obs)) return 0;
 		
 		auto airUnits = obs->GetUnits(IsFlying());
+		auto carriers = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE)).size() * 3; //Carriers need air weapons
 		score = Util::ExponentialIncrease(airUnits.size(), (idx + 1)* .08);
 
 		return score;

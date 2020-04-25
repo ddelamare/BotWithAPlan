@@ -37,7 +37,9 @@ public:
 		auto enemyBuildings = Util::FindNearbyUnits(IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 40);
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
 		auto targetPoint = Util::GetAveragePoint(enemyBuildings);
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], targetPoint);
+
+		state->ArmyManager->RequestAction(targetPoint, BattleMode::Attack);
+
 		return false;
 	}
 };

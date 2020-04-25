@@ -17,13 +17,13 @@ public:
 		auto score = 0.0;
 		// If we can see the main base and there's nothing there, and no other enemies are visible
 		// we need to find the last ones by scouting everywhere
-		if (obs->GetGameLoop() > 4000 && obs->GetVisibility(state->EnemyBase) == Visibility::Visible)
+		if (obs->GetGameLoop() > 4000 && obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall()).size() == 0)
 		{
 			auto enemies = obs->GetUnits(Unit::Alliance::Enemy);
 			if (enemies.size() == 0)
 			{
 				// Good chance we have killed everything at main
-				score = 7;
+				score = 70;
 			}
 		}
 

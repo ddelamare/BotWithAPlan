@@ -27,8 +27,8 @@ public:
 		{
 			attackPoint = visibleBuildings[0]->pos;
 		}
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[1], attackPoint);
-		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[1], BattleMode::Harrass);
+
+		state->ArmyManager->RequestAction(attackPoint, BattleMode::Harrass);
 
 		return madeStaker;
 	}

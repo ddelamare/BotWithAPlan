@@ -30,8 +30,7 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], state->StartingLocation);
-		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[0], BattleMode::Attack);
+		state->ArmyManager->RequestAction(state->StartingLocation, BattleMode::Attack);
 
 		return false;
 	}

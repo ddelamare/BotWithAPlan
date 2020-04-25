@@ -34,8 +34,9 @@ public:
 			
 			attackPoint = enemyStuff[0]->pos;
 		}
-		state->ArmyManager->SetTarget(&state->ArmyManager->battleGroups[0], attackPoint);
-		state->ArmyManager->SetMode(&state->ArmyManager->battleGroups[0], BattleMode::Attack);
+
+		state->ArmyManager->RequestAction(attackPoint, BattleMode::Attack);
+
 
 		return madeStaker;
 	}

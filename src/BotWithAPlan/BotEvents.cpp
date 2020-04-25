@@ -7,6 +7,7 @@
 #include "Common\Strategy\Attacks\SentryMicro.h"
 #include "Common\Strategy\Attacks\Phoenix.h"
 #include "Common\Strategy\Attacks\OracleAttack.h"
+#include "Common\Strategy\Building\ExpandStrategy.h"
 #include "Common\UnitFilters.h"
 #include "Common\Util.h"
 void BotWithAPlan::OnBuildingConstructionComplete(const Unit*)
@@ -49,6 +50,7 @@ void BotWithAPlan::OnUnitEnterVision(const Unit* unit)
 void BotWithAPlan::OnGameStart() {
 	auto obs = Observation();
 	auto query = Query();
+	auto debug = Debug();
 
 	PlanBotBase::OnGameStart();
 
@@ -60,6 +62,14 @@ void BotWithAPlan::OnGameStart() {
 	microManagers.push_back(new SentryMicro(obs, query, &state));
 	microManagers.push_back(new PhoenixLift(obs, query, &state));
 	microManagers.push_back(new OracleBeam(obs, query, &state));
+
+	auto strat = new ExpandStrategy(ABILITY_ID::BUILD_NEXUS, false, false);
+	for (auto exp : state.ExpansionLocations)
+	{
+		state.PrecomputedStartLocations.push_back(std::pair<Point3D,Point3D>(exp, strat->GetFirstMatchingPlacement(exp, obs, query, debug, 5, strat->NEXUS_MAX_TRIES)));
+	}
+
+
 
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");

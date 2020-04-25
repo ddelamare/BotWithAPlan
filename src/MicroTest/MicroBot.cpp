@@ -78,11 +78,11 @@ public:
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_PHOENIX, 30));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 5, UNIT_TYPEID::TERRAN_MARINE, 30));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_COLOSSUS, 5, UNIT_TYPEID::TERRAN_MARINE, 30));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
 		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 30, UNIT_TYPEID::TERRAN_MARINE, 180));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ARCHON, 25, UNIT_TYPEID::PROTOSS_VOIDRAY, 25));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 1, UNIT_TYPEID::PROTOSS_VOIDRAY, 1));
