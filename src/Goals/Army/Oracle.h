@@ -13,7 +13,7 @@ public:
 		this->BaseAction::name = "Build Oracle";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto oracles = obs->GetUnits(IsUnit(UNIT_TYPEID::PROTOSS_ORACLE));
+		auto oracles = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ORACLE));
 		return 0;
 		double score = Util::FeedbackFunction(oracles.size(), .16, 3);
 		return score;

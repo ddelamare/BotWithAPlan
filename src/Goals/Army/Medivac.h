@@ -16,8 +16,8 @@ public:
 		this->BaseAction::name = "Build Medivac";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto marines = obs->GetUnits(IsUnit(UNIT_TYPEID::TERRAN_MARINE));
-		auto medivac = obs->GetUnits(IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC));
+		auto marines = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_MARINE));
+		auto medivac = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC));
 		double MARINE_MEDIC_RATIO = 6;	// 1 Medivac per 6 marines
 		if (marines.size() > MARINE_MEDIC_RATIO * 2) // Start medivacs after twice the starting ratio
 		{

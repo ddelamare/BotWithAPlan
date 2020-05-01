@@ -39,7 +39,7 @@ public:
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		bool attacked = false;
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemy(), Util::ToPoint3D(state->StartingLocation), obs, 40);
+		auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemy(), Util::ToPoint3D(state->StartingLocation), obs, 40);
 		auto targetPoint = Util::GetAveragePoint(enemyUnits);
 		// If it's not just workers, send everything
 		if (numWorkers == 0)

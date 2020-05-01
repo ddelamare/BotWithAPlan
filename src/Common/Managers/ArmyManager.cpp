@@ -49,7 +49,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 						enemyCostsInRange = Util::GetUnitValues(ecluster.second, state->UnitInfo);
 					}
 				}
-				auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(IsTownHall()), cluster.first, obs, query, false);
+				auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()), cluster.first, obs, query, false);
 				auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
 				// Retreat unless we are at home
 				if (disToTownHall > 20 && enemyCostsInRange > Util::GetUnitValues(cluster.second, state->UnitInfo))
@@ -160,11 +160,11 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	//action->UnitCommand(group->units, ABILITY_ID::ATTACK, group->target);
 
 	auto averagePoint = Util::GetAveragePoint(group->units);
-	auto enemyUnits = Util::FindNearbyUnits(IsHighPrioirtyEnemy(), averagePoint, obs, 20);
+	auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsHighPrioirtyEnemy(), averagePoint, obs, 20);
 	// No High Priority? Then look for all
 	if (enemyUnits.size() == 0)
 	{
-		enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), averagePoint, obs, 20);
+		enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy , IsEnemyArmy(), averagePoint, obs, 20);
 	}
 
 	// This point should be where the sqishy units go. AKA not the front lines

@@ -14,8 +14,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_OBSERVER)).size();
-		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); 
+		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_OBSERVER, 2, obs);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_LURKERMP] > 0 
 			|| state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_SWARMHOSTMP] > 0 ||

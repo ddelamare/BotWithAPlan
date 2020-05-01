@@ -15,8 +15,8 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		// Counters mass marine. 
 		double score = 1;
-		int unitFood = 3 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR)).size();
-		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+
+		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_DISRUPTOR, 3, obs);
 		score = Util::FeedbackFunction(percent, .2, 2.5);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 

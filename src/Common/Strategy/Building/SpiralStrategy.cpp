@@ -75,7 +75,7 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 		}
 
 		if (this->useForwardPylon) {
-			std::sort(queries.begin(), queries.end(), Sorters::sort_by_distance(state->EnemyBase));
+			std::sort(queries.begin(), queries.end(), Sorters::sort_by_distance(state->StartingLocation));
 			std::reverse(queries.begin(), queries.end());
 		}
 

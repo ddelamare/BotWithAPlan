@@ -33,18 +33,21 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 		debug->DebugSphereOut(cluster.first, .5, Colors::Yellow);
 	}
 
-	//TODO: Sort clusters by estimated minerals killed
 
 	//Micro the orbs
 	auto orbs = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTORPHASED));
 
-	//TODO: find cluster in radius
-	//TODO: factor in move speed and time till explosion
-	//TODO: spread out orbs to different clusters
+	//find cluster in radius
+	//factor in move speed and time till explosion
+	//spread out orbs to different clusters
+	// Sort clusters by estimated minerals killed
 
 	auto orbsDirectedAlready = Units();
 	int ORB_TIME_TO_LIVE = 47; // 47 alive frames. Achieved by testing.	Also near frames 22.1 frames per sec times 2.1 ball life span
 	long gameLoop = obs->GetGameLoop();
+
+	std::sort(enemyClusters.begin(), enemyClusters.end(), Sorters::sort_by_cost(state));
+	std::reverse(enemyClusters.begin(), enemyClusters.end());
 	// Assign orbs by best cluster first
 	for (int i = 0; i < enemyClusters.size(); i++)
 	{
@@ -113,7 +116,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 		}
 		else
 		{
-			auto enemyUnits = Util::FindNearbyUnits(IsEnemyBuilding(), unit->pos, obs, 10);
+			auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), unit->pos, obs, 10);
 			if (enemyUnits.size())
 			{
 				auto targetPoint = Util::GetAveragePoint(enemyUnits);
@@ -133,7 +136,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 			continue;
 		}
 
-		auto enemyUnits = Util::FindNearbyUnits(IsEnemyGroundArmy(), orb->pos, obs, 10);
+		auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyGroundArmy(), orb->pos, obs, 10);
 		if (enemyUnits.size())
 		{
 			auto targetPoint = Util::GetAveragePoint(enemyUnits);
@@ -142,7 +145,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 		else
 		{
 			// No enemys nearby? Kill whatever
-			auto enemys = Util::FindNearbyUnits(IsEnemy(), orb->pos, obs, 10);
+			auto enemys = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemy(), orb->pos, obs, 10);
 			if (enemys.size())
 			{
 				auto targetPoint = Util::GetAveragePoint(enemyUnits);

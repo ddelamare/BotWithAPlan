@@ -19,10 +19,12 @@ public:
 		auto score = 0.0;
 
 		int batteries = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_SHIELDBATTERY)).size();
-		auto townhalls = obs->GetUnits(CompletedUnits(IsTownHall())).size();
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, CompletedUnits(IsTownHall())).size();
 
-		if (townhalls <= batteries || townhalls  <= 1)
+		if (townhalls <= batteries || townhalls <= 1)
+		{
 			return 0;
+		}
 
 		return 1;
 	};

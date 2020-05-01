@@ -175,15 +175,6 @@ namespace Util {
 		return clusters;
 	}
 
-	int static GetUnitValues(Units units, UnitTypes info)
-	{
-		int sum = 0;
-		for (auto unit : units)
-		{
-			sum += info[unit->unit_type].mineral_cost + info[unit->unit_type].vespene_cost;
-		}
 
-		return sum;
-	}
 
 }

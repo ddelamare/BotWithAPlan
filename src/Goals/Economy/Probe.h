@@ -15,7 +15,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		units.clear();
 		double score = 0.0f;
-		auto workers = obs->GetUnits(IsWorker());
+		auto workers = obs->GetUnits(sc2::Unit::Alliance::Self, IsWorker());
 		if (workers.size() >= Constants::HARD_WORKER_CAP) return 0; // Cap max number of workers/active bases
 		auto townHall = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
 		for (auto th : townHall)

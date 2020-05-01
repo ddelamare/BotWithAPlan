@@ -163,11 +163,6 @@ namespace Util {
 		return unitsNearby;
 	}
 
-	const static Units FindNearbyUnits(Filter filter, Point3D point, const ObservationInterface* obs, double radius)
-	{
-		auto units = obs->GetUnits(filter);
-		return Util::FindNearbyUnits(&units, point, obs, radius);
-	}
 
 	const static Units FindNearbyUnits(sc2::Unit::Alliance alliance, Filter filter, Point3D point, const ObservationInterface* obs, double radius)
 	{
@@ -276,9 +271,33 @@ namespace Util {
 		return alreadyVisited;
 	}
 
+	int static GetUnitValues(Units units, UnitTypes info)
+	{
+		int sum = 0;
+		for (auto unit : units)
+		{
+			sum += info[unit->unit_type].mineral_cost + info[unit->unit_type].vespene_cost;
+		}
+
+		return sum;
+	}
+
+
+	double static GetUnitPercent(Filter filter, int foodCost, const ObservationInterface* obs)
+	{
+		int unitFood = foodCost * obs->GetUnits(sc2::Unit::Alliance::Self, filter).size();
+		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent of filtered unit
+		return percent;
+	}
+
+	double static GetUnitPercent(UNIT_TYPEID unitType, int foodCost, const ObservationInterface* obs)
+	{
+		return GetUnitPercent(IsUnit(unitType), foodCost, obs);
+	}
+
 };
 
-struct Sorters
+namespace Sorters
 {
 	struct sort_by_x {
 		bool operator()(Point3D const & lhs, Point3D const & rhs)
@@ -324,6 +343,27 @@ struct Sorters
 			return Distance2D(lhs.target_pos, referencePoint) < Distance2D(rhs.target_pos, referencePoint);
 		}
 	};
+
+	struct sort_by_cost {
+		sort_by_cost(GameState* _state)
+		{
+			state = _state;
+		}
+
+		bool operator()(std::pair<Point3D, Units> lhs, std::pair<Point3D, Units> rhs)
+		{
+			return Util::GetUnitValues(lhs.second, state->UnitInfo) < Util::GetUnitValues(rhs.second, state->UnitInfo);
+		}
+
+		bool operator()(Units const lhs, Units const rhs)
+		{
+			return Util::GetUnitValues(lhs, state->UnitInfo) < Util::GetUnitValues(rhs, state->UnitInfo);
+		}
+	private:
+		GameState* state;
+	};
+
+
 
 	struct sort_by_pathing_distance {
 		Point3D referencePoint;

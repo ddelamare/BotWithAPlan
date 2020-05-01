@@ -32,7 +32,7 @@ public:
 			return 0;
 		if (idx > 0 && Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE), abilities[idx], obs)) return 0;
 
-		auto airUnits = obs->GetUnits(IsFlying());
+		auto airUnits = obs->GetUnits(sc2::Unit::Alliance::Self, IsFlying());
 		score = Util::ExponentialIncrease(airUnits.size(), (idx + 1)* .08);
 
 		return score;

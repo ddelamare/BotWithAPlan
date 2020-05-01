@@ -19,7 +19,7 @@ public:
 		auto score = 0.0;
 
 		int cannons = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOTONCANNON)).size();
-		auto townhalls = obs->GetUnits(IsTownHall()).size();
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()).size();
 
 		if (townhalls == 0)
 			return 0;

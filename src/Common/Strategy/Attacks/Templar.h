@@ -41,8 +41,8 @@ void TemplarMicro::Execute(const sc2::ObservationInterface *obs, sc2::ActionInte
 	{
 		for (auto unit : templar)
 		{
-			auto feedbackTargets = Util::FindNearbyUnits(IsUnits(feedbackableUnits), unit->pos, obs, 10);
-			auto enemyUnits = Util::FindNearbyUnits(IsEnemyArmy(), unit->pos, obs, 10);
+			auto feedbackTargets = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsUnits(feedbackableUnits), unit->pos, obs, 10);
+			auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), unit->pos, obs, 10);
 			if (unit->energy < 50)
 			{
 				templar_merge.push_back(unit);

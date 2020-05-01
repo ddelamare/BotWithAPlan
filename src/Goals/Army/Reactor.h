@@ -40,7 +40,7 @@ public:
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		bool found = true;
-		for (auto rax : obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::TERRAN_BARRACKS)) )
+		for (auto rax : obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(sc2::UNIT_TYPEID::TERRAN_BARRACKS)) )
 		{
 			if (!rax->add_on_tag)
 			{

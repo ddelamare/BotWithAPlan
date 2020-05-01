@@ -14,8 +14,9 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score;
-		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_VOIDRAY)).size();
-		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+
+		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_VOIDRAY, 4, obs);
+
 		score = Util::FeedbackFunction(percent, .2, 1);
 
 		//if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SCV] > 0)

@@ -76,6 +76,8 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new StarGateGoal());
 	EconomyGoals.push_back(new ExpandGoal());
 	EconomyGoals.push_back(new PhotonCannonGoal());
+	EconomyGoals.push_back(new ShieldBatteryGoal());
+
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
@@ -112,7 +114,6 @@ BotWithAPlan::BotWithAPlan()
 	//TacticsGoals.push_back(new RushGoal());
 	TacticsGoals.push_back(new Do4GateGoal());
 	TacticsGoals.push_back(new RetreatGoal());
-	TacticsGoals.push_back(new ShieldBatteryGoal());
 
 
 	UpgradeGoals.push_back(new ChargelotGoal());
@@ -181,7 +182,7 @@ void BotWithAPlan::OnStep() {
 	ManageUnits();
 
 	// Morph all gateways to warpgates
-	auto gateways = obs->GetUnits(IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
+	auto gateways = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
 	actions->UnitCommand(gateways, ABILITY_ID::MORPH_WARPGATE);
 
 	DebugDrawState(startTime);

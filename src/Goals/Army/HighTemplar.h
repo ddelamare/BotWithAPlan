@@ -21,8 +21,8 @@ public:
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_VIPER] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] > 8)
 		{
-			int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)).size();
-			auto percent = (double)unitFood / (1 + obs->GetFoodArmy());
+			double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR, 2, obs);
+
 			score = Util::FeedbackFunction(percent, .2, 2.5);
 		}
 

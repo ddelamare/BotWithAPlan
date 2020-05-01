@@ -14,8 +14,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX)).size();
-		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots
+		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_PHOENIX, 2, obs);
 
 		if (state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 6 
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3

@@ -16,7 +16,7 @@ public:
 		this->BaseAction::name = "Attack Proxy";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto enemyBuildings = Util::FindNearbyUnits(IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 60);
+		auto enemyBuildings = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 60);
 		if (enemyBuildings.size())
 		{
 
@@ -34,7 +34,7 @@ public:
 			spokenAlready = true;
 		}
 		bool attacked = false;
-		auto enemyBuildings = Util::FindNearbyUnits(IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 40);
+		auto enemyBuildings = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 40);
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
 		auto targetPoint = Util::GetAveragePoint(enemyBuildings);
 

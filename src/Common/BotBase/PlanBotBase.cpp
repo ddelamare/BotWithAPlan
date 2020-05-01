@@ -184,7 +184,7 @@ void PlanBotBase::BalanceWorkerAssignments()
 		{
 			// Tell all extra workers to stop so they can be reassigned
 			//TODO: only reassign if another town hall needs workers
-			auto overWorkers = Util::FindNearbyUnits(IsWorker(), th->pos, obs, 15);
+			auto overWorkers = Util::FindNearbyUnits(sc2::Unit::Alliance::Self, IsWorker(), th->pos, obs, 15);
 			int diff = th->assigned_harvesters - th->ideal_harvesters;
 			if (overWorkers.size() < diff) continue; // If no workers in area continue
 			extraWorkers = Units(overWorkers.begin(), overWorkers.begin() + diff);
@@ -237,7 +237,7 @@ void PlanBotBase::CancelBuildingsUnderAttack()
 	auto obs = Observation();
 	auto actions = Actions();
 	// Cancel all buildings that are close to being killed
-	auto inProgess = obs->GetUnits(InProgressUnits());
+	auto inProgess = obs->GetUnits(sc2::Unit::Alliance::Self, InProgressUnits());
 	for (auto ipBuilding : inProgess)
 	{
 		if (ipBuilding->build_progress > .1)
@@ -363,7 +363,7 @@ void PlanBotBase::OnGameStart()
 
 
 		// Calculate building offset
-		auto nearMinerals = Util::FindNearbyUnits(IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);
+		auto nearMinerals = Util::FindNearbyUnits(sc2::Unit::Alliance::Neutral, IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);
 
 		//Calc mineral vector and normalize
 		int visibleMinerals = 0;
