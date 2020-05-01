@@ -17,7 +17,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface* obs, GameState* state) {
 		auto robos = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY));
 		if (!robos.size()) return 0; // Don;t build it unless we need it
-		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, CompletedUnits(IsTownHall()));
 		int assignedHarvesters = 0;
 		for (auto th : townhalls)
 		{
@@ -29,7 +29,7 @@ public:
 			assignedHarvesters += th->assigned_harvesters;
 		}
 		// Ideally should have robo per fully mining  base
-		auto score = assignedHarvesters / ((1 + robos.size()) * (22.0 * 1.5));
+		auto score = assignedHarvesters / ((1 + robos.size()) * (22.0 * 3));
 
 		double CLAMP = .45;
 		if (score < CLAMP)

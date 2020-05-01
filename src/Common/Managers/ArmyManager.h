@@ -33,6 +33,9 @@ public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();
 
+	bool ShouldUnitsRetreat(Units units, Units enemies, GameState* state);
+
+
 	void RequestAction(Point2D target, BattleMode action);
 	void ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 };

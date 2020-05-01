@@ -19,24 +19,19 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
 		 // This goal currently stalls and never complets. FIXME!!!
-		if (   state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] >= 5 
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] >= 5 
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 10
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] >= 2)
+
+		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ARCHON)).size();
+		auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnits(morphableUnits));
+		// Count templar who are on the way to being archons
+		for (auto unit : units)
 		{
-			int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ARCHON)).size();
-			auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnits(morphableUnits));
-			// Count templar who are on the way to being archons
-			for (auto unit : units)
+			if (unit->orders.size() && unit->orders[0].ability_id == ABILITY_ID::MORPH_ARCHON)
 			{
-				if (unit->orders.size() && unit->orders[0].ability_id == ABILITY_ID::MORPH_ARCHON)
-				{
-					unitFood += 2;
-				}
+				unitFood += 2;
 			}
-			auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
-			score = Util::FeedbackFunction(percent, .35, 2.5);
 		}
+		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
+		score = Util::FeedbackFunction(percent, .35, 2.5);
 
 		return score;
 	};

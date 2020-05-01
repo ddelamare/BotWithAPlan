@@ -21,7 +21,6 @@ public:
 		score = Util::FeedbackFunction(percent, .3, 1.0);
 
 		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] >= 3 ||
-			state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3 ||
 			state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 3)
 		{
 			score *= 3;

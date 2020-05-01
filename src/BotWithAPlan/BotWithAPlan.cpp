@@ -112,6 +112,8 @@ BotWithAPlan::BotWithAPlan()
 	//TacticsGoals.push_back(new RushGoal());
 	TacticsGoals.push_back(new Do4GateGoal());
 	TacticsGoals.push_back(new RetreatGoal());
+	TacticsGoals.push_back(new ShieldBatteryGoal());
+
 
 	UpgradeGoals.push_back(new ChargelotGoal());
 	UpgradeGoals.push_back(new BlinkGoal());

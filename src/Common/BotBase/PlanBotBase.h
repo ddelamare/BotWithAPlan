@@ -38,6 +38,8 @@ public:
 	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors) = 0;
 	void DebugWriteInView(string message, Point2D relativePosition, DebugInterface* debug, const ObservationInterface* obs);
     bool Lost;
+	bool errorOccurred = 0;
+
 protected:
 	void ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers);
 	bool virtual ShouldSurrender(const sc2::ObservationInterface * obs);

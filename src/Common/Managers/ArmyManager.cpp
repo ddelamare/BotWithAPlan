@@ -13,19 +13,51 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 	this->cachedHighPriorityEnemies = obs->GetUnits(IsHighPrioirtyEnemy());
 	this->cachedEnemyArmy = obs->GetUnits(IsEnemyArmy());
 	this->cachedEnemies = obs->GetUnits(IsEnemy());	// includes buildings
+
+	auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsCombatUnit());
+	auto clusters = Util::FindClusters(units, CLUSTER_DISTANCE_THRESHOLD_MIN);
+	for (auto cluster : clusters) 
+	{
+		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, state->UnitInfo)), cluster.first);
+	}
+
+	auto enemyClusters = Util::FindClusters(this->cachedEnemyArmy, CLUSTER_DISTANCE_THRESHOLD_MIN);
+	for (auto cluster : enemyClusters)
+	{
+		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, state->UnitInfo)), cluster.first, Colors::Red);
+	}
+
 	for (auto group : battleGroups)
 	{
-
-
 		if (group.mode == BattleMode::Attack)
 		{
 			// Moves toward the target or attacks optimal units
 			AttackTarget(&group, obs, query, action, state, debug);
 			// Move units not in the cluster
-			ClusterUnits(&group, 
-				!IsClustered(&group, obs, query, action, state, debug)
-				, obs, query, action, state, debug);
-
+			//ClusterUnits(&group, 
+			//	!IsClustered(&group, obs, query, action, state, debug)
+			//	, obs, query, action, state, debug);
+			int ENEMY_CLUSTER_SEARCH_RANGE = 10;
+			// For any cluster that's near enemy clusters that are bigger, retreat
+			for (auto cluster : clusters)
+			{
+				int enemyCostsInRange = 0;
+				for (auto ecluster : enemyClusters)
+				{
+					if (Distance2D(cluster.first, ecluster.first) <= ENEMY_CLUSTER_SEARCH_RANGE)
+					{
+						enemyCostsInRange = Util::GetUnitValues(ecluster.second, state->UnitInfo);
+					}
+				}
+				auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(IsTownHall()), cluster.first, obs, query, false);
+				auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
+				// Retreat unless we are at home
+				if (disToTownHall > 20 && enemyCostsInRange > Util::GetUnitValues(cluster.second, state->UnitInfo))
+				{
+					// Retreat
+					action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
+				}
+			}
 		}
 		else if (group.mode == BattleMode::Defend)
 		{
@@ -87,7 +119,6 @@ bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* ob
 	return group->isClustered;
 }
 void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
-
 {
 	//TODO: Based on where they're going, meet up in a sane spot.
 	if (group->units.size() <= 1) return;
@@ -403,4 +434,13 @@ ArmyManager::ArmyManager()
 
 	threatAnalyzer = ThreatAnalyzer();
 	HasThermalLance = false;
+}
+
+// This method should take a cluster of friendly units near a cluster of enemy units and see if they should retreat.
+bool ArmyManager::ShouldUnitsRetreat(Units units, Units enemies, GameState* state)
+{
+	int val = Util::GetUnitValues(units, state->UnitInfo);
+	int enemyVal = Util::GetUnitValues(enemies, state->UnitInfo);
+
+	return (val < enemyVal);
 }

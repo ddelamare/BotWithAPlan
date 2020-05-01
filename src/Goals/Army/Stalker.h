@@ -20,6 +20,7 @@ public:
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent Stalker
 		score = Util::FeedbackFunction(percent, .35, 4);	
 		if (state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 6
+			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3
 			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BANSHEE] >= 2)
 		{

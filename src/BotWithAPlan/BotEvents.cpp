@@ -112,5 +112,6 @@ void BotWithAPlan::OnError(const std::vector<sc2::ClientError> & client_errors, 
 	{
 		std::cerr << "Client error: " << ClientErrorToString(error) << std::endl;
 	}
+	this->errorOccurred = true;
 
 }

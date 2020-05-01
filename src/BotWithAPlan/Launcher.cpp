@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 	planner->PrintPlan(plan);
 	std::cin.get();
 #else  // Run local sims
-	auto races = new Race[3]{  Race::Terran, Race::Zerg,  Race::Protoss };
+	auto races = new Race[3]{  Race::Protoss, Race::Zerg,  Race::Terran };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
 	std::vector<std::string> maps = {  "LostAndFoundLE.SC2Map",  "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" ,"16-BitLE.SC2Map"};
@@ -63,13 +63,20 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::HardVeryHard)
+					CreateComputer(race, sc2::Difficulty::VeryHard)
 					});
 
 				coordinator.LaunchStarcraft();
 				coordinator.StartGame(map);
 				while (coordinator.Update()) {
 					if (bot.Lost) break;
+					std::this_thread::sleep_for(std::chrono::milliseconds(0));
+				}
+				if (bot.errorOccurred)
+				{
+					// Try it again
+					j--;
+					continue;
 				}
 				if (bot.Observation() && bot.Observation()->GetResults().size() > 0 && bot.Observation()->GetResults().front().result == sc2::GameResult::Win)
 				{

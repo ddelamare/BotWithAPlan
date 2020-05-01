@@ -137,18 +137,18 @@ namespace Util {
 	}
 
 	// Taken from sc2api/sc2libs/sc2_search and modfied with unit sizes
-	std::vector<std::pair<Point3D, std::vector<Unit> > > static FindClusters(const Units& units, float distance_apart)
+	std::vector<std::pair<Point3D, Units>> static FindClusters(const Units& units, float distance_apart)
 	{
 		float squared_distance_apart = distance_apart * distance_apart;
-		std::vector<std::pair<Point3D, std::vector<Unit> > > clusters;
+		std::vector<std::pair<Point3D, Units>> clusters;
 		for (size_t i = 0, e = units.size(); i < e; ++i) {
-			const Unit& u = *units[i];
+			auto u = units[i];
 
 			float distance = std::numeric_limits<float>::max();
-			std::pair<Point3D, std::vector<Unit> >* target_cluster = nullptr;
-			// Find the cluster this mineral patch is closest to.
+			std::pair<Point3D, Units>* target_cluster = nullptr;
+			// Find the cluster this unit is closest to.
 			for (auto& cluster : clusters) {
-				float d = DistanceSquared3D(u.pos, cluster.first);
+				float d = DistanceSquared3D(u->pos, cluster.first);
 				if (d < distance) {
 					distance = d;
 					target_cluster = &cluster;
@@ -157,17 +157,33 @@ namespace Util {
 
 			// If the target cluster is some distance away don't use it.
 			if (distance > squared_distance_apart) {
-				clusters.push_back(std::pair<Point3D, std::vector<Unit> >(u.pos, std::vector<Unit>{u}));
+				clusters.push_back(std::make_pair(u->pos, Units{u}));
+				continue;
+			}
+
+			if (target_cluster == nullptr)
+			{
 				continue;
 			}
 
 			// Otherwise append to that cluster and update it's center of mass.
 			target_cluster->second.push_back(u);
 			size_t size = target_cluster->second.size();
-			target_cluster->first = ((target_cluster->first * (float(size) - 1)) + u.pos) / float(size);
+			target_cluster->first = ((target_cluster->first * (float(size) - 1)) + u->pos) / float(size);
 		}
 
 		return clusters;
+	}
+
+	int static GetUnitValues(Units units, UnitTypes info)
+	{
+		int sum = 0;
+		for (auto unit : units)
+		{
+			sum += info[unit->unit_type].mineral_cost + info[unit->unit_type].vespene_cost;
+		}
+
+		return sum;
 	}
 
 }

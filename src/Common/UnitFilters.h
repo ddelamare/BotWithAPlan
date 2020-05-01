@@ -431,18 +431,19 @@ struct InProgressUnits
 
 struct CompletedUnits
 {
+	CompletedUnits(Filter _filter)
+	{
+		filter = _filter;
+	}
 	CompletedUnits(UNIT_TYPEID type)
 	{
-		unitType = type;
+		filter = IsUnit(type);
 	}
-	bool operator()(const Unit& unit) {
-		if (unitType == unit.unit_type)
-		{
-			return unit.build_progress >= 1;
-		}
-		return false;
+	bool operator()(const Unit& unit) 
+	{
+		return filter(unit) && unit.build_progress >= 1;
 	}
-private: sc2::UNIT_TYPEID unitType;
+private: Filter filter;
 };
 
 struct IsReactor

@@ -16,10 +16,19 @@ public:
 		this->BaseAction::name = "Build Shield Battery";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		return 0;
+		auto score = 0.0;
+
+		int batteries = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_SHIELDBATTERY)).size();
+		auto townhalls = obs->GetUnits(CompletedUnits(IsTownHall())).size();
+
+		if (townhalls <= batteries || townhalls  <= 1)
+			return 0;
+
+		return 1;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
+		auto start = new SpiralStrategy(ABILITY_ID::BUILD_SHIELDBATTERY, false, true, state->selfRace, true);
 		return Util::TryBuildBuilding(ABILITY_ID::BUILD_SHIELDBATTERY, UNIT_TYPEID::PROTOSS_SHIELDBATTERY, obs, actions, query, debug, state);
 	}
 };

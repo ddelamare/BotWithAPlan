@@ -99,7 +99,8 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 				if (targetedClusters.find(i) != targetedClusters.end())
 					continue;
 				auto cluster = enemyClusters[i];
-				auto dis = Distance2D(unit->pos, cluster.first);
+				auto dis = query->PathingDistance(unit, cluster.first);
+					//Distance2D(unit->pos, cluster.first);
 				if ( dis < Constants::DISRUPTOR_RANGE + 1)
 				{
 					debug->DebugSphereOut(cluster.first, 2, Colors::Red);

@@ -1,7 +1,7 @@
 #pragma once
 using namespace sc2;
 
-enum BattleMode {
+enum class BattleMode {
 	Attack,
 	Retreat,
 	Defend,
@@ -11,7 +11,6 @@ enum BattleMode {
 
 struct BattleGroup
 {
-	BattleGroup() {}
 	// Hold the mode the group is currently in.
 	// Could be Attack, Retreat, Defend
 	BattleMode mode;

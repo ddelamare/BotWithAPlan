@@ -54,8 +54,13 @@ public:
 				return 0;
 			auto threatAnalyzer = ThreatAnalyzer();
 			auto threat = threatAnalyzer.GetThreat(&state->threat);
-			//score *= threat * 2 ;
-			score *= obs->GetGameLoop() / (GREED_DAMPER * townhalls.size());
+
+			if (townhalls.size() == 1) 
+			{
+				score *= 2;
+			}
+
+			score *= obs->GetGameLoop() / (GREED_DAMPER * (townhalls.size()));
 			if (score < CLAMP) // If we are losing a lot of units, don't expand
 				return 0;
 			else
