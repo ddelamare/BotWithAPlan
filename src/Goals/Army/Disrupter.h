@@ -21,12 +21,8 @@ public:
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 6)
-		{
-			score *= 1.5;
-		}
-
-		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] >= 3
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 6
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] >= 3
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] >= 3)
 		{
 			score *= 1.5;

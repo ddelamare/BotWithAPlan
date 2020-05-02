@@ -25,7 +25,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	// We only look for unphased disruptors
 	auto disruptors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR));
 	auto enemyTargets = obs->GetUnits(Unit::Alliance::Enemy, IsEnemyGroundArmy());
-	auto enemyClusters = Util::FindClusters(enemyTargets, 3.5); //Find clusters the size of disruptor blast radius
+	auto enemyClusters = Util::FindClusters(enemyTargets, 2.5); //Find clusters the size of disruptor blast radius
 	auto targetedClusters = std::set<int>();
 	//Draw enemy clusters
 	for (auto cluster : enemyClusters)

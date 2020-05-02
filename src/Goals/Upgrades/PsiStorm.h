@@ -18,8 +18,8 @@ public:
 		auto hasUpgrade = VectorHelpers::FoundInVector(upgrades, (UpgradeID)UPGRADE_ID::PSISTORMTECH);
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE), ABILITY_ID::RESEARCH_PSISTORM, obs))
 			return 0;
-		int unitCount = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)).size();
-		score = Util::ExponentialIncrease(unitCount, .25);
+		int unitCount = obs->GetFoodArmy();
+		score = Util::ExponentialIncrease(unitCount, .1);
 
 		return score;
 	};

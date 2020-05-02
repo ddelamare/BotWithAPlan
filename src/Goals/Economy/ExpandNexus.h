@@ -57,7 +57,7 @@ public:
 
 			if (townhalls.size() == 1) 
 			{
-				score *= 2;
+				score *= 2.5;
 			}
 
 			score *= obs->GetGameLoop() / (GREED_DAMPER * (townhalls.size()));

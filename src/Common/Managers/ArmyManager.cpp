@@ -37,27 +37,14 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			//ClusterUnits(&group, 
 			//	!IsClustered(&group, obs, query, action, state, debug)
 			//	, obs, query, action, state, debug);
-			int ENEMY_CLUSTER_SEARCH_RANGE = 10;
+
 			// For any cluster that's near enemy clusters that are bigger, retreat
 			for (auto cluster : clusters)
 			{
-				int enemyCostsInRange = 0;
-				for (auto ecluster : enemyClusters)
+
+				if (ShouldUnitsRetreat(cluster, enemyClusters, obs, query, state)) 
 				{
-					if (Distance2D(cluster.first, ecluster.first) <= ENEMY_CLUSTER_SEARCH_RANGE)
-					{
-						enemyCostsInRange = Util::GetUnitValues(ecluster.second, state->UnitInfo);
-					}
-				}
-				auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()), cluster.first, obs, query, false);
-				if (closestTownHall) {
-					auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
-					// Retreat unless we are at home
-					if (disToTownHall > 20 && enemyCostsInRange > Util::GetUnitValues(cluster.second, state->UnitInfo))
-					{
-						// Retreat
-						action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
-					}
+					action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
 				}
 			}
 		}
@@ -369,7 +356,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 			// Infestors must die
 			if (IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC)(*eu))
 			{
-				weakestUnit = eu;
+			//	weakestUnit = eu;
 			}
 		}
 
@@ -432,17 +419,39 @@ ArmyManager::ArmyManager()
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_TEMPEST);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_SENTRY);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_STALKER);
+	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_IMMORTAL);
 	backLineUnits.push_back(UNIT_TYPEID::TERRAN_MARINE);
 
 	threatAnalyzer = ThreatAnalyzer();
 	HasThermalLance = false;
 }
 
+int ENEMY_CLUSTER_SEARCH_RANGE = 10;
 // This method should take a cluster of friendly units near a cluster of enemy units and see if they should retreat.
-bool ArmyManager::ShouldUnitsRetreat(Units units, Units enemies, GameState* state)
+bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<std::pair<Point3D, Units>> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
 {
-	int val = Util::GetUnitValues(units, state->UnitInfo);
-	int enemyVal = Util::GetUnitValues(enemies, state->UnitInfo);
+	int enemyCostsInRange = 0;
+	for (auto ecluster : enemyClusters)
+	{
+		if (Distance2D(cluster.first, ecluster.first) <= ENEMY_CLUSTER_SEARCH_RANGE)
+		{
+			enemyCostsInRange = Util::GetUnitValues(ecluster.second, state->UnitInfo);
+		}
+	}
 
-	return (val < enemyVal);
+	int friendlyUnitsCost = Util::GetUnitValues(cluster.second, state->UnitInfo);
+
+	auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()), cluster.first, obs, query, false);
+	bool isAwayFromHome = false;
+	if (closestTownHall) {
+		auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
+
+		// Retreat unless we are at home
+		if (disToTownHall > 20)
+		{
+			isAwayFromHome = true;
+		}
+	}
+
+	return isAwayFromHome && (friendlyUnitsCost < (enemyCostsInRange * 1.2));
 }

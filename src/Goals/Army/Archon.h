@@ -38,7 +38,7 @@ public:
 	bool virtual Excecute(const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		Units templar = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR));
-		if (templar.size() > 1) {
+		if (templar.size() > 3) {
 			Units templar_merge;
 			for (int i = 0; i < 2; ++i) {
 				templar_merge.push_back(templar.at(i));

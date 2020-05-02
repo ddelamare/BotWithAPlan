@@ -33,7 +33,7 @@ public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();
 
-	bool ShouldUnitsRetreat(Units units, Units enemies, GameState* state);
+	bool ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<std::pair<Point3D, Units>> enemyClusters, const ObservationInterface* obs, QueryInterface* query, GameState* state);
 
 
 	void RequestAction(Point2D target, BattleMode action);
