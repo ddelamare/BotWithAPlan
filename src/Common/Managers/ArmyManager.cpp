@@ -16,7 +16,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 
 	auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsCombatUnit());
 	auto clusters = Util::FindClusters(units, CLUSTER_DISTANCE_THRESHOLD_MIN);
-	for (auto cluster : clusters) 
+	for (auto cluster : clusters)
 	{
 		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, state->UnitInfo)), cluster.first);
 	}
@@ -50,12 +50,14 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 					}
 				}
 				auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()), cluster.first, obs, query, false);
-				auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
-				// Retreat unless we are at home
-				if (disToTownHall > 20 && enemyCostsInRange > Util::GetUnitValues(cluster.second, state->UnitInfo))
-				{
-					// Retreat
-					action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
+				if (closestTownHall) {
+					auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
+					// Retreat unless we are at home
+					if (disToTownHall > 20 && enemyCostsInRange > Util::GetUnitValues(cluster.second, state->UnitInfo))
+					{
+						// Retreat
+						action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
+					}
 				}
 			}
 		}
@@ -118,7 +120,7 @@ bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* ob
 
 	return group->isClustered;
 }
-void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
+void ArmyManager::ClusterUnits(BattleGroup* group, bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	//TODO: Based on where they're going, meet up in a sane spot.
 	if (group->units.size() <= 1) return;
@@ -127,7 +129,7 @@ void ArmyManager::ClusterUnits(BattleGroup* group,bool includeAll, const Observa
 	{
 		distMult = threatAnalyzer.GetThreat(&state->threat);
 	}
-		
+
 	auto averagePoint = Util::GetAveragePoint(group->units);
 	debug->DebugSphereOut(averagePoint, 5);
 	Units unitsToMove;
@@ -164,7 +166,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	// No High Priority? Then look for all
 	if (enemyUnits.size() == 0)
 	{
-		enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy , IsEnemyArmy(), averagePoint, obs, 20);
+		enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), averagePoint, obs, 20);
 	}
 
 	// This point should be where the sqishy units go. AKA not the front lines
@@ -272,7 +274,7 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 		Units groupunits;
 		for (auto group : battleGroups)
 		{
-			groupunits.insert(groupunits.end(),group.units.begin(), group.units.end());
+			groupunits.insert(groupunits.end(), group.units.begin(), group.units.end());
 		}
 
 		Units missing = VectorHelpers::FindMissingInVector(armyUnits, groupunits);
@@ -284,7 +286,7 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 
 	auto isHarrassUnit = IsUnit(UNIT_TYPEID::PROTOSS_ORACLE);
 
-	for (auto &group : battleGroups)
+	for (auto& group : battleGroups)
 	{
 		group.units.clear();
 
@@ -361,9 +363,9 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		std::sort(nearbyEnemies.begin(), nearbyEnemies.end(), Sorters::sort_by_distance(unit->pos));
 
 		// Units needing to get sniped RIGHT NOW
-		for (auto eu : nearbyEnemies) 
+		for (auto eu : nearbyEnemies)
 		{
-		
+
 			// Infestors must die
 			if (IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC)(*eu))
 			{
@@ -387,30 +389,30 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		}
 		if (!weakestUnit)
 		{
-		   auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, unitType.weapons[0].range * range);
-		   int pylons = 0;
-		   int poweredBuildings = 0;
-		   auto isPylon = IsUnit(UNIT_TYPEID::PROTOSS_PYLON);
-		   const Unit* pylon = nullptr;
-		   for (auto eu : nearbyBuildings)
-		   {
-			   if (isPylon(*eu))
-			   {
-				   pylons++;
-				   pylon = eu;
-			   }
-			   else if (eu->is_powered)
-			   {
-				   poweredBuildings++;
-			   }
-		   }
-		   // if there are more than twice the number of buildings as pylons, target the pylons
-		   if ((pylons * 2) <= poweredBuildings)
-		   {
-			   weakestUnit = pylon;
-		   }
+			auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, unitType.weapons[0].range * range);
+			int pylons = 0;
+			int poweredBuildings = 0;
+			auto isPylon = IsUnit(UNIT_TYPEID::PROTOSS_PYLON);
+			const Unit* pylon = nullptr;
+			for (auto eu : nearbyBuildings)
+			{
+				if (isPylon(*eu))
+				{
+					pylons++;
+					pylon = eu;
+				}
+				else if (eu->is_powered)
+				{
+					poweredBuildings++;
+				}
+			}
+			// if there are more than twice the number of buildings as pylons, target the pylons
+			if ((pylons * 2) <= poweredBuildings)
+			{
+				weakestUnit = pylon;
+			}
 		}
-		
+
 		return weakestUnit;
 	}
 	else

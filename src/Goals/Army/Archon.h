@@ -18,7 +18,6 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		 // This goal currently stalls and never complets. FIXME!!!
 
 		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ARCHON)).size();
 		auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnits(morphableUnits));
@@ -31,12 +30,12 @@ public:
 			}
 		}
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
-		score = Util::FeedbackFunction(percent, .35, 2.5);
+		score = Util::FeedbackFunction(percent, .6, 2.5);
 
 		return score;
 	};
 
-	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
+	bool virtual Excecute(const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
 		Units templar = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR));
 		if (templar.size() > 1) {
