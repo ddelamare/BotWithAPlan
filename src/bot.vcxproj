@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\src;;../include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\rapidjson\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\src;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;..\src;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -124,7 +124,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\src;C:\Users\ddelam\Documents\Git\sc2api\include;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\src;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;..\src;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

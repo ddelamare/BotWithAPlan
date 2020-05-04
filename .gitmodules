@@ -4,3 +4,6 @@
 [submodule "include/rapidxml"]
 	path = include/rapidxml
 	url = https://github.com/discordapp/rapidxml.git
+[submodule "include/cpp-sc2"]
+	path = include/cpp-sc2
+	url = https://github.com/alkurbatov/cpp-sc2.git

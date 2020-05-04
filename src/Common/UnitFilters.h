@@ -2,6 +2,7 @@
 #ifndef UNIT_FILTERS
 #include "GameState.h"
 #include "VectorHelpers.h"
+#include "sc2api/sc2_unit_filters.h"
 
 using namespace sc2;
 
@@ -236,22 +237,6 @@ struct IsArmy {
 		case UNIT_TYPEID::PROTOSS_VOIDRAY: return true;
 		case UNIT_TYPEID::PROTOSS_WARPPRISM: return true;
 		case UNIT_TYPEID::PROTOSS_ZEALOT: return true;
-		default: return false;
-		}
-	}
-};
-
-struct IsTownHall {
-	bool operator()(const Unit& unit) {
-		switch (unit.unit_type.ToType()) {
-		case UNIT_TYPEID::ZERG_HATCHERY: return true;
-		case UNIT_TYPEID::ZERG_LAIR: return true;
-		case UNIT_TYPEID::ZERG_HIVE: return true;
-		case UNIT_TYPEID::TERRAN_COMMANDCENTER: return true;
-		case UNIT_TYPEID::TERRAN_ORBITALCOMMAND: return true;
-		case UNIT_TYPEID::TERRAN_ORBITALCOMMANDFLYING: return true;
-		case UNIT_TYPEID::TERRAN_PLANETARYFORTRESS: return true;
-		case UNIT_TYPEID::PROTOSS_NEXUS: return true;
 		default: return false;
 		}
 	}

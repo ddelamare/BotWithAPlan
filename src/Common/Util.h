@@ -1,5 +1,6 @@
 #pragma once
 #include "sc2api\sc2_api.h"
+#include "sc2api/sc2_unit_filters.h"
 #include "UnitFilters.h"
 #include "VectorHelpers.h"
 #include <vector>
