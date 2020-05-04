@@ -18,13 +18,13 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 	auto clusters = Util::FindClusters(units, CLUSTER_DISTANCE_THRESHOLD_MIN);
 	for (auto cluster : clusters)
 	{
-		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, state->UnitInfo)), cluster.first);
+		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, &state->UnitInfo)), cluster.first);
 	}
 
 	auto enemyClusters = Util::FindClusters(this->cachedEnemyArmy, CLUSTER_DISTANCE_THRESHOLD_MIN);
 	for (auto cluster : enemyClusters)
 	{
-		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, state->UnitInfo)), cluster.first, Colors::Red);
+		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, &state->UnitInfo)), cluster.first, Colors::Red);
 	}
 
 	for (auto group : battleGroups)
@@ -194,6 +194,10 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_CARRIER)
 			{
 				range = Constants::CARRIER_RANGE;
+			}
+			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)
+			{
+				range = Constants::STORM_RANGE;
 			}
 			// Keep units in the back, but also in range
 			action->UnitCommand(unit, ABILITY_ID::MOVE, closestUnit->pos + (range * vectorAway));
@@ -426,7 +430,7 @@ ArmyManager::ArmyManager()
 	HasThermalLance = false;
 }
 
-int ENEMY_CLUSTER_SEARCH_RANGE = 10;
+int ENEMY_CLUSTER_SEARCH_RANGE = 15;
 // This method should take a cluster of friendly units near a cluster of enemy units and see if they should retreat.
 bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<std::pair<Point3D, Units>> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
 {
@@ -435,11 +439,11 @@ bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vec
 	{
 		if (Distance2D(cluster.first, ecluster.first) <= ENEMY_CLUSTER_SEARCH_RANGE)
 		{
-			enemyCostsInRange = Util::GetUnitValues(ecluster.second, state->UnitInfo);
+			enemyCostsInRange = Util::GetUnitValues(ecluster.second, &state->UnitInfo);
 		}
 	}
 
-	int friendlyUnitsCost = Util::GetUnitValues(cluster.second, state->UnitInfo);
+	int friendlyUnitsCost = Util::GetUnitValues(cluster.second, &state->UnitInfo);
 
 	auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()), cluster.first, obs, query, false);
 	bool isAwayFromHome = false;

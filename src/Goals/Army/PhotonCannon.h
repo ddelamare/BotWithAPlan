@@ -8,6 +8,8 @@
 
 class PhotonCannonGoal : public BaseAction
 {
+	double CLAMP = .25;
+
 public:
 	PhotonCannonGoal() : BaseAction()
 	{
@@ -29,8 +31,11 @@ public:
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] >= 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] >= 2)	
 		{
-			score = Util::FeedbackFunction(percent, .4, 2);
+			score = Util::FeedbackFunction(percent, .2, 2);
 		}
+
+		if (score < CLAMP) // If we are losing a lot of units, don't expand
+			return 0;
 
 		return score;
 	};

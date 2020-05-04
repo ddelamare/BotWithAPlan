@@ -272,12 +272,12 @@ namespace Util {
 		return alreadyVisited;
 	}
 
-	int static GetUnitValues(Units units, UnitTypes info)
+	int static GetUnitValues(Units units, UnitTypes* info)
 	{
 		int sum = 0;
 		for (auto unit : units)
 		{
-			sum += info[unit->unit_type].mineral_cost + info[unit->unit_type].vespene_cost;
+			sum += (*info)[unit->unit_type].mineral_cost + (*info)[unit->unit_type].vespene_cost;
 		}
 
 		return sum;
@@ -353,12 +353,12 @@ namespace Sorters
 
 		bool operator()(std::pair<Point3D, Units> lhs, std::pair<Point3D, Units> rhs)
 		{
-			return Util::GetUnitValues(lhs.second, state->UnitInfo) < Util::GetUnitValues(rhs.second, state->UnitInfo);
+			return Util::GetUnitValues(lhs.second, &state->UnitInfo) < Util::GetUnitValues(rhs.second, &state->UnitInfo);
 		}
 
 		bool operator()(Units const lhs, Units const rhs)
 		{
-			return Util::GetUnitValues(lhs, state->UnitInfo) < Util::GetUnitValues(rhs, state->UnitInfo);
+			return Util::GetUnitValues(lhs, &state->UnitInfo) < Util::GetUnitValues(rhs, &state->UnitInfo);
 		}
 	private:
 		GameState* state;

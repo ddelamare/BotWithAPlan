@@ -16,21 +16,9 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 7
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] > 6
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_VIPER] > 2
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] > 8)
-		{
-			double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR, 2, obs);
+		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR, 2, obs);
 
-			score = Util::FeedbackFunction(percent, .4, 2.5);
-		}
-
-		if (obs->GetMinerals() < 400 && obs->GetVespene() > 500)
-		{
-			score *= 3;
-		}
-
+		score = Util::FeedbackFunction(percent, .4, 2.5);
 		return score;
 	};
 

@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 	planner->PrintPlan(plan);
 	std::cin.get();
 #else  // Run local sims
-	auto races = new Race[3]{  Race::Terran, Race::Terran,  Race::Terran };
+	auto races = new Race[3]{  Race::Protoss, Race::Zerg,  Race::Terran };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
 	std::vector<std::string> maps = {  "LostAndFoundLE.SC2Map",  "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" ,"16-BitLE.SC2Map"};
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::VeryHard)
+					CreateComputer(race, sc2::Difficulty::HardVeryHard)
 					});
 
 				coordinator.LaunchStarcraft();
