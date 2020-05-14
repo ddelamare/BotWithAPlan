@@ -13,6 +13,7 @@ class ArmyManager
 	const double CLUSTER_PERCENT_THRESHOLD_MAX = 0.50; // Once not clustered, has to reach this percentage to be considered clustered again
 	const double CLUSTER_MOVE_THRESHOLD = 2.5; //If unit with this distance of target and has not specfic target, don't move
 	std::vector<UnitTypeID> backLineUnits;
+	std::vector<UnitTypeID> nonAutoAttackUnits;
 	std::vector<std::pair<Point2D, BattleMode>> requestedActions;
 private:
 	bool IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);

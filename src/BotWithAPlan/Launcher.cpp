@@ -22,8 +22,7 @@ int main(int argc, char* argv[]) {
 	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
 
 	return 0;
-#elif PLANNER_M
-	ODE
+#elif PLANNER_MODE
 	InitResources();
 
 	GenerateDependencyList();
@@ -55,15 +54,14 @@ int main(int argc, char* argv[]) {
 				coordinator.LoadSettings(argc, argv);
 				coordinator.SetMultithreaded(true);
 				coordinator.SetRealtime(REALTIME);
-				coordinator.SetStepSize(10);
-				//coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
+				//coordinator.SetStepSize(10);
 				BotWithAPlan bot;
 				BotWithAPlan bot2;
 				coordinator.SetParticipants({
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::HardVeryHard)
+					CreateComputer(race, sc2::Difficulty::VeryHard)
 					});
 
 				coordinator.LaunchStarcraft();

@@ -73,7 +73,7 @@ void BotWithAPlan::OnGameStart() {
 
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 1.6");
+	Actions()->SendChat("Bot version: 1.7");
 #endif
 }
 

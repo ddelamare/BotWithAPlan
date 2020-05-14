@@ -17,15 +17,22 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
 
+		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_STALKER, 2, obs);
-		score = Util::FeedbackFunction(percent, .35, 4);
-		if (state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 6
-			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3
+		score = Util::FeedbackFunction(percent, .45, 3);
+		if (
+			 state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3
 			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BANSHEE] >= 2)
 		{
 			score *= 4;
 		}
+
+		if (townhalls.size() == 1)
+		{
+			score /= 2;
+		}
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

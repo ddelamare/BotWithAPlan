@@ -73,6 +73,34 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			}*/
 		}
 	}
+
+
+	// TODO: Fan out better
+	auto allUnits = obs->GetUnits(sc2::Unit::Alliance::Self);
+	auto toAvoid = obs->GetUnits(IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTORPHASED));
+	for (auto unit : allUnits)
+	{
+		auto nearbyEffects = Util::FindNearbyUnits(&toAvoid, unit->pos, obs, 5);
+
+		auto combinedVec = Point2D();
+		auto absVec = Point2D();
+		// Avoid effects
+		for (auto effect : nearbyEffects)
+		{
+			// Find a safe spot by doing some vector addition
+			Point2D vecToEnemy = effect->pos - unit->pos;
+			Normalize2D(vecToEnemy);
+			absVec += vecToEnemy;
+		}
+
+		// Rotate 90
+		auto vecAway = -1 * absVec;
+		Normalize2D(vecAway);
+
+		vecAway *= 2;
+
+		action->UnitCommand(unit, sc2::ABILITY_ID::MOVE, unit->pos + vecAway);
+	}
 }
 
 // Checks if a group is close enough together
@@ -167,7 +195,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	for (auto unit : group->units)
 	{
 		auto enemyUnit = FindOptimalTarget(unit, obs, query, state);
-		if (enemyUnit && unit->weapon_cooldown == 0) // If a enemy is near and can fire, target them
+		if (enemyUnit && unit->weapon_cooldown == 0 && !VectorHelpers::FoundInVector(nonAutoAttackUnits, unit->unit_type)) // If a enemy is near and can fire, target them
 		{
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyUnit);
 		}
@@ -425,6 +453,12 @@ ArmyManager::ArmyManager()
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_STALKER);
 	backLineUnits.push_back(UNIT_TYPEID::PROTOSS_IMMORTAL);
 	backLineUnits.push_back(UNIT_TYPEID::TERRAN_MARINE);
+
+
+	nonAutoAttackUnits.push_back(UNIT_TYPEID::PROTOSS_CARRIER);
+	nonAutoAttackUnits.push_back(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR);
+	nonAutoAttackUnits.push_back(UNIT_TYPEID::PROTOSS_DISRUPTOR);
+	nonAutoAttackUnits.push_back(UNIT_TYPEID::PROTOSS_SENTRY);
 
 	threatAnalyzer = ThreatAnalyzer();
 	HasThermalLance = false;

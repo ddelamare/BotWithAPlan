@@ -10,9 +10,9 @@
 class ExpandGoal : public BaseAction
 {
 	double CLAMP = .25;
-	int MIN_ARMY_PER_EXPO = 3;
+	int MIN_ARMY_PER_EXPO = 0;
 	// Roughly this value means that it gets more greedy with time
-	float GREED_DAMPER = 2000.0;
+	float GREED_DAMPER = 1500.0;
 public:
 	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
@@ -50,14 +50,17 @@ public:
 				score *= 1.3; // If we are near probe capacity, we need to expand
 			else if (differance > -5)
 				score *= 1.1; // If we are nearing probe capacity we might expand
-			else
+			else if (townhalls.size() > 2)
 				return 0;
-			auto threatAnalyzer = ThreatAnalyzer();
-			auto threat = threatAnalyzer.GetThreat(&state->threat);
 
-			if (townhalls.size() == 1) 
+			if (townhalls.size() == 1)
 			{
-				score *= 2.5;
+				score = 1;
+			}
+
+			if (townhalls.size() <= 2) 
+			{
+				score *= 3.5;
 			}
 
 			score *= obs->GetGameLoop() / (GREED_DAMPER * (townhalls.size()));

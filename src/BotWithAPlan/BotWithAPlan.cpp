@@ -76,13 +76,13 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new StarGateGoal());
 	EconomyGoals.push_back(new ExpandGoal());
 	EconomyGoals.push_back(new PhotonCannonGoal());
-	EconomyGoals.push_back(new ShieldBatteryGoal());
+	//EconomyGoals.push_back(new ShieldBatteryGoal());
 
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
 	ArmyGoals.push_back(new StalkerGoal());
-	//ArmyGoals.push_back(new AdeptGoal());
+	ArmyGoals.push_back(new AdeptGoal());
 	ArmyGoals.push_back(new ColossusGoal());
 	ArmyGoals.push_back(new VoidRayGoal());
 	ArmyGoals.push_back(new ImmortalGoal());
@@ -167,6 +167,15 @@ BotWithAPlan::BotWithAPlan()
 
 void BotWithAPlan::OnStep() {
 	LOG(4) << "Step Begin" << endl;
+
+	// Frame Skip
+	if (StepCounter != STEPS_PER_GOAL)
+	{
+		StepCounter++;
+		return;
+	}
+	StepCounter = 0;
+
 	auto startTime = Clock::now();
 	auto obs = Observation();
 	auto query = Query();

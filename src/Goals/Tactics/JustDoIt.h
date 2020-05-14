@@ -14,6 +14,10 @@ public:
 		this->BaseAction::name = "Just Do It";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
+
+		if (obs->GetFoodUsed() > 180)
+			return 5;
+
 		return (obs->GetFoodArmy() / 75) * threatAnalyzer.GetThreat(&state->threat);
 	};
 

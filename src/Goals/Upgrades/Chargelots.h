@@ -21,13 +21,17 @@ public:
 		int unitCount = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT)).size();
 		if (unitCount < 5) return 0;
 
-		score = Util::ExponentialIncrease(unitCount, .3);
+		score = Util::ExponentialIncrease(unitCount, .2);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
 			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
 		{
 			score *= 3;
 		}
+
+		if (score > 10)
+			return 9.9;
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

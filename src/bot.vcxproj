@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\src;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;..\src;../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include\cpp-sc2\include;..\src;..\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

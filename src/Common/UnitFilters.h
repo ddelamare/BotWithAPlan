@@ -53,8 +53,22 @@ struct IsGasBuilding {
 	}
 };
 
+struct IsAttackBuilding {
+	bool operator()(const sc2::Unit& unit)
+	{
+		switch (unit.unit_type.ToType())
+		{
+		case sc2::UNIT_TYPEID::PROTOSS_PHOTONCANNON:    return true;
+		case sc2::UNIT_TYPEID::TERRAN_BUNKER:			return true;
+		case sc2::UNIT_TYPEID::ZERG_SPINECRAWLER:		return true;
+		case sc2::UNIT_TYPEID::ZERG_SPINECRAWLERUPROOTED:   return true;
+		default:										return false;
+		}
+	}
+};
+
 struct IsBuilding {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		switch (unit.unit_type.ToType())
 		{
@@ -125,7 +139,7 @@ struct IsBuilding {
 };
 
 struct IsLowPriorityArmy {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		switch (unit.unit_type.ToType())
 		{
@@ -140,7 +154,7 @@ struct IsLowPriorityArmy {
 		case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return true;
 		case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return true;
 		case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return true;
-		case UNIT_TYPEID::ZERG_CORRUPTOR: return true;	
+		case UNIT_TYPEID::ZERG_CORRUPTOR: return true;
 		case UNIT_TYPEID::ZERG_INFESTEDTERRANSEGG: return true;
 		case UNIT_TYPEID::ZERG_OVERLORD: return true;
 		case UNIT_TYPEID::ZERG_OVERSEER: return true;
@@ -157,7 +171,7 @@ struct IsLowPriorityArmy {
 };
 
 struct IsArmy {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		switch (unit.unit_type.ToType())
 		{
@@ -187,11 +201,11 @@ struct IsArmy {
 		case UNIT_TYPEID::ZERG_BROODLORD: return true;
 		case UNIT_TYPEID::ZERG_BROODLORDCOCOON: return true;
 		case UNIT_TYPEID::ZERG_CHANGELING: return true;
-		//case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return true;
-		//case UNIT_TYPEID::ZERG_CHANGELINGMARINESHIELD: return true;
-		//case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return true;
-		//case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return true;
-		//case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return true;
+			//case UNIT_TYPEID::ZERG_CHANGELINGMARINE: return true;
+			//case UNIT_TYPEID::ZERG_CHANGELINGMARINESHIELD: return true;
+			//case UNIT_TYPEID::ZERG_CHANGELINGZEALOT: return true;
+			//case UNIT_TYPEID::ZERG_CHANGELINGZERGLING: return true;
+			//case UNIT_TYPEID::ZERG_CHANGELINGZERGLINGWINGS: return true;
 		case UNIT_TYPEID::ZERG_CORRUPTOR: return true;
 		case UNIT_TYPEID::ZERG_DRONE: return true;
 		case UNIT_TYPEID::ZERG_HYDRALISK: return true;
@@ -272,7 +286,7 @@ struct IsMineralField {
 		case UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD750:
 		case UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD:
 		case UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD750:
-				return true;
+			return true;
 		default: return false;
 		}
 	}
@@ -292,9 +306,9 @@ struct IsWorker {
 struct IsIdleWorker {
 	bool operator()(const Unit& unit) {
 		switch (unit.unit_type.ToType()) {
-		case UNIT_TYPEID::PROTOSS_PROBE: 
-		case UNIT_TYPEID::ZERG_DRONE: 
-		case UNIT_TYPEID::TERRAN_SCV: 
+		case UNIT_TYPEID::PROTOSS_PROBE:
+		case UNIT_TYPEID::ZERG_DRONE:
+		case UNIT_TYPEID::TERRAN_SCV:
 			return IsIdle()(unit);
 		default: return false;
 		}
@@ -302,7 +316,7 @@ struct IsIdleWorker {
 };
 
 struct IsCombatUnit {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (IsWorker()(unit))
 		{
@@ -313,7 +327,7 @@ struct IsCombatUnit {
 };
 
 struct IsVisibleArmy {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (unit.Visible != Unit::DisplayType::Visible)
 		{
@@ -325,7 +339,7 @@ struct IsVisibleArmy {
 
 struct IsEnemy
 {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (unit.alliance == Unit::Alliance::Enemy)
 		{
@@ -337,7 +351,7 @@ struct IsEnemy
 
 struct IsEnemyArmy
 {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (unit.alliance != Unit::Alliance::Enemy)
 		{
@@ -349,7 +363,7 @@ struct IsEnemyArmy
 
 
 struct IsHighPrioirtyEnemy {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (unit.alliance != Unit::Alliance::Enemy)
 		{
@@ -361,7 +375,7 @@ struct IsHighPrioirtyEnemy {
 
 struct IsFlying
 {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		return unit.is_flying;
 	}
@@ -369,7 +383,7 @@ struct IsFlying
 
 struct IsEnemyGroundArmy
 {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (unit.alliance != Unit::Alliance::Enemy)
 		{
@@ -378,10 +392,10 @@ struct IsEnemyGroundArmy
 		else return !IsFlying()(unit) && IsEnemyArmy()(unit);
 	}
 };
-	
+
 struct IsEnemyBuilding
 {
-	bool operator()(const sc2::Unit & unit)
+	bool operator()(const sc2::Unit& unit)
 	{
 		if (unit.alliance != Unit::Alliance::Enemy)
 		{
@@ -424,7 +438,7 @@ struct CompletedUnits
 	{
 		filter = IsUnit(type);
 	}
-	bool operator()(const Unit& unit) 
+	bool operator()(const Unit& unit)
 	{
 		return filter(unit) && unit.build_progress >= 1;
 	}

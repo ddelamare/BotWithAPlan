@@ -15,7 +15,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 1;
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_IMMORTAL, 4, obs);
-		score = Util::FeedbackFunction(percent, .6, 4);
+		score = Util::FeedbackFunction(percent, .7, 3);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5)
 		{

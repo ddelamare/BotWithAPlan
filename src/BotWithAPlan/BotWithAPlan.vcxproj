@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -135,7 +135,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>civetweb.lib;libprotobufd.lib;sc2apid.lib;sc2libd.lib;sc2protocold.lib;sc2rendererd.lib;sc2utilsd.lib;SDL2.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;dinput8.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;C:\Users\ddelam\Documents\Git\BotWithAPlan\src\x64\Debug\Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\bin;../lib;../src/x64/Debug;../../lib;../src/x64/Release;../x64/Release;C:\Users\ddelam\Documents\Git\BotWithAPlan\src\x64\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\include\cpp-sc2\build\bin;../lib;../src/x64/Debug;../../lib;../src/x64/Release;../x64/Release</AdditionalLibraryDirectories>
       <PerUserRedirection>true</PerUserRedirection>
     </Link>
   </ItemDefinitionGroup>

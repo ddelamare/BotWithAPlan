@@ -30,7 +30,21 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		state->ArmyManager->RequestAction(state->StartingLocation, BattleMode::Attack);
+
+		auto closestTownHall = Util::FindClosetOfType(obs->GetUnits(sc2::Unit::Alliance::Enemy, IsEnemyArmy()), Util::ToPoint3D(state->StartingLocation), obs, query, false);
+		bool isEnemyClose = false;
+		if (closestTownHall) {
+			auto disToTownHall = Distance2D(closestTownHall->pos, state->StartingLocation);
+
+			// Retreat unless we are at home
+			if (disToTownHall > 20)
+			{
+				isEnemyClose = true;
+			}
+		}
+
+		if (!isEnemyClose)
+			state->ArmyManager->RequestAction(state->StartingLocation, BattleMode::Defend);
 
 		return false;
 	}

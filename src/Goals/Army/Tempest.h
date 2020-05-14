@@ -19,7 +19,7 @@ public:
 		double score = 1;
 
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_TEMPEST,5, obs);
-		score = Util::FeedbackFunction(percent, .3, 1.0);
+		score = Util::FeedbackFunction(percent, .2, 1.0);
 
 		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_FUSIONCORE] > 0)
 		{
@@ -35,7 +35,7 @@ public:
 			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3
 			)
 		{
-			score *= 3;
+			score *= 2;
 		}
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_SHIELDBATTERY] 

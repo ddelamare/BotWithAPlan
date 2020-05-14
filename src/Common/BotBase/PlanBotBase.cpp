@@ -155,7 +155,7 @@ void PlanBotBase::ChooseGoals()
 	auto query = Query();
 	auto actions = Actions();
 
-	if (StepCounter == STEPS_PER_GOAL)
+	//if (StepCounter == STEPS_PER_GOAL)
 	{
 		debugMessages.clear();
 		bool stopOthers = false;
@@ -164,9 +164,9 @@ void PlanBotBase::ChooseGoals()
 		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages, true, stopOthers);
 		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages, false, stopOthers);
 		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages, false, stopOthers);
-		StepCounter = 0;
+		//StepCounter = 0;
 	}
-	StepCounter++;
+	//StepCounter++;
 	goalCategory = 0;
 }
 
@@ -176,9 +176,11 @@ void PlanBotBase::BalanceWorkerAssignments()
 	auto query = Query();
 	auto actions = Actions();
 	// Reassign Excess Workers
-	auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+	auto workerBase = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+	auto gas = obs->GetUnits(sc2::Unit::Alliance::Self, IsGasBuilding());
+	workerBase.insert(workerBase.end(), gas.begin(), gas.end());
 	Units extraWorkers;
-	for (auto th : townhalls)
+	for (auto th : workerBase)
 	{
 		if (th->assigned_harvesters > th->ideal_harvesters)
 		{
@@ -191,25 +193,25 @@ void PlanBotBase::BalanceWorkerAssignments()
 		}
 	}
 
-	auto idleUnits = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
-	idleUnits.insert(idleUnits.end(), extraWorkers.begin(), extraWorkers.end());
-	for (int i = 0; i < idleUnits.size(); i++)
+	auto reallocableWorkers = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
+	reallocableWorkers.insert(reallocableWorkers.end(), extraWorkers.begin(), extraWorkers.end());
+	for (int i = 0; i < reallocableWorkers.size(); i++)
 	{
 		// Don't reassign scouts
-		if (VectorHelpers::FoundInVector(state.ScoutingUnits, idleUnits[i])) continue;
+		if (VectorHelpers::FoundInVector(state.ScoutingUnits, reallocableWorkers[i])) continue;
 
-		auto resource = Util::FindNearestResourceNeedingHarversters(idleUnits[i], obs, query);
+		auto resource = Util::FindNearestResourceNeedingHarversters(reallocableWorkers[i], obs, query);
 		if (resource)
 		{
-			actions->UnitCommand(idleUnits[i], ABILITY_ID::HARVEST_GATHER, resource);
+			actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::HARVEST_GATHER, resource);
 		}
 		else
 		{
 			// Send to scout
 			if (state.ScoutingUnits.size() == 0 && state.KilledScouts < 3)
 			{
-				actions->UnitCommand(idleUnits[i], ABILITY_ID::MOVE, state.EnemyBase);
-				state.ScoutingUnits.push_back(idleUnits[i]);
+				actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::MOVE, state.EnemyBase);
+				state.ScoutingUnits.push_back(reallocableWorkers[i]);
 			}
 			break;
 		}

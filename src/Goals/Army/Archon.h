@@ -33,7 +33,12 @@ public:
 		// If there's already some morphing, don't try and morph more
 		if (foundMorphing)
 			return 0;
-
+		if (
+			state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 6
+			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3)
+		{
+			score *= 4;
+		}
 
 		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ARCHON)).size();
 

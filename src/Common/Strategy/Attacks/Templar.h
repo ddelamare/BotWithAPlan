@@ -72,7 +72,7 @@ void TemplarMicro::Execute(const sc2::ObservationInterface* obs, sc2::ActionInte
 				{
 					auto ecluster = enemyClusters[i];
 
-					if (ecluster.second.size() < 3)
+					if (ecluster.second.size() < 3 || Util::GetUnitValues(ecluster.second, &state->UnitInfo) < 100)
 						continue;
 
 					// Find all clusters affected by storm

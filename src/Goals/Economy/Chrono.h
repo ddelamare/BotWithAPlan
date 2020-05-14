@@ -19,7 +19,7 @@ public:
 		units.clear();
 		targets.clear();
 		auto nexuses = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
-		double score = 15.0f;
+		double score = 9.9f;
 
 		// Find nexuses that can cast chrono		  
 		for (auto nexus : nexuses)
@@ -43,7 +43,7 @@ public:
 			{
 				//Check for buildings that are building something
 				auto currentOrder = building->orders[0];
-				if (currentOrder.progress > 0)
+				if (currentOrder.progress > 0 && currentOrder.progress < 90)
 				{
 					targets.push_back(building);					  
 				}
@@ -66,6 +66,7 @@ public:
 			auto target = targets[i];
 			actions->UnitCommand(caster, CHRONO_OVERRIDE, target);
 			didChrono = true;
+			break;
 		}
 		return didChrono;
 	}

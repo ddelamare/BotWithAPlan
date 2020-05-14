@@ -64,7 +64,7 @@ protected:
 	vector<BaseAction*> UpgradeGoals;
 	bool shouldRecalcuate;
 	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 1;
+	const int STEPS_PER_GOAL = 10;
 	vector<string> debugMessages;
 	ThreatAnalyzer threatAnalyzer;
 	vector<UnitMicro*> microManagers;

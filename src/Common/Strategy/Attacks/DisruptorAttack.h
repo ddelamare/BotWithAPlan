@@ -25,6 +25,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 	// We only look for unphased disruptors
 	auto disruptors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR));
 	auto enemyTargets = obs->GetUnits(Unit::Alliance::Enemy, IsEnemyGroundArmy());
+
 	auto enemyClusters = Util::FindClusters(enemyTargets, 2.5); //Find clusters the size of disruptor blast radius
 	auto targetedClusters = std::set<int>();
 	//Draw enemy clusters
@@ -98,25 +99,29 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 		{
 			for (int i = 0; i < enemyClusters.size();i++)
 			{
-				// Don't touble target
-				if (targetedClusters.find(i) != targetedClusters.end())
-					continue;
 				auto cluster = enemyClusters[i];
+
+				// Don't touble target
+				if (targetedClusters.find(i) != targetedClusters.end() || cluster.second.size() < 2)
+					continue;
+
+				if (Distance2D(unit->pos, cluster.first) > Constants::DISRUPTOR_RANGE)
+					continue;
+
 				auto dis = query->PathingDistance(unit, cluster.first);
 					//Distance2D(unit->pos, cluster.first);
-				if ( dis < Constants::DISRUPTOR_RANGE + 1)
+				if (dis > 0.1f && dis < Constants::DISRUPTOR_RANGE)
 				{
 					debug->DebugSphereOut(cluster.first, 2, Colors::Red);
 					actions->UnitCommand(unit, ABILITY_ID::EFFECT_PURIFICATIONNOVA, cluster.first);
 					targetedClusters.insert(i);
 					break;
 				}
-
 			}
 		}
 		else
 		{
-			auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), unit->pos, obs, 10);
+			auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsAttackBuilding(), unit->pos, obs, Constants::DISRUPTOR_RANGE);
 			if (enemyUnits.size())
 			{
 				auto targetPoint = Util::GetAveragePoint(enemyUnits);
