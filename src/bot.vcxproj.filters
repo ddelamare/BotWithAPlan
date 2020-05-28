@@ -197,6 +197,7 @@
     <ClInclude Include="Common\Entity\UnitBattleData.h" />
     <ClInclude Include="Goals\Tactics\DefendWithWorkers.h" />
     <ClInclude Include="Goals\Tactics\RetreatGoal.h" />
+    <ClInclude Include="Common\Entity\KnownEnemyPresence.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

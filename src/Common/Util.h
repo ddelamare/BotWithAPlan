@@ -74,7 +74,7 @@ namespace Util {
 		return hallNeedingMiners;
 	}
 
-	const static Unit* FindClosestAvailableBuilder(Point3D point, const ObservationInterface* obs, QueryInterface* query, GameState* state)
+	const static Unit* FindClosestAvailableBuilder(Point3D point, const ObservationInterface* obs, QueryInterface* query, GameState* state, bool includeUnpathable)
 	{
 		auto units = obs->GetUnits(Unit::Alliance::Self, IsWorker());
 		double distance = DBL_MAX;
@@ -82,7 +82,8 @@ namespace Util {
 		for (auto unit : units)
 		{
 			auto dis = query->PathingDistance(unit, point);
-			if (dis < distance && !VectorHelpers::FoundInVector(state->ScoutingUnits, unit))
+			// Only count distances that are greater than 0. The exception is for gas geysers, which are not pathable. Hence the flag.
+			if ((dis > 0.1f || includeUnpathable) && dis < distance && !VectorHelpers::FoundInVector(state->ScoutingUnits, unit))
 			{
 				distance = dis;
 				foundUnit = unit;

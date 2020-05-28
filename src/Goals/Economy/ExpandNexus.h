@@ -58,13 +58,13 @@ public:
 				score = 1;
 			}
 
-			if (townhalls.size() <= 2) 
+			if (townhalls.size() <= 2)
 			{
 				score *= 3.5;
 			}
 
 			score *= obs->GetGameLoop() / (GREED_DAMPER * (townhalls.size()));
-			if (score < CLAMP) // If we are losing a lot of units, don't expand
+			if (score < CLAMP && townhalls.size() > 1) // If we are losing a lot of units, don't expand
 				return 0;
 			else
 				// If we are ahead, we can expand more.  

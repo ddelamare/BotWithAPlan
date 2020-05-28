@@ -98,13 +98,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>../../lib;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\bin;../lib;../src/x64/Debug;../../lib;../src/x64/Release;../x64/Debug;C:\Users\ddelam\Documents\Git\BotWithAPlan\src\x64\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>civetweb.lib;libprotobufd.lib;sc2apid.lib;sc2libd.lib;sc2protocold.lib;sc2rendererd.lib;sc2utilsd.lib;SDL2.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;dinput8.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;C:\Users\ddelam\Documents\Git\BotWithAPlan\src\x64\Debug\Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>NotSet</SubSystem>
       <Profile>false</Profile>

@@ -24,13 +24,14 @@ public:
 		score = Util::ExponentialIncrease(unitCount, .2);
 
 		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0
+			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] > 3)
 		{
 			score *= 3;
 		}
 
 		if (score > 10)
-			return 9.9;
+			return 9.91;
 
 		return score;
 	};

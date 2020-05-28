@@ -14,15 +14,8 @@ const char* kDreamCatcher = "Ladder/(2)DreamCatcherLE.SC2Map";
 // 
   
 int main(int argc, char* argv[]) {
-#if LADDER_MODE
-	for (int i = 0; i < argc; i++)
-	{
-		LOG(4) << argv[i] << endl;
-	}
-	RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
 
-	return 0;
-#elif PLANNER_MODE
+#if PLANNER_MODE
 	InitResources();
 
 	GenerateDependencyList();
@@ -37,7 +30,26 @@ int main(int argc, char* argv[]) {
 	planner->PrintPlan(plan);
 	std::cin.get();
 #else  // Run local sims
-	auto races = new Race[3]{  Race::Protoss, Race::Zerg,  Race::Terran };
+
+	bool isLadder = false;
+	for (int i = 0; i < argc; i++)
+	{
+		LOG(4) << argv[i] << endl;
+	}
+
+	if (argc > 5)
+		isLadder = true;
+
+	if (isLadder)
+	{
+		RunBot(argc, argv, new BotWithAPlan(), sc2::Race::Protoss);
+
+		return 0;
+	}
+
+
+	// Not ladder code
+	auto races = new Race[3]{  Race::Terran, Race::Zerg,  Race::Protoss };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
 	std::vector<std::string> maps = {  "LostAndFoundLE.SC2Map",  "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" ,"16-BitLE.SC2Map"};

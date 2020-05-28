@@ -18,12 +18,18 @@ public:
 		auto workers = obs->GetUnits(sc2::Unit::Alliance::Self, IsWorker());
 		if (workers.size() >= Constants::HARD_WORKER_CAP) return 0; // Cap max number of workers/active bases
 		auto townHall = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
+		bool availableTownHall = false;
 		for (auto th : townHall)
 		{
 			auto needed = th->ideal_harvesters - th->assigned_harvesters;
 			score += needed;
 			units.push_back(th);	
+			availableTownHall |= th->orders.size() == 0;
 		}
+
+		if (!availableTownHall)
+			return 0;
+
 		auto gasHaverstBuilding = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
 		for (auto ghb : gasHaverstBuilding)
 		{

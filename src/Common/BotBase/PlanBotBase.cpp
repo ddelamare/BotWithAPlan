@@ -22,7 +22,7 @@ void PlanBotBase::Init()
 	Lost = false;
 	StepCounter = STEPS_PER_GOAL;
 }
-void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface * obs, sc2::ActionInterface * actions, sc2::QueryInterface * query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
+void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
 {
 	if (stopOthers) return;
 	BaseAction* goal = nullptr;
@@ -38,7 +38,7 @@ void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::Ob
 		auto goal = std::get<1>(actionList[i]);
 		auto resState = planner.GetResourceState(obs);
 
-		Debug()->DebugTextOut(goal->GetName() + ":" + std::to_string(get<0>(actionList[i])), Point2D(.2 * goalCategory, .01 + (i*.01)), Colors::White, 8);
+		Debug()->DebugTextOut(goal->GetName() + ":" + std::to_string(get<0>(actionList[i])), Point2D(.2 * goalCategory, .01 + (i * .01)), Colors::White, 8);
 
 		auto plan = planner.CalculatePlan(resState, goal);
 		if (plan.size() == 1)
@@ -76,7 +76,7 @@ void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::Ob
 	goalCategory++;
 }
 
-bool PlanBotBase::ShouldSurrender(const sc2::ObservationInterface * obs)
+bool PlanBotBase::ShouldSurrender(const sc2::ObservationInterface* obs)
 {
 	auto probes = obs->GetFoodWorkers();
 	auto minerals = obs->GetMinerals();
@@ -307,7 +307,8 @@ void PlanBotBase::OnGameStart()
 
 	auto players = Observation()->GetGameInfo().player_info;
 	LOG(1) << Util::GetStringFromRace(players[0].race_actual) << endl;
-	LOG(1) << Util::GetStringFromRace(players[1].race_actual) << endl;
+	if (players.size() > 1)
+		LOG(1) << Util::GetStringFromRace(players[1].race_actual) << endl;
 
 	auto townhalls = Observation()->GetUnits(IsTownHall());
 	if (townhalls.size() > 0)
@@ -398,12 +399,15 @@ void PlanBotBase::OnGameStart()
 	if (obs->GetPlayerID() == 1)
 	{
 		state.selfRace = obs->GetGameInfo().player_info[0].race_actual;
-		state.opponentRace = obs->GetGameInfo().player_info[1].race_actual;
+		if (players.size() > 1)
+			state.opponentRace = obs->GetGameInfo().player_info[1].race_actual;
 	}
 	else
 	{
 		state.selfRace = obs->GetGameInfo().player_info[1].race_actual;
-		state.opponentRace = obs->GetGameInfo().player_info[0].race_actual;
+		if (players.size() > 1)
+
+			state.opponentRace = obs->GetGameInfo().player_info[0].race_actual;
 	}
 
 }

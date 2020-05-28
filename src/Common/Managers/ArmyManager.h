@@ -3,6 +3,7 @@
 #include "Common/UnitHelpers.h"
 #include "Common\Entity\BattleGroup.h"
 #include "Common\Analyzers\ThreatAnalyzer.h"
+#include "Common/Entity/KnownEnemyPresence.h"
 using namespace sc2;
 
 class ArmyManager
@@ -15,6 +16,7 @@ class ArmyManager
 	std::vector<UnitTypeID> backLineUnits;
 	std::vector<UnitTypeID> nonAutoAttackUnits;
 	std::vector<std::pair<Point2D, BattleMode>> requestedActions;
+	std::vector<KnownEnemyPresence*> knownEnemyPresences;
 private:
 	bool IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	void ClusterUnits(BattleGroup* group,bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
@@ -30,11 +32,15 @@ private:
 	ThreatAnalyzer threatAnalyzer;
 	void SetTarget(BattleGroup* group, Point2D location);
 	void SetMode(BattleGroup* group, BattleMode mode);
+	void UpdateKnownEnemyPositions(const ObservationInterface* obs, DebugInterface* debug, GameState* state);
+	bool ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<KnownEnemyPresence*> enemyClusters, const ObservationInterface* obs, QueryInterface* query, GameState* state);
+
 public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();
 
-	bool ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<std::pair<Point3D, Units>> enemyClusters, const ObservationInterface* obs, QueryInterface* query, GameState* state);
+
+
 
 
 	void RequestAction(Point2D target, BattleMode action);

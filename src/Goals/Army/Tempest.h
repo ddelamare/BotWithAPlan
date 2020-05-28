@@ -26,9 +26,7 @@ public:
 			score *= 2;
 		}
 
-		if (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_THOR] >= 4 
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_ARCHON] >= 4 
-			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2
+		if (state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BATTLECRUISER] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_COLOSSUS] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 2

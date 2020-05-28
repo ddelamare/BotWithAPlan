@@ -63,7 +63,7 @@ void DisruptorAttack::Execute(const sc2::ObservationInterface *obs, sc2::ActionI
 				OrbMap[orb->tag] = obs->GetGameLoop(); // Mark orb create frame
 			}
 
-			if (VectorHelpers::FoundInVector(orbsDirectedAlready, orb))
+			if (VectorHelpers::FoundInVector(orbsDirectedAlready, orb) || Util::GetUnitValues(cluster.second, &state->UnitInfo) < 100)
 			{
 				continue;
 			}

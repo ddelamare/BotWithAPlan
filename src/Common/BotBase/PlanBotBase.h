@@ -19,7 +19,7 @@ using Clock = std::chrono::high_resolution_clock;
 
 
 using namespace sc2;
-#define LADDER_MODE 0
+#define LADDER_MODE 1
 #define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME 0	 

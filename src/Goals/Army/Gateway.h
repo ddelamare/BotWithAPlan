@@ -40,7 +40,7 @@ public:
 		}
 		// Ideally should have 3 gates per fully mining base
 		auto score =  assignedHarvesters / ((1 + totalGates) * (22.0));
-		double CLAMP = .35;
+		double CLAMP = .45;
 		if (score < CLAMP)
 			return 0;
 

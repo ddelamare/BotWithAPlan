@@ -16,7 +16,7 @@ public:
 		name = "Build Pylon";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		double score = 20.0f;
+		double score = 15.0f;
 		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
 		//Add food from building pylons

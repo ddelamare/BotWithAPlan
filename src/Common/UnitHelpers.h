@@ -110,7 +110,7 @@ namespace Util {
 
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
 
-		auto worker = FindClosestAvailableBuilder(buildPos, obs, query, state);
+		auto worker = FindClosestAvailableBuilder(buildPos, obs, query, state, IsGasBuilding()(unitType));
 		if (DistanceSquared3D(buildPos, Point3D()) > 0)
 		{
 			// For vespene collectors, build ability must target geyser

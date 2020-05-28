@@ -21,11 +21,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, &state->UnitInfo)), cluster.first);
 	}
 
-	auto enemyClusters = Util::FindClusters(this->cachedEnemyArmy, CLUSTER_DISTANCE_THRESHOLD_MIN);
-	for (auto cluster : enemyClusters)
-	{
-		debug->DebugTextOut("***" + std::to_string(Util::GetUnitValues(cluster.second, &state->UnitInfo)), cluster.first, Colors::Red);
-	}
+	UpdateKnownEnemyPositions(obs, debug, state);
 
 	for (auto group : battleGroups)
 	{
@@ -41,8 +37,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			// For any cluster that's near enemy clusters that are bigger, retreat
 			for (auto cluster : clusters)
 			{
-
-				if (ShouldUnitsRetreat(cluster, enemyClusters, obs, query, state)) 
+				if (ShouldUnitsRetreat(cluster, knownEnemyPresences, obs, query, state)) 
 				{
 					action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
 				}
@@ -184,12 +179,6 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 		enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), averagePoint, obs, 20);
 	}
 
-	// This point should be where the sqishy units go. AKA not the front lines
-	auto enemyAvgPoint = Util::GetAveragePoint(enemyUnits);
-	auto vectorAway = averagePoint - enemyAvgPoint;
-	vectorAway.z = 0;
-	Normalize3D(vectorAway);
-	//Normalize3D(vectorTowardTarget);
 	Units unitsToMove;
 	float minSpeed = 0;
 	for (auto unit : group->units)
@@ -202,42 +191,44 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 		else if (VectorHelpers::FoundInVector(backLineUnits, unit->unit_type) && enemyUnits.size())
 		{
 			//move unit to back of cluster
-			auto unitType = state->UnitInfo[unit->unit_type];
+			auto unitType = &state->UnitInfo[unit->unit_type];
 			double range = 1;
 
 			auto closestUnit = Util::FindClosetOfType(this->cachedEnemyArmy, unit->pos, obs, query, false);
-			if (unitType.weapons.size())
+			if (unitType->weapons.size())
 			{
 				//TODO: Find range based on eligibile targets ie air vs ground
-				range = unitType.weapons[0].range;
+				range = unitType->weapons[0].range;
 			}
-			if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_DISRUPTOR)
+			if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_DISRUPTOR)
 			{
-				range = Constants::DISRUPTOR_RANGE;
+				// Allow disruptors to get a little closer
+				// TODO: only if they are not on cooldown
+				range = Constants::DISRUPTOR_RANGE - 1;
 			}
-			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_COLOSSUS && HasThermalLance)
+			else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_COLOSSUS && HasThermalLance)
 			{
 				range = Constants::COLOSSUS_EXTENDED_RANGE;
 			}
-			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_CARRIER)
+			else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_CARRIER)
 			{
 				range = Constants::CARRIER_RANGE;
 			}
-			else if (unitType.unit_type_id == UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)
+			else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)
 			{
 				range = Constants::STORM_RANGE;
 			}
-			// Keep units in the back, but also in range
-			action->UnitCommand(unit, ABILITY_ID::MOVE, closestUnit->pos + (range * vectorAway));
-			debug->DebugSphereOut(closestUnit->pos + (range * vectorAway), 3, Colors::Teal);
+			// Keep units in the back, but also in range		
+			auto vectorAway = closestUnit->pos - unit->pos;
+			vectorAway.z = 0;
+			Normalize3D(vectorAway);
+			vectorAway *= -1 * range;
+
+			action->UnitCommand(unit, ABILITY_ID::MOVE, closestUnit->pos + vectorAway);
+			debug->DebugLineOut(unit->pos, closestUnit->pos + vectorAway, Colors::Teal);
 		}
-		else //if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)
+		else if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)
 		{
-			auto moveSpeed = state->UnitInfo[unit->unit_type].movement_speed;
-			if (moveSpeed < minSpeed || minSpeed == 0)
-			{
-				minSpeed = moveSpeed;
-			}
 			unitsToMove.push_back(unit);
 		}
 	}
@@ -291,8 +282,10 @@ void ArmyManager::PartitionGroups(const ObservationInterface* obs, QueryInterfac
 	if (!requestedActions.size())
 	{
 		Units groupunits;
-		for (auto group : battleGroups)
+		for (auto &group : battleGroups)
 		{
+			// remove dead units
+			group.units.erase(std::remove_if(group.units.begin(), group.units.end(), [](const Unit* u) { return !u->is_alive; }), group.units.end());
 			groupunits.insert(groupunits.end(), group.units.begin(), group.units.end());
 		}
 
@@ -358,13 +351,13 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 	auto unitData = &state->UnitInfo;
 	if (!unitData->size()) return nullptr;
 	auto unitType = (*unitData)[unit->unit_type];
-	auto range = 2.0;
+	auto range = 1.3;
 	if (unitType.weapons.size())
 	{
 		// Prevent long range units from going too deep and dying.
 		if (unitType.weapons[0].range > 8)
 		{
-			range = 1.2;
+			range = 1.1;
 		}
 		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedHighPriorityEnemies, unit->pos, obs, unitType.weapons[0].range * range);
 		bool isHighPriority = true;
@@ -386,9 +379,9 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		{
 
 			// Infestors must die
-			if (IsUnit(UNIT_TYPEID::TERRAN_MEDIVAC)(*eu))
+			if (IsUnit(UNIT_TYPEID::TERRAN_SIEGETANK)(*eu))
 			{
-			//	weakestUnit = eu;
+				weakestUnit = eu;
 			}
 		}
 
@@ -466,14 +459,16 @@ ArmyManager::ArmyManager()
 
 int ENEMY_CLUSTER_SEARCH_RANGE = 15;
 // This method should take a cluster of friendly units near a cluster of enemy units and see if they should retreat.
-bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<std::pair<Point3D, Units>> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
+bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<KnownEnemyPresence*> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
 {
+
+	return false;
 	int enemyCostsInRange = 0;
 	for (auto ecluster : enemyClusters)
 	{
-		if (Distance2D(cluster.first, ecluster.first) <= ENEMY_CLUSTER_SEARCH_RANGE)
+		if (Distance2D(cluster.first, ecluster->location) <= ENEMY_CLUSTER_SEARCH_RANGE)
 		{
-			enemyCostsInRange = Util::GetUnitValues(ecluster.second, &state->UnitInfo);
+			enemyCostsInRange = Util::GetUnitValues(ecluster->enemies, &state->UnitInfo);
 		}
 	}
 
@@ -492,4 +487,102 @@ bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vec
 	}
 
 	return isAwayFromHome && (friendlyUnitsCost < (enemyCostsInRange * 1.2));
+}
+
+
+void ArmyManager::UpdateKnownEnemyPositions(const ObservationInterface* obs, DebugInterface* debug, GameState* state)
+{
+	auto enemyClusters = Util::FindClusters(this->cachedEnemyArmy, CLUSTER_DISTANCE_THRESHOLD_MIN);
+
+	//Steps
+	/* KEP = Known Enemy Position
+	* Prune old KEP and dead units
+	* Prune KEP that have visible points, but no nearby units
+	* Loop through visible clusters. If near KEP, move KEP center and update units and cost, and refresh last seen loop
+	*	* If cluster not near KEP, create a new KEP
+	*/
+
+	int MAX_PRESENCE_AGE = 500;
+	int loop = obs->GetGameLoop();
+
+	// Prune old KEP and dead units. Iterate backwards to remove
+	for (int i = knownEnemyPresences.size() - 1; i >= 0; i--)
+	{
+		// Prune old KEPs
+		if (loop - knownEnemyPresences[i]->lastSeenLoop > MAX_PRESENCE_AGE)
+		{
+			VectorHelpers::RemoveFromVector(&knownEnemyPresences, knownEnemyPresences[i]);
+			continue;
+		}
+
+		// Prune visible locations without units
+		if (obs->GetVisibility(knownEnemyPresences[i]->location) == sc2::Visibility::Visible)
+		{
+			bool hasNearbyEnemyUnits = false;
+			for (auto cluster : enemyClusters)
+			{
+				if (Distance2D(knownEnemyPresences[i]->location, cluster.first) < CLUSTER_DISTANCE_THRESHOLD_MIN)
+				{
+					hasNearbyEnemyUnits = true;
+					break;
+				}
+			}
+			if (!hasNearbyEnemyUnits)
+			{
+				VectorHelpers::RemoveFromVector(&knownEnemyPresences, knownEnemyPresences[i]);
+				continue;
+			}
+		}
+
+		// Remove dead units from KEP
+		for (int j =  knownEnemyPresences[i]->enemies.size() -1; j >= 0; j--)
+		{
+			auto unit = knownEnemyPresences[i]->enemies[j];
+			if (!unit->is_alive)
+			{
+				VectorHelpers::RemoveFromVector(&knownEnemyPresences[i]->enemies, unit);
+			}
+		}
+	}
+
+	// If the KEP moved, update the location. If no KEP is nearby, make a new one
+	for (auto cluster : enemyClusters)
+	{
+		double minDis = DBL_MAX;
+		KnownEnemyPresence* closestKep = nullptr;
+		for (auto kep : knownEnemyPresences)
+		{
+			// Find nearest cluster that was not updated this loop
+			if (kep->lastSeenLoop != loop && Distance2D(kep->location, cluster.first) < minDis)
+			{
+				minDis = Distance2D(kep->location, cluster.first);
+				closestKep = kep;
+			}
+		}
+
+		bool newKep = false;
+		// If no KEP found, make new KEP
+		if (!closestKep)
+		{
+			closestKep = new KnownEnemyPresence();
+			newKep = true;
+			knownEnemyPresences.insert(knownEnemyPresences.end(), closestKep);
+		}
+
+		// Create or Update KEP
+		if (newKep || minDis < CLUSTER_DISTANCE_THRESHOLD_MIN)
+		{
+			// Update KEP with cluster
+			closestKep->enemies = cluster.second;
+			closestKep->lastSeenLoop = loop;
+			closestKep->location = cluster.first;
+			closestKep->unitValue = std::max(Util::GetUnitValues(cluster.second, &state->UnitInfo), closestKep->unitValue);
+			continue;
+		}
+	}
+
+	for (auto kep : knownEnemyPresences)
+	{
+		debug->DebugTextOut("***" + std::to_string(kep->unitValue), kep->location, Colors::Red);
+	}
 }

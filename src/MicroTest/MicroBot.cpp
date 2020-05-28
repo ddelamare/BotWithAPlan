@@ -72,20 +72,20 @@ public:
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 10, UNIT_TYPEID::PROTOSS_ADEPT, 5));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 20, UNIT_TYPEID::PROTOSS_ADEPT, 10));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 40, UNIT_TYPEID::PROTOSS_ADEPT, 20));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 80, UNIT_TYPEID::PROTOSS_ADEPT, 40));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 20));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 160, UNIT_TYPEID::PROTOSS_ADEPT, 80));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::ZERG_ZERGLING, 240));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 150));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_PHOENIX, 30));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_STALKER, 30));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 5, UNIT_TYPEID::TERRAN_MARINE, 30));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 5, UNIT_TYPEID::TERRAN_MARINE, 50));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 3, UNIT_TYPEID::TERRAN_MARINE, 20));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_STALKER, 5, UNIT_TYPEID::TERRAN_MARINE, 20));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ARCHON, 25, UNIT_TYPEID::PROTOSS_VOIDRAY, 25));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 1, UNIT_TYPEID::PROTOSS_VOIDRAY, 1));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_HELLION, 25, UNIT_TYPEID::ZERG_HYDRALISK, 25));
@@ -156,7 +156,7 @@ public:
 				rhsCount = std::get<3>(testSetups[setupIdx]);
 
 				Debug()->DebugCreateUnit(lhsUnit, Point2D(40, 50), 1, lhsCount);
-				Debug()->DebugCreateUnit(rhsUnit, Point2D(80, 50), 1, rhsCount);
+				Debug()->DebugCreateUnit(rhsUnit, Point2D(80, 50), 2, rhsCount);
 
 				lhsUnitData = ab->unitData[(int)lhsUnit];
 				rhsUnitData = ab->unitData[(int)rhsUnit];

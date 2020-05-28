@@ -20,7 +20,7 @@ public:
 		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_STALKER, 2, obs);
-		score = Util::FeedbackFunction(percent, .45, 3);
+		score = Util::FeedbackFunction(percent, .45, 2.9);
 		if (
 			 state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3
 			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BANSHEE] >= 2)
