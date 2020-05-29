@@ -19,7 +19,7 @@ public:
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_DISRUPTOR, 3, obs);
 		score = Util::FeedbackFunction(percent, .3, 1.5);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 6
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] >= 3
@@ -35,8 +35,8 @@ public:
 		//	score *= 3.5;
 		//}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_CARRIER] > 0
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_CARRIER] > 0
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_MUTALISK] >= 5)
 		{
 			score /= 2;

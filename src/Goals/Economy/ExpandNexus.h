@@ -58,7 +58,7 @@ public:
 				score = 1;
 			}
 
-			if (townhalls.size() <= 2)
+			if (townhalls.size() < 2)
 			{
 				score *= 3.5;
 			}

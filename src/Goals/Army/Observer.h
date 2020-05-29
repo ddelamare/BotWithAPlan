@@ -16,9 +16,9 @@ public:
 		double score = 0;
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_OBSERVER, 2, obs);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_LURKERMP] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_SWARMHOSTMP] > 0 ||
-			state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] > 0
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_LURKERMP] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_SWARMHOSTMP] > 0 ||
+			state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] > 0
 			|| state->HasCloakedUnits)
 		{
 			score = Util::FeedbackFunction(percent, .03, 3);

@@ -210,7 +210,7 @@ void PlanBotBase::BalanceWorkerAssignments()
 			// Send to scout
 			if (state.ScoutingUnits.size() == 0 && state.KilledScouts < 3)
 			{
-				actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::MOVE, state.EnemyBase);
+				actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::MOVE_MOVE, state.EnemyBase);
 				state.ScoutingUnits.push_back(reallocableWorkers[i]);
 			}
 			break;
@@ -362,7 +362,7 @@ void PlanBotBase::OnGameStart()
 		state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
 
 		// Sort expansions by distance to home base
-		std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_distance(state.StartingLocation));
+		std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_pathing_distance(state.StartingLocation));
 
 
 		// Calculate building offset

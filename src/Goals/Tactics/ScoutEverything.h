@@ -34,12 +34,14 @@ public:
 	{
 		bool queuedScouting = false;
 		auto units = obs->GetUnits(sc2::Unit::Alliance::Self);
+		auto allLocations = state->ExpansionLocations;
+		allLocations.push_back(Util::ToPoint3D(state->EnemyBase));
 		if (units.size())
 		{
 			// Send it to every expo
 			for (int i = 0; i < units.size(); i++)
 			{
-				actions->UnitCommand(units[i], ABILITY_ID::SMART, state->ExpansionLocations[i % state->ExpansionLocations.size()], true);
+				actions->UnitCommand(units[i], ABILITY_ID::SMART, allLocations[i % allLocations.size()], true);
 			}
 			queuedScouting = true;
 		}

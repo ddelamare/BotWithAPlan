@@ -17,19 +17,19 @@ public:
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_IMMORTAL, 4, obs);
 		score = Util::FeedbackFunction(percent, .7, 4);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5)
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5)
 		{
 			score *= 2.0;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0
 			)
 		{
 			score *= 1.5;
 		}
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_THOR] > 0)
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_THOR] > 0)
 		{
 			score *= 1.2;
 		}
@@ -41,10 +41,10 @@ public:
 			score *= 1.4;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_VOIDRAY] > 1
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 1
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_CARRIER] > 1
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 1
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_VOIDRAY] > 1
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 1
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_CARRIER] > 1
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 1
 			)
 		{
 			score /= 1.2;

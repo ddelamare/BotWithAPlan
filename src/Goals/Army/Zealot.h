@@ -20,10 +20,10 @@ public:
 		auto percent = Util::GetUnitPercent(IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT), 2, obs);
 		score = Util::FeedbackFunction(percent, .35, 3);
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
 		{
-			score *= 2;
+			score *= 4;
 		}
 
 		if (obs->GetMinerals() > 1000 && obs->GetVespene() < 200)
@@ -31,18 +31,15 @@ public:
 			score *= 2;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5
 			)
 		{
 			score /= 3;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPT] > 1 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::PROTOSS_ADEPTPHASESHIFT] > 1
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] >= 2
-			)
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] >= 4)
 		{
-			score /= 6;
+			score /= 4;
 		}
 		return score;
 	};

@@ -377,7 +377,7 @@ namespace Sorters
 
 		bool operator()(Point3D const & lhs, Point3D const & rhs)
 		{
-			float l = q->PathingDistance(referencePoint,lhs );
+			float l = q->PathingDistance(referencePoint, lhs );
 			float r = q->PathingDistance(referencePoint, rhs);
 			return l < r;
 		}

@@ -42,7 +42,7 @@ public:
 			score *= 3.5;
 		}
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_CORRUPTOR] > 0
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_CORRUPTOR] > 0
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_VIKINGFIGHTER] > 3)
 		{
 			score /= 2.5;

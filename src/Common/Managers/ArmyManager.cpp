@@ -39,7 +39,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			{
 				if (ShouldUnitsRetreat(cluster, knownEnemyPresences, obs, query, state)) 
 				{
-					action->UnitCommand(cluster.second, ABILITY_ID::MOVE, state->StartingLocation);
+					action->UnitCommand(cluster.second, ABILITY_ID::MOVE_MOVE, state->StartingLocation);
 				}
 			}
 		}
@@ -50,7 +50,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		}
 		else if (group.mode == BattleMode::Retreat)
 		{
-			action->UnitCommand(group.units, ABILITY_ID::MOVE, state->StartingLocation);
+			action->UnitCommand(group.units, ABILITY_ID::MOVE_MOVE, state->StartingLocation);
 		}
 		else if (group.mode == BattleMode::Harrass)
 		{
@@ -94,7 +94,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 
 		vecAway *= 2;
 
-		action->UnitCommand(unit, sc2::ABILITY_ID::MOVE, unit->pos + vecAway);
+		action->UnitCommand(unit, sc2::ABILITY_ID::MOVE_MOVE, unit->pos + vecAway);
 	}
 }
 
@@ -224,7 +224,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			Normalize3D(vectorAway);
 			vectorAway *= -1 * range;
 
-			action->UnitCommand(unit, ABILITY_ID::MOVE, closestUnit->pos + vectorAway);
+			action->UnitCommand(unit, ABILITY_ID::MOVE_MOVE, closestUnit->pos + vectorAway);
 			debug->DebugLineOut(unit->pos, closestUnit->pos + vectorAway, Colors::Teal);
 		}
 		else if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)

@@ -19,20 +19,20 @@ public:
 
 		score = Util::FeedbackFunction(percent, .2, 1);
 
-		//if (state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SCV] > 0)
+		//if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SCV] > 0)
 		//{
 		//	score *= 2.1;
 		//}
 
 
-		if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 4
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 2
+		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 4
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_LIBERATOR] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_LIBERATORAG] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_ARCHON] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 2
-			|| state->ObservedUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 2)
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 2)
 		{
 			score *= 2.5;
 		}

@@ -30,7 +30,6 @@ void::BotWithAPlan::OnUnitCreated(const Unit* unit)
 		cout << "Ran Game Start after game has started...";
 	}
 
-
 	auto type = state.UnitInfo[unit->unit_type];
 	state.CurrentUnits[unit->unit_type]++;
 }
@@ -44,7 +43,6 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 
 void BotWithAPlan::OnUnitEnterVision(const Unit* unit) 
 {
-	state.ObservedUnits[unit->unit_type] = 1;
 }
 
 void BotWithAPlan::OnGameStart() {

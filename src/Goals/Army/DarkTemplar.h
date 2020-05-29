@@ -16,7 +16,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		//if (state->ObservedUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
+		//if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0)
 		//{
 		//	int unitFood = 2 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR)).size();
 		//	auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent zealots

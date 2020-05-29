@@ -26,7 +26,6 @@ void TerranPlan::OnUnitDestroyed(const Unit* unit) {
 
 void TerranPlan::OnUnitEnterVision(const Unit* unit) 
 {
-	state.ObservedUnits[unit->unit_type] = 1;
 }
 
 void TerranPlan::OnGameStart() {

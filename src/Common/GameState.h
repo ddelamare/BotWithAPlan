@@ -16,7 +16,6 @@ struct GameState
 		ScoutingUnits = Units();
 		BuildingWorkers = Units();
 		ExpansionLocations = std::vector<Point3D>();
-		ObservedUnits = UnitMap();
 		CurrentUnits = UnitMap();
 		MaxEnemyUnits = UnitMap();
 		PrecomputedStartLocations = std::vector<std::pair<Point3D, Point3D>>();
@@ -27,7 +26,6 @@ struct GameState
 	Point3D MineralDirection;
 	Point2D EnemyBase;
 	Point2D StartingLocation;
-	UnitMap ObservedUnits;
 	UnitMap CurrentUnits;
 	UnitMap MaxEnemyUnits;
 	ArmyManager* ArmyManager;
