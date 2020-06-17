@@ -115,7 +115,6 @@ public:
 	{
 		Point3D buildPos;
 
-
 		for (auto exp : state->ExpansionLocations)
 		{
 			// If enemy is too close don't expand there
@@ -127,7 +126,11 @@ public:
 
 			// If the precomputed spot is open, use it.
 			auto expandLocation = VectorHelpers::GetFromPairVector(state->PrecomputedStartLocations,exp);
-			if (expandLocation.x != 0 && query->Placement(this->buildingAction, expandLocation))
+			bool canPath = false;
+			canPath = Util::IsPossibleToPathTo(obs, expandLocation, query);
+
+
+			if (expandLocation.x != 0 && canPath && query->Placement(this->buildingAction, expandLocation))
 			{
 				return expandLocation;
 			}
@@ -135,13 +138,17 @@ public:
 			// Check for placement along the center vector
 			buildPos = GetFirstMatchingPlacement(exp, obs, query, debug, 5, NEXUS_MAX_TRIES);
 
+			canPath = Util::IsPossibleToPathTo(obs, buildPos, query);
+
 			// If we found one near this expansion site, return it
-			if (buildPos.x != 0 || buildPos.y != 0)
+			if (canPath && (buildPos.x != 0 || buildPos.y != 0))
 				return buildPos;
 		}
 
 
 		return buildPos;
 	}
+
+
 };
 

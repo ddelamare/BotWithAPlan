@@ -13,7 +13,7 @@ public:
 		this->conditions.push_back(new BaseCondition("Oracle Harass", 2, sc2::UNIT_TYPEID::PROTOSS_ORACLE, 2));
 		this->BaseAction::name = "Oracle Harass";
 	}
-	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
+	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {  
 		if (obs->GetGameLoop() < 6000 || obs->GetGameLoop() > 9000 || true) return 0;
 		return 5;
 	};

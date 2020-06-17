@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 	auto races = new Race[3]{  Race::Terran, Race::Zerg,  Race::Protoss };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
-	std::vector<std::string> maps = {  "LostAndFoundLE.SC2Map",  "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" ,"16-BitLE.SC2Map"};
+	std::vector<std::string> maps = { "ZenLE.SC2Map", "ThunderbirdLE.SC2Map","GoldenWallLE.SC2Map",  "SimulacrumLE.SC2Map",  "NightshadeLE.SC2Map" ,"EverDreamLE.SC2Map" ,"EternalEmpireLE.SC2Map" };
 	while (true)
 	{
 		for (int i = 0; i < maps.size(); i++)
@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
 			auto map = "Ladder/" + maps[i];
 			for (int j = 0; j < 3; j++)
 			{
+
 				auto race = races[j];
 
 				Coordinator coordinator;
@@ -69,6 +70,7 @@ int main(int argc, char* argv[]) {
 				//coordinator.SetStepSize(10);
 				BotWithAPlan bot;
 				BotWithAPlan bot2;
+
 				coordinator.SetParticipants({
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),

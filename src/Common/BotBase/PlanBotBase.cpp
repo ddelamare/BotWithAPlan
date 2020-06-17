@@ -62,7 +62,7 @@ void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::Ob
 				goal = nullptr;
 				break;
 			}
-			else if (get<0>(actionList[i]) > 10 || goal->HoldOtherGoals(obs))
+			else if (goal->HoldOtherGoals(obs))
 			{
 				stopOthers = true;
 				break;
@@ -176,22 +176,54 @@ void PlanBotBase::BalanceWorkerAssignments()
 	auto query = Query();
 	auto actions = Actions();
 	// Reassign Excess Workers
-	auto workerBase = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+	auto townHalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 	auto gas = obs->GetUnits(sc2::Unit::Alliance::Self, IsGasBuilding());
-	workerBase.insert(workerBase.end(), gas.begin(), gas.end());
+	Units workerMinables;
+	workerMinables.insert(workerMinables.end(), townHalls.begin(), townHalls.end());
+	workerMinables.insert(workerMinables.end(), gas.begin(), gas.end());
 	Units extraWorkers;
-	for (auto th : workerBase)
+	int mineralMiners = 0;
+	int optimalMinMiners = 0;
+	int gasMiners = 0;
+	int optimalGasMiners = 0;
+
+	for (auto th : townHalls)
 	{
+		mineralMiners += th->assigned_harvesters;
+		optimalMinMiners = th->ideal_harvesters;
+	}
+
+	for (auto th : gas)
+	{
+		gasMiners += th->assigned_harvesters;
+		optimalGasMiners = th->ideal_harvesters;
+	}
+
+
+	double saturatedRatio = 0;
+	double saturatedGasRatio = 0;
+	if (optimalMinMiners > 0)
+	{
+		saturatedRatio = mineralMiners / (double)optimalMinMiners;
+	}
+
+	bool needsMoreGas = false;
+	if (optimalGasMiners > 0)
+	{
+		saturatedGasRatio = gasMiners / (double)optimalGasMiners;
+
+		needsMoreGas = saturatedGasRatio < .75;
+	}
+	for (auto& th : workerMinables) {
 		if (th->assigned_harvesters > th->ideal_harvesters)
 		{
-			// Tell all extra workers to stop so they can be reassigned
-			//TODO: only reassign if another town hall needs workers
 			auto overWorkers = Util::FindNearbyUnits(sc2::Unit::Alliance::Self, IsWorker(), th->pos, obs, 15);
 			int diff = th->assigned_harvesters - th->ideal_harvesters;
 			if (overWorkers.size() < diff) continue; // If no workers in area continue
 			extraWorkers = Units(overWorkers.begin(), overWorkers.begin() + diff);
 		}
 	}
+
 
 	auto reallocableWorkers = obs->GetUnits(Unit::Alliance::Self, IsIdleWorker());
 	reallocableWorkers.insert(reallocableWorkers.end(), extraWorkers.begin(), extraWorkers.end());
@@ -200,21 +232,22 @@ void PlanBotBase::BalanceWorkerAssignments()
 		// Don't reassign scouts
 		if (VectorHelpers::FoundInVector(state.ScoutingUnits, reallocableWorkers[i])) continue;
 
-		auto resource = Util::FindNearestResourceNeedingHarversters(reallocableWorkers[i], obs, query);
+		auto resource = Util::FindNearestResourceNeedingHarversters(reallocableWorkers[i], obs, query, needsMoreGas);
 		if (resource)
 		{
 			actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::HARVEST_GATHER, resource);
-		}
-		else
-		{
-			// Send to scout
-			if (state.ScoutingUnits.size() == 0 && state.KilledScouts < 3)
-			{
-				actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::MOVE_MOVE, state.EnemyBase);
-				state.ScoutingUnits.push_back(reallocableWorkers[i]);
-			}
 			break;
 		}
+		//else
+		//{
+		//	// Send to scout
+		//	if (state.ScoutingUnits.size() == 0 && state.KilledScouts < 3)
+		//	{
+		//		actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::GENERAL_MOVE, state.EnemyBase);
+		//		state.ScoutingUnits.push_back(reallocableWorkers[i]);
+		//	}
+		//	break;
+		//}
 	}
 }
 
@@ -362,8 +395,13 @@ void PlanBotBase::OnGameStart()
 		state.ExpansionLocations.erase(std::remove_if(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), [closest_mineral](Point3D p) {return p == closest_mineral; }));
 
 		// Sort expansions by distance to home base
-		std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_pathing_distance(state.StartingLocation));
+		std::sort(state.ExpansionLocations.begin(), state.ExpansionLocations.end(), Sorters::sort_by_pathing_distance(Util::ToPoint3D(state.StartingLocation), Query()));
 
+		LOG(2) << "Expansion Location Distance" << endl;
+		for (auto loc : state.ExpansionLocations)
+		{
+			LOG(2) << "Distance: " << Query()->PathingDistance(Util::ToPoint3D(state.StartingLocation), loc);
+		}
 
 		// Calculate building offset
 		auto nearMinerals = Util::FindNearbyUnits(sc2::Unit::Alliance::Neutral, IsMineralField(), Util::ToPoint3D(state.StartingLocation), Observation(), 15);

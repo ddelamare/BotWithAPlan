@@ -43,7 +43,7 @@ public:
 		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ARCHON)).size();
 
 		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
-		score = Util::FeedbackFunction(percent, .6, 2.5);
+		score = Util::FeedbackFunction(percent, .6, 3.5);
 
 		return score;
 	};

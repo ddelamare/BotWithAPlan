@@ -50,10 +50,8 @@ sc2::Point3D PylonStrategy::FindPlacement(const sc2::ObservationInterface *obs, 
 
 	if (pylons.size())
 	{
-		//TODO: BUild next to nexuses without pylons
 		auto spiralizer = SpiralStrategy(buildingAction, useClearance, needsPower, radius, race);
 		return spiralizer.FindPlacement(obs, actions, query, debug, state);
-
 	}
 
  	return buildPos;

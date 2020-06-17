@@ -49,8 +49,8 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 		offset *= -1;
 		rotationDir = -1;
 	}
-	const int numDivisions = 4;
-	int maxSpiralCount = numDivisions * 3;
+	const int numDivisions = 6;
+	int maxSpiralCount = numDivisions * _RadialDistance;
 	const double radialDiff = 2 * M_PI / numDivisions;
 	double xScalar = 0;
 	bool foundSpot = false;
@@ -84,7 +84,7 @@ sc2::Point3D SpiralStrategy::FindPlacement(const sc2::ObservationInterface *obs,
 
 		for (int i = 0; i < queryResults.size(); i++)
 		{
-			if (queryResults[i])
+			if (queryResults[i] && Util::IsPossibleToPathTo(obs, Util::ToPoint3D(queries[i].target_pos), query) > 0.1f)
 			{
 				buildPos = Util::ToPoint3D(queries[i].target_pos);
 				foundSpot = true;

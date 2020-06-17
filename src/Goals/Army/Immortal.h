@@ -15,7 +15,10 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 1;
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_IMMORTAL, 4, obs);
-		score = Util::FeedbackFunction(percent, .7, 4);
+		score = Util::FeedbackFunction(percent, .6, 4.0);
+
+		if (obs->GetGameLoop() < 9000)
+			score /= 1.8;
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] > 5)
 		{

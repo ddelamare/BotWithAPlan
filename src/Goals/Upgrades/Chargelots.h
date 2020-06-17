@@ -21,7 +21,7 @@ public:
 		int unitCount = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT)).size();
 		if (unitCount < 5) return 0;
 
-		score = Util::ExponentialIncrease(unitCount, .2);
+		score = Util::ExponentialIncrease(unitCount, .25);
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 0 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0

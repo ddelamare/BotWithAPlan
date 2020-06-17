@@ -4,7 +4,7 @@
 #include <map>
 #include "sc2api\sc2_api.h"
 using namespace std;
-#define LOGLEVEL 0 
+#define LOGLEVEL 1 
 #define LOG(level) if (level>LOGLEVEL){} else cout 
 
 // Due to bugs in the sc2 ai library, value overrides are here

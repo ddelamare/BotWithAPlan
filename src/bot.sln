@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "bot.vcxproj", "{59A1A504-22E3-4655-AFE7-0F5ADE0C9FA3}"
 EndProject
@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1288BFE1-DAAE-42B2-AA18-44AD9A367687}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BotWithAPlan", "BotWithAPlan\BotWithAPlan.vcxproj", "{74207113-848F-4988-86B9-6C7F9DFDEC16}"
+	ProjectSection(ProjectDependencies) = postProject
+		{59A1A504-22E3-4655-AFE7-0F5ADE0C9FA3} = {59A1A504-22E3-4655-AFE7-0F5ADE0C9FA3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TerranPlanBot", "TerranPlanBot\TerranPlanBot.vcxproj", "{3BC4CF77-0E66-4185-9466-C90DA55987DA}"
 EndProject

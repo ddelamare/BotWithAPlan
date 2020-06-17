@@ -39,7 +39,8 @@ public:
 
 		// If reaper rush, tech to air
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] > 2
-			&& state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] < 2)
+			&& state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] < 2
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_IMMORTAL] > 8)
 		{
 			score *= 3;
 		}

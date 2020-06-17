@@ -16,7 +16,12 @@ public:
 		name = "Build Pylon";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		double score = 15.0f;
+		double score = 16.0f;
+
+		// Early game we don't need to be aggressive with pylons
+		if (obs->GetGameLoop() < 2500)
+			score = 2.0;
+
 		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
 
 		//Add food from building pylons

@@ -29,7 +29,7 @@ public:
 			assignedHarvesters += th->assigned_harvesters;
 		}
 		// Ideally should have (half) a  robo per fully mining  base
-		auto score = assignedHarvesters / ((1 + robos.size()) * (22.0 * 3));
+		auto score = assignedHarvesters / ((robos.size() * 4) * (22.0));
 
 		double CLAMP = .45;
 		if (score < CLAMP)

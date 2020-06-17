@@ -18,7 +18,13 @@ public:
 		double score = 0;
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_HIGHTEMPLAR, 2, obs);
 
-		score = Util::FeedbackFunction(percent, .3, 2.5);
+		score = Util::FeedbackFunction(percent, .4, 2.0);
+
+		if (obs->GetMinerals() < 300 && obs->GetVespene() > 1000)
+		{
+			score *= 3;
+		}
+
 		return score;
 	};
 

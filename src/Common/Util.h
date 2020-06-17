@@ -6,10 +6,11 @@
 #include <vector>
 using namespace sc2;
 
-namespace Util {
+namespace Util
+{
 
 	// Basically this function outputs a lower value as current percent increases over hallNeedingMiners percent and when percent is 0, returns score when zero
-	const static double FeedbackFunction(double currentPercent,double targetPercent, double multiplier)
+	const static double FeedbackFunction(double currentPercent, double targetPercent, double multiplier)
 	{
 		// equivalent to 1/((currentPercent / targetPercent) + (1/multiplier));
 		return targetPercent / (currentPercent + (targetPercent / multiplier));
@@ -20,7 +21,7 @@ namespace Util {
 		return x * x * dampener;
 	}
 
-	const static Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query)
+	const static Unit* FindNearestResourceNeedingHarversters(const Unit* worker, const ObservationInterface* obs, QueryInterface* query, bool prioritizeGas)
 	{
 		double distance = DBL_MAX;
 		const Unit* hallNeedingMiners = 0;
@@ -54,8 +55,9 @@ namespace Util {
 			}
 		}
 		// Only assign gas after minerals have been filled
-		if (!hallNeedingMiners)
+		if (!hallNeedingMiners || prioritizeGas)
 		{
+			distance = DBL_MAX;
 			auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsGasBuilding());
 			for (auto assim : assimilators)
 			{
@@ -168,7 +170,7 @@ namespace Util {
 
 	const static Units FindNearbyUnits(sc2::Unit::Alliance alliance, Filter filter, Point3D point, const ObservationInterface* obs, double radius)
 	{
-		auto units = obs->GetUnits(alliance,filter);
+		auto units = obs->GetUnits(alliance, filter);
 		return Util::FindNearbyUnits(&units, point, obs, radius);
 	}
 
@@ -228,7 +230,7 @@ namespace Util {
 		return Point3D(point.x, point.y, 0);
 	}
 
-	std::string static GetStringFromRace(const sc2::Race & race)
+	std::string static GetStringFromRace(const sc2::Race& race)
 	{
 		switch (race)
 		{
@@ -247,7 +249,7 @@ namespace Util {
 		auto currentPoint = &startingPoint;
 		for (int i = 0; i < pointsToVisit.size(); i++)
 		{
-			if (VectorHelpers::FoundInVector(alreadyVisited,pointsToVisit[i]) || &pointsToVisit[i] == currentPoint)
+			if (VectorHelpers::FoundInVector(alreadyVisited, pointsToVisit[i]) || &pointsToVisit[i] == currentPoint)
 			{
 				continue;
 			}
@@ -297,12 +299,42 @@ namespace Util {
 		return GetUnitPercent(IsUnit(unitType), foodCost, obs);
 	}
 
+	bool static IsPossibleToPathTo(const sc2::ObservationInterface* obs, const sc2::Point3D& expandLocation, sc2::QueryInterface* query)
+	{
+
+		auto randoWorker = obs->GetUnits(sc2::Unit::Alliance::Self, IsWorker());
+
+		std::vector<QueryInterface::PathingQuery> queries;
+		for (int i = 0; i < randoWorker.size() && i < 5; i++)
+		{
+			QueryInterface::PathingQuery pq;
+			pq.start_unit_tag_ = randoWorker[i]->tag;
+			pq.start_ = randoWorker[i]->pos;
+			pq.end_ = expandLocation;
+
+			queries.push_back(pq);
+		}
+		auto res = query->PathingDistance(queries);
+
+		bool canPath = false;
+		for (int i = 0; i < res.size(); i++)
+		{
+			if (res[i] > 0.1f)
+			{
+				canPath = true;
+				break;
+			}
+		}
+
+		return canPath;
+	}
+
 };
 
 namespace Sorters
 {
 	struct sort_by_x {
-		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		bool operator()(Point3D const& lhs, Point3D const& rhs)
 		{
 			return lhs.x < rhs.x;
 		}
@@ -312,7 +344,7 @@ namespace Sorters
 		}
 	};
 	struct sort_by_y {
-		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		bool operator()(Point3D const& lhs, Point3D const& rhs)
 		{
 			return lhs.y < rhs.y;
 		}
@@ -330,12 +362,12 @@ namespace Sorters
 			referencePoint = point;
 		}
 
-		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		bool operator()(Point3D const& lhs, Point3D const& rhs)
 		{
 			return Distance2D(lhs, referencePoint) < Distance2D(rhs, referencePoint);
 		}
 
-		bool operator()(Unit const * lhs, Unit const * rhs)
+		bool operator()(Unit const* lhs, Unit const* rhs)
 		{
 			return Distance2D(lhs->pos, referencePoint) < Distance2D(rhs->pos, referencePoint);
 		}
@@ -365,6 +397,13 @@ namespace Sorters
 		GameState* state;
 	};
 
+	struct sort_by_energy {
+
+		bool operator()(Unit const* lhs, Unit const* rhs)
+		{
+			return lhs->energy > rhs->energy;
+		}
+	};
 
 
 	struct sort_by_pathing_distance {
@@ -375,21 +414,29 @@ namespace Sorters
 			q = query;
 		}
 
-		bool operator()(Point3D const & lhs, Point3D const & rhs)
+		bool operator()(Point3D const& lhs, Point3D const& rhs)
 		{
-			float l = q->PathingDistance(referencePoint, lhs );
+			float l = q->PathingDistance(referencePoint, lhs);
 			float r = q->PathingDistance(referencePoint, rhs);
-			return l < r;
+			// If it's not pathable, use direct distance
+			if (l == 0 || r == 0)
+			{
+				return Distance2D(lhs, referencePoint) < Distance2D(rhs, referencePoint);
+			}
+			else
+			{
+				return l < r;
+			}
 		}
 
-		bool operator()(Unit const * lhs, Unit const * rhs)
+		bool operator()(Unit const* lhs, Unit const* rhs)
 		{
-			return q->PathingDistance(referencePoint, lhs->pos ) < q->PathingDistance(referencePoint, rhs->pos);
+			return q->PathingDistance(referencePoint, lhs->pos) < q->PathingDistance(referencePoint, rhs->pos);
 		}
 	};
 
 	struct sort_by_tag {
-		bool operator()(Unit const * lhs, Unit const * rhs)
+		bool operator()(Unit const* lhs, Unit const* rhs)
 		{
 			return lhs->tag < rhs->tag;
 		}

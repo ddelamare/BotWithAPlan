@@ -13,10 +13,24 @@ public:
 
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) override
 	{
-		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ASSIMILATOR));
-		auto pylons = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
+		auto assimilators = obs->GetUnits(Unit::Alliance::Self, IsGasBuilding());
 		auto nexs = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(UNIT_TYPEID::PROTOSS_NEXUS));
-		if (assimilators.size() >= 2 * nexs.size() || pylons.size() == 0 || (assimilators.size() == 1 && obs->GetGameLoop() < 5000))
+
+		auto geyers = obs->GetUnits(IsGeyser());
+
+		bool openGeysers = false;
+		for (auto& nex : nexs)
+		{
+			auto geys = Util::FindNearbyUnits(&geyers, nex->pos, obs, 15);
+			auto assims = Util::FindNearbyUnits(&assimilators, nex->pos, obs, 15);
+			if (geys.size() > assims.size())
+			{
+				openGeysers = true;
+				break;
+			}
+		}
+
+		if (!openGeysers || obs->GetGameLoop() < 2500)
 			return 0;
 		else
 		{

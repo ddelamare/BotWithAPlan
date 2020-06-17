@@ -16,6 +16,8 @@ public:
 		this->BaseAction::name = "Build me some cannons";
 		holdOtherGoals = true;
 	}
+
+	//TODO: if rush is detected
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		if (!cannons->IsMet(state))
 		{

@@ -50,18 +50,18 @@ ResourceState Planner::CalculateTargetResourceState(ResourceState state, BaseAct
 	// Calculate the total number of resources to get to the goal state
 	for (auto cond : neededConditions)
 	{
-		LOG(2) << "\t" << cond->GetName() << endl;
+		LOG(5) << "\t" << cond->GetName() << endl;
 		auto needed = cond->UnmetResources(&state);
 		for (auto res : needed)
 		{
 			goalState.resources[res.first] += res.second;
 			if (state.resources[res.first] >= cond->GetRequiredResources(&state)[res.first])
 			{
-				LOG(2) << "\t- Has Resource " << (int)res.first << endl;
+				LOG(5) << "\t- Has Resource " << (int)res.first << endl;
 			}
 			else
 			{
-				LOG(2) << "\t- Needs Resource " << RESOURCE_MAP[res.first].name << ". Amount: " << res.second << endl;
+				LOG(5) << "\t- Needs Resource " << RESOURCE_MAP[res.first].name << ". Amount: " << res.second << endl;
 			}
 		}
 	}
@@ -85,7 +85,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 
 	if (isGoalState)
 	{
-		LOG(3) << "\t **--**GOAL FOUND**--**\n";
+		LOG(4) << "\t **--**GOAL FOUND**--**\n";
 		return plan;
 	}
 
@@ -111,11 +111,11 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 		{
 			heuristic = CalculateHeuristic(action, currentState, &(goalState.resources));
 
-			LOG(4) << "\t--Action " << action->GetName() << " is viable with weight " << heuristic << endl;
+			LOG(5) << "\t--Action " << action->GetName() << " is viable with weight " << heuristic << endl;
 		}
 		else
 		{
-			LOG(4) << "\t--Action " << action->GetName() << " is not viable with weight " << heuristic << endl;
+			LOG(5) << "\t--Action " << action->GetName() << " is not viable with weight " << heuristic << endl;
 		}
 		actionsThatGetCorrectResources.push_back(tuple<BaseAction*, float>(action, heuristic));
 	}
@@ -135,12 +135,12 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 
 	if (chosen != 0)
 	{
-		LOG(2) << "\t---Choose Action " << chosen->GetName() << endl;
+		LOG(4) << "\t---Choose Action " << chosen->GetName() << endl;
 		plan.push_back(chosen);
 	}
 	else
 	{
-		LOG(2) << "\t****NO ACTIONS FOUND****\n";
+		LOG(4) << "\t****NO ACTIONS FOUND****\n";
 		return plan;
 	}
 
@@ -149,7 +149,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	if (!chosen->MeetsConditions(currentState))
 	{
 		plan.pop_back();
-		LOG(3) << "\t_-_-_-Chosen Action conditions not met\n";
+		LOG(5) << "\t_-_-_-Chosen Action conditions not met\n";
 		auto newPlan = CalculatePlan(*currentState, chosen);
 		plan.insert(plan.begin(), newPlan.begin(), newPlan.end());
 		//Since we successfully got a plan, we can add the plan values to out state
@@ -197,11 +197,11 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState state, BaseAction* endG
 	// Are we done before we start?
 	if (endGoal->MeetsConditions(&state))
 	{
-		LOG(3) << "Goal Met: " << endGoal->GetName() << endl;
+		LOG(5) << "Goal Met: " << endGoal->GetName() << endl;
 		return plan;
 	}
 
-	LOG(3) << "Goal Not Met: " << endGoal->GetName() << endl;
+	LOG(5) << "Goal Not Met: " << endGoal->GetName() << endl;
 
 	auto goalState = CalculateTargetResourceState(state, endGoal);
 

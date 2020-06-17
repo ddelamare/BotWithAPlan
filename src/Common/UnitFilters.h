@@ -48,6 +48,7 @@ struct IsGasBuilding {
 	{
 		switch (type) {
 		case UNIT_TYPEID::PROTOSS_ASSIMILATOR: return true;
+		case UNIT_TYPEID::PROTOSS_ASSIMILATORRICH: return true;
 		case UNIT_TYPEID::TERRAN_REFINERY: return true;
 		case UNIT_TYPEID::ZERG_EXTRACTOR: return true;
 		default: return false;

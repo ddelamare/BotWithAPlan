@@ -35,6 +35,10 @@ public:
 		{												   
 			score = obs->GetGameLoop() / (6000u * (idx + .1));
 		}
+
+		if (score >= 9)
+			score = 9;
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

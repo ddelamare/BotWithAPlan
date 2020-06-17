@@ -39,7 +39,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			{
 				if (ShouldUnitsRetreat(cluster, knownEnemyPresences, obs, query, state)) 
 				{
-					action->UnitCommand(cluster.second, ABILITY_ID::MOVE_MOVE, state->StartingLocation);
+					action->UnitCommand(cluster.second, ABILITY_ID::GENERAL_MOVE, state->StartingLocation);
 				}
 			}
 		}
@@ -50,7 +50,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 		}
 		else if (group.mode == BattleMode::Retreat)
 		{
-			action->UnitCommand(group.units, ABILITY_ID::MOVE_MOVE, state->StartingLocation);
+			action->UnitCommand(group.units, ABILITY_ID::GENERAL_MOVE, state->StartingLocation);
 		}
 		else if (group.mode == BattleMode::Harrass)
 		{
@@ -94,7 +94,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 
 		vecAway *= 2;
 
-		action->UnitCommand(unit, sc2::ABILITY_ID::MOVE_MOVE, unit->pos + vecAway);
+		action->UnitCommand(unit, sc2::ABILITY_ID::GENERAL_MOVE, unit->pos + vecAway);
 	}
 }
 
@@ -192,7 +192,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 		{
 			//move unit to back of cluster
 			auto unitType = &state->UnitInfo[unit->unit_type];
-			double range = 1;
+			float range = 1;
 
 			auto closestUnit = Util::FindClosetOfType(this->cachedEnemyArmy, unit->pos, obs, query, false);
 			if (unitType->weapons.size())
@@ -224,7 +224,7 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 			Normalize3D(vectorAway);
 			vectorAway *= -1 * range;
 
-			action->UnitCommand(unit, ABILITY_ID::MOVE_MOVE, closestUnit->pos + vectorAway);
+			action->UnitCommand(unit, ABILITY_ID::GENERAL_MOVE, closestUnit->pos + vectorAway);
 			debug->DebugLineOut(unit->pos, closestUnit->pos + vectorAway, Colors::Teal);
 		}
 		else if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)
@@ -462,7 +462,6 @@ int ENEMY_CLUSTER_SEARCH_RANGE = 15;
 bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<KnownEnemyPresence*> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
 {
 
-	return false;
 	int enemyCostsInRange = 0;
 	for (auto ecluster : enemyClusters)
 	{
@@ -502,7 +501,7 @@ void ArmyManager::UpdateKnownEnemyPositions(const ObservationInterface* obs, Deb
 	*	* If cluster not near KEP, create a new KEP
 	*/
 
-	int MAX_PRESENCE_AGE = 500;
+	int MAX_PRESENCE_AGE = 1000;
 	int loop = obs->GetGameLoop();
 
 	// Prune old KEP and dead units. Iterate backwards to remove

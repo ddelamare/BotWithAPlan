@@ -9,6 +9,7 @@
 class AttackProxyGoal : public BaseAction
 {
 	bool spokenAlready = false;
+	int max_proxy_distance = 60;
 public:
 	AttackProxyGoal() : BaseAction() {
 		this->conditions.push_back(new HaveBigArmy(50));
@@ -16,7 +17,7 @@ public:
 		this->BaseAction::name = "Attack Proxy";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto enemyBuildings = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 60);
+		auto enemyBuildings = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, max_proxy_distance);
 		if (enemyBuildings.size())
 		{
 
@@ -34,7 +35,7 @@ public:
 			spokenAlready = true;
 		}
 		bool attacked = false;
-		auto enemyBuildings = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, 40);
+		auto enemyBuildings = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyBuilding(), Util::ToPoint3D(state->StartingLocation), obs, max_proxy_distance);
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());
 		auto targetPoint = Util::GetAveragePoint(enemyBuildings);
 

@@ -17,7 +17,7 @@ public:
 		double score = 1;
 
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_DISRUPTOR, 3, obs);
-		score = Util::FeedbackFunction(percent, .3, 1.5);
+		score = Util::FeedbackFunction(percent, .15, 1.5);
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6

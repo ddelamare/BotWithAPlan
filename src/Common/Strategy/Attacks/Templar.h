@@ -5,7 +5,7 @@
 #include <vector>
 using namespace sc2;
 
-class TemplarMicro : public UnitMicro
+class TemplarMicro: public UnitMicro
 {
 	UnitTypeData unitInfo;
 	std::vector<UNIT_TYPEID> feedbackableUnits;
@@ -40,7 +40,8 @@ void TemplarMicro::Execute(const sc2::ObservationInterface* obs, sc2::ActionInte
 	else
 	{
 		auto targetedClusters = std::set<int>();
-
+		int readyCasts = 0;
+		std::sort(templar.begin(), templar.end(), Sorters::sort_by_energy());
 		for (auto unit : templar)
 		{
 			int STORM_RADIUS = 3;
@@ -49,12 +50,13 @@ void TemplarMicro::Execute(const sc2::ObservationInterface* obs, sc2::ActionInte
 			auto enemyClusters = Util::FindClusters(enemyUnits, STORM_RADIUS); //Find clusters the size of templar
 			auto stormsActive = obs->GetEffects();
 
-			if (unit->energy < 50)
+			if (unit->energy < 50 || readyCasts > 3)
 			{
 				templar_merge.push_back(unit);
 			}
 			else if (feedbackTargets.size())
 			{
+				readyCasts++;
 				for (auto u : feedbackTargets)
 				{
 					if (u->energy >75)
