@@ -17,7 +17,7 @@ public:
 		double score = 1;
 
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_DISRUPTOR, 3, obs);
-		score = Util::FeedbackFunction(percent, .15, 1.5);
+		score = Util::FeedbackFunction(percent, .10, 1.5);
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_HYDRALISK] > 0 
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARAUDER] >= 6
@@ -46,7 +46,7 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_DISRUPTOR, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions);
+		return Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_DISRUPTOR, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions, query, state);
 
 	}
 };

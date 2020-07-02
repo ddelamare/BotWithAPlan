@@ -25,7 +25,6 @@ void PlanBotBase::Init()
 void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
 {
 	if (stopOthers) return;
-	BaseAction* goal = nullptr;
 	BaseAction* nextInPlan = nullptr;
 	auto actionList = goalPicker.GetGoals(goals, obs, &state);
 	bool allowDependencies = true;
@@ -53,20 +52,22 @@ void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::Ob
 		if (goal && nextInPlan)
 		{
 			auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
+			if (goal->HoldOtherGoals(obs))
+			{
+				stopOthers = true;
+			}
 			if (success)
 			{
 				auto msg = name + " GP:" + goal->GetName();
 				if (nextInPlan && goal != nextInPlan)
 					msg += " GS:" + nextInPlan->GetName();
 				messages->push_back(msg);
-				goal = nullptr;
-				break;
 			}
-			else if (goal->HoldOtherGoals(obs))
+			if (success || stopOthers)
 			{
-				stopOthers = true;
 				break;
 			}
+
 		}
 
 		if (!withRetry) break; // If we aren't retrying, break out
@@ -107,8 +108,55 @@ void PlanBotBase::DebugDrawState(chrono::time_point<chrono::steady_clock> startT
 	Debug()->DebugTextOut("Game Loop:" + std::to_string(state.threat.gameTime), Point2D(0, .46));
 	Debug()->DebugTextOut("Threat Score: " + std::to_string(this->threatAnalyzer.GetThreat(&state.threat)), Point2D(0, .48));
 	Debug()->DebugTextOut("Loop Time: " + to_string(std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count()), Point2D(0, .50));
+	Debug()->DebugTextOut("Known Enemy Value: " + std::to_string(state.threat.knownEnemyValue), Point2D(0, .52));
 
 }
+
+void PlanBotBase::OnStep()
+{
+	auto startTime = Clock::now();
+
+	// Frame Skip
+	if (StepCounter != STEPS_PER_GOAL)
+	{
+		StepCounter++;
+		return;
+	}
+	StepCounter = 0;
+
+
+	UpdateGameState();
+	ManageScouts();
+	ChooseGoals();
+	BalanceWorkerAssignments();
+	DefendBase();
+	CancelBuildingsUnderAttack();
+	ManageUnits();
+
+
+	DebugDrawState(startTime);
+
+#if LADDER_MODE
+	// This does not seem to work in local tests
+
+	if (!this->Lost && PlanBotBase::ShouldSurrender(Observation()))
+	{
+		this->Lost = true;
+		//auto y = Control()->RequestLeaveGame();
+		Actions()->SendChat("My plan has failed...");
+		Actions()->SendChat("gg");
+	}
+#endif
+
+
+#if DEBUG_MODE	
+	Debug()->SendDebug();
+#endif
+#if REALTIME
+	Actions()->SendActions();
+#endif
+}
+
 
 void PlanBotBase::UpdateGameState()
 {
@@ -119,26 +167,34 @@ void PlanBotBase::UpdateGameState()
 	state.threat.gameTime = obs->GetGameLoop();
 	state.threat.friendlyBases = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()).size();
 	state.threat.enemyBases = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall()).size();
-
-	// Store the number of each unit they have
-	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy);
-	UnitMap cUnits;
-	int maxFood = 0;
-	for (auto unit : enemyUnits)
-	{
-		cUnits[unit->unit_type]++;
-		maxFood += state.UnitInfo[unit->unit_type].food_required;
-	}
-	state.MaxEnemyFood = max(state.MaxEnemyFood, maxFood);
-	for (auto type : cUnits)
-	{
-		state.MaxEnemyUnits[type.first] = max(state.MaxEnemyUnits[type.first], type.second);
-		LOG(4) << (int)type.first << " " << state.MaxEnemyUnits[type.first];
-	}
+	state.AvailableAffordableAbilties = query->GetAbilitiesForUnits(obs->GetUnits(sc2::Unit::Alliance::Self, IsBuilding()), false, false);
 }
 
-void PlanBotBase::RemoveIdleScouts()
+void PlanBotBase::ManageScouts()
 {
+	if (state.ScoutingUnits.size() == 0) 
+		return;
+
+	// Be annoying to building SCVs
+	auto obs = Observation();
+	auto actions = Actions();
+
+
+	auto inProgressBuildings = obs->GetUnits(Unit::Alliance::Enemy, UnitsInProgress(UNIT_TYPEID::TERRAN_BARRACKS));
+	std::sort(inProgressBuildings.begin(), inProgressBuildings.end(), Sorters::sort_by_tag());
+	if (inProgressBuildings.size())
+	{
+		auto scv = Util::FindNearbyUnits(Unit::Enemy, IsWorker(), inProgressBuildings[0]->pos, obs, 3);
+		if (scv.size())
+		{
+			auto closestScout = Util::FindClosetOfType(state.ScoutingUnits, scv[0]->pos, obs, Query(), true);
+			if (closestScout)
+			{
+				actions->UnitCommand(closestScout, ABILITY_ID::ATTACK, scv[0], false);
+			}
+		}
+	}
+
 	// Clear out scouting probes if they're not scouting
 	for (auto worker : state.ScoutingUnits)
 	{
@@ -159,8 +215,8 @@ void PlanBotBase::ChooseGoals()
 	{
 		debugMessages.clear();
 		bool stopOthers = false;
-		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages, true, stopOthers);
 		ChooseActionFromGoals(BuildOrderGoals, obs, actions, query, "BuildOrder", &debugMessages, true, stopOthers);
+		ChooseActionFromGoals(EconomyGoals, obs, actions, query, "Econ", &debugMessages, true, stopOthers);
 		ChooseActionFromGoals(ArmyGoals, obs, actions, query, "Army", &debugMessages, true, stopOthers);
 		ChooseActionFromGoals(TacticsGoals, obs, actions, query, "Tactics", &debugMessages, false, stopOthers);
 		ChooseActionFromGoals(UpgradeGoals, obs, actions, query, "Upgrade", &debugMessages, false, stopOthers);
@@ -212,7 +268,7 @@ void PlanBotBase::BalanceWorkerAssignments()
 	{
 		saturatedGasRatio = gasMiners / (double)optimalGasMiners;
 
-		needsMoreGas = saturatedGasRatio < .75;
+		needsMoreGas = saturatedGasRatio < .75 && (gasMiners * 2) < mineralMiners ;
 	}
 	for (auto& th : workerMinables) {
 		if (th->assigned_harvesters > th->ideal_harvesters)
@@ -238,16 +294,6 @@ void PlanBotBase::BalanceWorkerAssignments()
 			actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::HARVEST_GATHER, resource);
 			break;
 		}
-		//else
-		//{
-		//	// Send to scout
-		//	if (state.ScoutingUnits.size() == 0 && state.KilledScouts < 3)
-		//	{
-		//		actions->UnitCommand(reallocableWorkers[i], ABILITY_ID::GENERAL_MOVE, state.EnemyBase);
-		//		state.ScoutingUnits.push_back(reallocableWorkers[i]);
-		//	}
-		//	break;
-		//}
 	}
 }
 
@@ -301,6 +347,32 @@ void PlanBotBase::ManageUnits()
 	}
 }
 
+void PlanBotBase::OnUnitEnterVision(const Unit* unit)
+{
+	auto obs = Observation();
+
+	// Store the number of each unit they have
+	auto enemyUnits = obs->GetUnits(sc2::Unit::Alliance::Enemy,IsVisible());
+	UnitMap cUnits;
+	int maxFood = 0;
+	for (auto unit : enemyUnits)
+	{
+		cUnits[unit->unit_type]++;
+		maxFood += state.UnitInfo[unit->unit_type].food_required;
+		if (!state.EnemyUnits[unit->tag])
+		{
+			state.EnemyUnits[unit->tag] = unit;
+			state.threat.knownEnemyValue += state.UnitInfo[unit->unit_type].mineral_cost + state.UnitInfo[unit->unit_type].vespene_cost;
+		}
+	}
+	state.MaxEnemyFood = max(state.MaxEnemyFood, maxFood);
+	for (auto type : cUnits)
+	{
+		state.MaxEnemyUnits[type.first] = max(state.MaxEnemyUnits[type.first], type.second);
+		LOG(4) << (int)type.first << " " << state.MaxEnemyUnits[type.first];
+	}
+}
+
 
 void PlanBotBase::OnUnitDestroyed(const Unit* unit)
 {
@@ -328,6 +400,8 @@ void PlanBotBase::OnUnitDestroyed(const Unit* unit)
 	}
 	else
 	{
+		state.threat.knownEnemyValue -= state.UnitInfo[unit->unit_type].mineral_cost;
+		state.threat.knownEnemyValue -= state.UnitInfo[unit->unit_type].vespene_cost;
 		state.threat.enemyMineralsLost += state.UnitInfo[unit->unit_type].mineral_cost;
 		state.threat.enemyGasLost += state.UnitInfo[unit->unit_type].vespene_cost;
 		state.threat.enemyBuildTimeLost += state.UnitInfo[unit->unit_type].build_time;

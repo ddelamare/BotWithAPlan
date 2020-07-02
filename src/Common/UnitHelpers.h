@@ -19,9 +19,47 @@ namespace Util {
 		return vectorToCenter / units.size();
 	}
 
-	bool static TryBuildUnit(AbilityID train_unit_ability, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions)
+
+	bool static DoesUnitHaveAbility(const Unit* unit, ABILITY_ID ability, QueryInterface* query, GameState* state)
 	{
-		bool madeUnit = false;
+		bool hasability = false;
+
+		auto unitAbilities = &state->AvailableAffordableAbilties;
+
+		bool isWarpgate = IsUnit(UNIT_TYPEID::PROTOSS_WARPGATE)(*unit);
+
+		for (auto un : *unitAbilities)
+		{
+			if (un.unit_tag != unit->tag)
+			{
+				continue;
+			}
+
+			if (isWarpgate && un.abilities.size() == 1)
+			{
+				// This means the warpgate is on cooldown
+				// Or we are broke.
+				return false;
+			}
+
+			for (auto abi : un.abilities)
+			{
+				if (abi.ability_id == ability)
+				{
+					hasability = true;
+					break;
+				}
+			}
+		}
+
+		return hasability;
+	}
+
+
+	// Used for upgrades
+	bool static TryBuildUpgrade(AbilityID research_upgrade_ability, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions, QueryInterface* query)
+	{
+		bool madeUpgrade = false;
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(buildingType));
 		for (auto building : buildings) {
 			if (building->build_progress < 1.0)
@@ -30,27 +68,27 @@ namespace Util {
 			}
 			if (building->orders.size() == 0)
 			{
-				actions->UnitCommand(building, train_unit_ability);
-				madeUnit = true;
-			}
-			else if (building->add_on_tag && IsReactor()(*obs->GetUnit(building->add_on_tag)) && building->orders.size() < 2)
-			{
-				actions->UnitCommand(building, train_unit_ability);
-				madeUnit = true;
+				actions->UnitCommand(building, research_upgrade_ability);
+				madeUpgrade = true;
 			}
 		}
 
-		return madeUnit;
+		return madeUpgrade;
 	}
 
-	bool static TryBuildUnit(sc2::UNIT_TYPEID unit_type, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions, QueryInterface* query)
+	bool static TryBuildUnit(sc2::UNIT_TYPEID unit_type, UnitTypeID buildingType, const ObservationInterface* obs, sc2::ActionInterface* actions, QueryInterface* query, GameState* state)
 	{
 		bool madeUnit = false;
-		UnitTypes unitTypes = obs->GetUnitTypeData();
-		UnitTypeData unittype = unitTypes[(int)unit_type];
+		auto unitTypes = &state->UnitInfo;
+		UnitTypeData unittype = (*unitTypes)[(int)unit_type];
 		auto buildings = obs->GetUnits(Unit::Alliance::Self, IsUnit(buildingType));
 		for (auto building : buildings) {
-			if (building->orders.size() == 0 && building->build_progress >= 1.0)
+			if (building->orders.size() == 0 && building->build_progress >= 1.0  && Util::DoesUnitHaveAbility(building, unittype.ability_id, query, state))
+			{
+				actions->UnitCommand(building, unittype.ability_id);
+				madeUnit = true;
+			}
+			else if (building->add_on_tag && IsReactor()(*obs->GetUnit(building->add_on_tag)) && building->orders.size() < 2)
 			{
 				actions->UnitCommand(building, unittype.ability_id);
 				madeUnit = true;
@@ -70,18 +108,8 @@ namespace Util {
 		UnitTypeData unittype = (*unitTypes)[(int)unit_type];
 		auto warpAbility = (ABILITY_ID) ((int)unittype.ability_id + WARPCONVERSION_DIFFERENCE);
 		int MAX_BUILD_PER_FRAME = 2;
-		for (auto building : buildings) {
-			auto abilities = query->GetAbilitiesForUnit(building).abilities;
-
-			bool hasability = false;
-			for (auto abi : abilities)
-			{
-				if (abi.ability_id == warpAbility)
-				{
-					hasability = true;
-					break;
-				}
-			}
+		for (auto& building : buildings) {
+			bool hasability = Util::DoesUnitHaveAbility(building, warpAbility, query, state);
 
 			if (hasability)
 			{
@@ -94,7 +122,7 @@ namespace Util {
 				break;
 		}
 		if (!madeUnit)
-			return TryBuildUnit(unit_type, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions, query);
+			return TryBuildUnit(unit_type, UNIT_TYPEID::PROTOSS_GATEWAY, obs, actions, query, state);
 
 		return madeUnit;
 	}
@@ -109,6 +137,9 @@ namespace Util {
 		if (alreadyBuilding || !HasEnoughResources(buildingData.mineral_cost, buildingData.vespene_cost, obs)) return false;
 
 		Point3D buildPos = buildingStrategy->FindPlacement(obs, actions, query, debug, state);
+
+		if (buildPos == Point3D(0, 0, 0))
+			return false;
 
 		auto worker = FindClosestAvailableBuilder(buildPos, obs, query, state, IsGasBuilding()(unitType));
 		if (DistanceSquared3D(buildPos, Point3D()) > 0)

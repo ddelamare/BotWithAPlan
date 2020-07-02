@@ -68,7 +68,7 @@ void TerranPlan::OnStep() {
 	auto actions = Actions();
 
 	UpdateGameState();
-	RemoveIdleScouts();
+	ManageScouts();
 	ChooseGoals();
 	BalanceWorkerAssignments();
 	DefendBase();

@@ -8,6 +8,7 @@
 #include "Goals\Economy\ExpandNexus.h"
 #include "Goals\Economy\Chrono.h"
 #include "Goals\Economy\Assimilator.h"
+#include "Goals\BuildOrder\RushDefense.h"
 #include "Goals\Army\Zealot.h"
 #include "Goals\Army\Stalker.h"
 #include "Goals\Army\DarkTemplar.h"
@@ -50,6 +51,7 @@
 #include "Goals\Tactics\SuperCannonDefense.h"
 #include "Goals\Tactics\ScoutEverything.h"
 #include "Goals\Tactics\RetreatGoal.h"
+#include "Goals\Tactics\ClearObstructions.h"
 #include "Goals\Upgrades\Chargelots.h"
 #include "Goals\Upgrades\GroundWeaponsUpgrade.h"
 #include "Goals\Upgrades\GroundArmor.h"
@@ -78,6 +80,7 @@ BotWithAPlan::BotWithAPlan()
 	EconomyGoals.push_back(new PhotonCannonGoal());
 	//EconomyGoals.push_back(new ShieldBatteryGoal());
 
+	BuildOrderGoals.push_back(new RushDefenseGoal());
 
 	// Build Because we Can
 	ArmyGoals.push_back(new ZealotGoal());
@@ -114,6 +117,7 @@ BotWithAPlan::BotWithAPlan()
 	//TacticsGoals.push_back(new RushGoal());
 	TacticsGoals.push_back(new Do4GateGoal());
 	TacticsGoals.push_back(new RetreatGoal());
+	TacticsGoals.push_back(new ClearObstructionsGoal());
 
 
 	UpgradeGoals.push_back(new ChargelotGoal());
@@ -166,55 +170,16 @@ BotWithAPlan::BotWithAPlan()
 }
 
 void BotWithAPlan::OnStep() {
-	LOG(4) << "Step Begin" << endl;
 
-	// Frame Skip
-	if (StepCounter != STEPS_PER_GOAL)
-	{
-		StepCounter++;
-		return;
-	}
-	StepCounter = 0;
+	PlanBotBase::OnStep();
 
-	auto startTime = Clock::now();
 	auto obs = Observation();
-	auto query = Query();
 	auto actions = Actions();
-	auto debug = Debug();
-
-	UpdateGameState();
-	RemoveIdleScouts();
-	ChooseGoals();
-	BalanceWorkerAssignments();
-	DefendBase();
-	CancelBuildingsUnderAttack();
-	ManageUnits();
 
 	// Morph all gateways to warpgates
 	auto gateways = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(sc2::UNIT_TYPEID::PROTOSS_GATEWAY));
 	actions->UnitCommand(gateways, ABILITY_ID::MORPH_WARPGATE);
 
-	DebugDrawState(startTime);
-
-#if LADDER_MODE
-	// This does not seem to work in local tests
-
-	if (!this->Lost && PlanBotBase::ShouldSurrender(obs))
-	{
-		this->Lost = true;
-		//auto y = Control()->RequestLeaveGame();
-		Actions()->SendChat("My plan has failed...");
-		Actions()->SendChat("gg");
-	}
-#endif
-
-
-#if DEBUG_MODE	
-	Debug()->SendDebug();
-#endif
-#if REALTIME
-	Actions()->SendActions();
-#endif
 }
 
 

@@ -26,7 +26,7 @@ public:
 		if (townhalls == 0)
 			return 0;
 
-		auto percent = (double)cannons / (townhalls * 3); // 3 cannons per nex should be fine
+		auto percent = (double)cannons / (townhalls * 2); // 3 cannons per nex should be fine
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_REAPER] >= 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] >= 2)	

@@ -8,6 +8,7 @@ using namespace sc2;
 // Holds data that only needs to be calculated once and then referenced or updated
 
 typedef std::map<UNIT_TYPEID, int>	UnitMap;
+typedef std::map<sc2::Tag, const Unit*>	UnitCache;
 class ArmyManager;
 struct BattleGroup;
 struct GameState
@@ -37,5 +38,7 @@ struct GameState
 	ThreatModel threat;
 	int KilledScouts = 0;
 	std::vector<std::pair<Point3D, Point3D>> PrecomputedStartLocations;
+	UnitCache EnemyUnits;
+	std::vector<AvailableAbilities> AvailableAffordableAbilties;
 
 };

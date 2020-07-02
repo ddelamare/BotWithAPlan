@@ -20,7 +20,7 @@ using Clock = std::chrono::high_resolution_clock;
 
 using namespace sc2;
 #define LADDER_MODE 1
-#define DEBUG_MODE 	0
+#define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME 0	 
 class PlanBotBase : public Agent
@@ -29,10 +29,10 @@ public:
 	PlanBotBase();
 	void Init();
 	void OnGameStart();
-	void OnStep() = 0;
+	void OnStep();
 	void OnBuildingConstructionComplete(const Unit *) = 0;
 	void OnUnitCreated(const Unit *) = 0;
-	void OnUnitEnterVision(const Unit *) = 0;
+	void OnUnitEnterVision(const Unit *);
 	void virtual OnUnitDestroyed(const Unit* unit);
 	void OnGameEnd() = 0;
 	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors) = 0;
@@ -45,7 +45,7 @@ protected:
 	bool virtual ShouldSurrender(const sc2::ObservationInterface * obs);
 	void virtual DebugDrawState(chrono::time_point<chrono::steady_clock> startTime);
 	void UpdateGameState();
-	void RemoveIdleScouts();
+	void ManageScouts();
 	void virtual ChooseGoals();
 	void BalanceWorkerAssignments();
 	void DefendBase();
@@ -64,7 +64,7 @@ protected:
 	vector<BaseAction*> UpgradeGoals;
 	bool shouldRecalcuate;
 	int StepCounter = 0;
-	const int STEPS_PER_GOAL = 10;
+	const int STEPS_PER_GOAL = 2;
 	vector<string> debugMessages;
 	ThreatAnalyzer threatAnalyzer;
 	vector<UnitMicro*> microManagers;
@@ -72,3 +72,4 @@ protected:
 
 };
 
+																  

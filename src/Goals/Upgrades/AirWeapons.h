@@ -40,6 +40,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(abilities[idx], UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, obs, actions);
+		return Util::TryBuildUpgrade(abilities[idx], UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, obs, actions, query);
 	}
 };

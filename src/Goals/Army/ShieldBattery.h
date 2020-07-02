@@ -5,9 +5,12 @@
 #include "Common/Resource.h"
 #include "Common/Strategy/Building/SpiralStrategy.h"
 #include "Common/Util.h"
+#include "Common/Analyzers/RushAnalyzer.h"
 
 class ShieldBatteryGoal : public BaseAction
 {
+	RushAnalyzer rushAnalyzer;
+
 public:
 	ShieldBatteryGoal() : BaseAction()
 	{
@@ -24,6 +27,12 @@ public:
 		if (townhalls <= batteries || townhalls <= 1)
 		{
 			return 0;
+		}
+
+		auto rushChance = rushAnalyzer.GetRushPossibiliy(obs);
+		if (rushChance > 1)
+		{
+			return 2;
 		}
 
 		return 1;

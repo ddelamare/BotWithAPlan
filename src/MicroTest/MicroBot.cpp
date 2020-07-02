@@ -64,25 +64,25 @@ public:
 		Debug()->DebugShowMap();
 		Debug()->DebugEnemyControl();
 		Debug()->SendDebug();
-		Debug()->DebugGiveAllUpgrades();
+		//Debug()->DebugGiveAllUpgrades();
 		Debug()->DebugIgnoreResourceCost();
 
 		state.UnitInfo = Observation()->GetUnitTypeData();
 
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 10, UNIT_TYPEID::PROTOSS_ADEPT, 5));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 20, UNIT_TYPEID::PROTOSS_ADEPT, 10));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 40, UNIT_TYPEID::PROTOSS_ADEPT, 20));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 20));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 160, UNIT_TYPEID::PROTOSS_ADEPT, 80));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::ZERG_ZERGLING, 240));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 150));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_STALKER, 30));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
-		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
-		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 5, UNIT_TYPEID::TERRAN_MARINE, 50));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ADEPT, 5  ,UNIT_TYPEID::TERRAN_MARINE, 10 ));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ADEPT, 10 ,UNIT_TYPEID::TERRAN_MARINE, 20 ));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ADEPT, 20 ,UNIT_TYPEID::TERRAN_MARINE, 40 ));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ZEALOT, 20,UNIT_TYPEID::TERRAN_MARINE, 20));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ADEPT, 80 ,UNIT_TYPEID::TERRAN_MARINE, 160));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_ADEPT, 160,UNIT_TYPEID::TERRAN_MARINE, 320));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::ZERG_ZERGLING, 240));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_THOR, 20, UNIT_TYPEID::PROTOSS_ZEALOT, 150));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_TEMPEST, 20, UNIT_TYPEID::PROTOSS_STALKER, 30));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::TERRAN_MARINE, 320, UNIT_TYPEID::PROTOSS_ADEPT, 160));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 1, UNIT_TYPEID::TERRAN_MARINE, 6));
+		testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 2, UNIT_TYPEID::TERRAN_MARINE, 12));
+		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 5, UNIT_TYPEID::TERRAN_MARINE, 50));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 10, UNIT_TYPEID::TERRAN_MARINE, 60));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_DISRUPTOR, 15, UNIT_TYPEID::TERRAN_MARINE, 90));
 		//testSetups.push_back(std::make_tuple(UNIT_TYPEID::PROTOSS_STALKER, 5, UNIT_TYPEID::TERRAN_MARINE, 20));
@@ -120,7 +120,7 @@ public:
 			auto enemyUnits = Observation()->GetUnits(Unit::Alliance::Enemy);
 
 
-			if (selfUnits.size() == 0 || enemyUnits.size() < 0)
+			if (selfUnits.size() == 0 || enemyUnits.size() <= 0)
 			{
 			    auto ab = new BattleAnalyzer("C:\\Users\\ddelam\\Documents\\Git\\BotWithAPlan\\src\\MicroTest\\Debug\\data\\unitinfo.json");
 

@@ -23,6 +23,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_MOTHERSHIP, UNIT_TYPEID::PROTOSS_NEXUS, obs, actions);
+		return Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_MOTHERSHIP, UNIT_TYPEID::PROTOSS_NEXUS, obs, actions, state);
 	}
 };

@@ -9,7 +9,7 @@ using namespace sc2;
 class GatewayGoal : public BaseAction
 {
 private:
-	Point3D lastBuildSpot;
+	RushAnalyzer rushAnalyzer;
 
 public:
 	GatewayGoal() : BaseAction() {
@@ -40,6 +40,12 @@ public:
 		}
 		// Ideally should have 2 gates per fully mining base
 		auto score =  assignedHarvesters / ((totalGates * 2.5) * (22.0));
+
+		auto rushChance = rushAnalyzer.GetRushPossibiliy(obs);
+		if (rushChance > 1)
+		{
+			score *= 1.5;
+		}
 
 		if (obs->GetFoodUsed() < 180 && obs->GetMinerals() > 1500)
 			score *= 2;

@@ -21,7 +21,7 @@ public:
 		{
 			score += Distance2D(expo->pos, state->EnemyBase);
 		}
-		score = score / 200;
+		score = score / 300;
 		score *= threatAnalyzer.GetThreat(&state->threat);
 		return score;
 	};

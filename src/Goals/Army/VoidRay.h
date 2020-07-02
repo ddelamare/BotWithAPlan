@@ -26,13 +26,11 @@ public:
 
 
 		if (state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ULTRALISK] > 0 
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] > 4
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BATTLECRUISER] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_LIBERATOR] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_LIBERATORAG] > 2
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::PROTOSS_ARCHON] > 2
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 2
-			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 2)
+			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_BROODLORD] > 2)
 		{
 			score *= 2.5;
 		}
@@ -49,6 +47,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_VOIDRAY, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions);
+		return Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_VOIDRAY, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions, query, state);
 	}
 };

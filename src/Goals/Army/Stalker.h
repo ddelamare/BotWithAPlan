@@ -9,7 +9,7 @@ class StalkerGoal : public BaseAction
 {
 public:
 	StalkerGoal() : BaseAction() {
-		this->conditions.push_back(new BaseCondition("Build Cybernetics", 2, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
+		this->conditions.push_back(new BaseCondition("Build Cybernetics", 4, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1, sc2::UNIT_TYPEID::PROTOSS_ASSIMILATOR, 1));
 		this->conditions.push_back(new HaveGateWayTrainer());
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_STALKER, 1));
 		this->BaseAction::name = "Build Stalker";

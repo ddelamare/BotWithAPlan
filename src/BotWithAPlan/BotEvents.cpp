@@ -43,6 +43,7 @@ void BotWithAPlan::OnUnitDestroyed(const Unit* unit) {
 
 void BotWithAPlan::OnUnitEnterVision(const Unit* unit) 
 {
+	PlanBotBase::OnUnitEnterVision(unit);
 }
 
 void BotWithAPlan::OnGameStart() {
@@ -71,7 +72,7 @@ void BotWithAPlan::OnGameStart() {
 
 #if LADDER_MODE
 	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 1.8");
+	Actions()->SendChat("Bot version: 1.9");
 #endif
 }
 

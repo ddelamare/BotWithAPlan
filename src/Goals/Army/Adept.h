@@ -3,9 +3,13 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
+#include "Common/Analyzers/RushAnalyzer.h"
+
 
 class AdeptGoal : public BaseAction
 {		   
+	RushAnalyzer rushAnalyzer;
+
 public:
 	AdeptGoal() : BaseAction() {
 		this->conditions.push_back(new BaseCondition("Build Cybernetics", 2, sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, 1));
@@ -18,6 +22,12 @@ public:
 
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_ADEPT, 2, obs);
 		score = Util::FeedbackFunction(percent, .25, 2);
+
+		auto rushChance = rushAnalyzer.GetRushPossibiliy(obs);
+		if (rushChance > 1)
+		{
+			score *= 1.4;
+		}
 
 		if (state->MaxEnemyUnits[UNIT_TYPEID::ZERG_MUTALISK] >= 6
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3)

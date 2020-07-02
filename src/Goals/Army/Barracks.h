@@ -20,12 +20,12 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto barracks = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
 		int totalRax = barracks.size();
-		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
+		auto th = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		if (!totalRax)
 		{
 			return 5;
 		}
-		else if (totalRax >= ((2 * nexus.size())))
+		else if (totalRax >= ((3 * th.size())))
 		{
 			return 0;
 		}

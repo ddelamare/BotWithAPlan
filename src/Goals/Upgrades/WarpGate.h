@@ -19,10 +19,10 @@ public:
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE), ABILITY_ID::RESEARCH_WARPGATE, obs))
 			return 0;
 		
-		return state->CurrentUnits[sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE] * 4;
+		return state->CurrentUnits[sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE] * 10;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::RESEARCH_WARPGATE, UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, obs, actions);
+		return Util::TryBuildUpgrade(ABILITY_ID::RESEARCH_WARPGATE, UNIT_TYPEID::PROTOSS_CYBERNETICSCORE, obs, actions, query);
 	}
 };

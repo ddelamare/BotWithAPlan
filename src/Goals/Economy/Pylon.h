@@ -19,7 +19,7 @@ public:
 		double score = 16.0f;
 
 		// Early game we don't need to be aggressive with pylons
-		if (obs->GetGameLoop() < 2500)
+		if (obs->GetGameLoop() < 5000)
 			score = 2.0;
 
 		size_t foodLeft = obs->GetFoodCap() - obs->GetFoodUsed();
@@ -39,7 +39,7 @@ public:
 		else if (foodLeft <= 0)
 		{
 			// If we are in the red, we really want that pylon.
-			score = 50;
+			score = 10;
 		}
 
 		if (score < 1 || obs->GetFoodCap() == 200)

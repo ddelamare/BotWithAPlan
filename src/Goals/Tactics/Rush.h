@@ -18,7 +18,7 @@ public:
 
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		Util::TryBuildUnit(ABILITY_ID::TRAIN_VOIDRAY, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions);
+		Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_VOIDRAY, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions, query, state);
 
 		bool madeStaker = false;
 		auto army = obs->GetUnits(Unit::Alliance::Self, IsCombatUnit());

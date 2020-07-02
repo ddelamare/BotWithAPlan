@@ -14,7 +14,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		if (state->ScoutingUnits.size() > 1) return 0;
 		auto loop = obs->GetGameLoop();
-		if (loop > 1000 && loop < 4000 && state->KilledScouts < 3)
+		if (loop > 800 && loop < 2000 && state->KilledScouts < 2)
 			return 2 + (obs->GetIdleWorkerCount() > 1);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)

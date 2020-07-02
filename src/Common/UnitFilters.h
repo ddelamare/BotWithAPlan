@@ -299,6 +299,14 @@ struct IsMineralField {
 	}
 };
 
+struct IsSmallMineralPatch {
+	IsVisibleMineralPatch filter;
+	bool operator() (const Unit& unit)
+	{
+		return filter(unit) && unit.mineral_contents < 25;
+	}
+};
+
 struct IsWorker {
 	bool operator()(const Unit& unit) {
 		switch (unit.unit_type.ToType()) {

@@ -151,6 +151,7 @@
     <ClCompile Include="Common\Strategy\Building\SpiralStrategy.cpp" />
     <ClCompile Include="Common\Strategy\Building\PylonStrategy.cpp" />
     <ClCompile Include="Common\Analyzers\ThreatAnalyzer.cpp" />
+    <ClCompile Include="Common\Analyzers\RushAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog" />
@@ -162,6 +163,8 @@
     <ClInclude Include="Common\Entity\UnitBattleData.h" />
     <ClInclude Include="Goals\Army\Factory.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />
+    <ClInclude Include="Goals\BuildOrder\RushDefense.h" />
+    <ClInclude Include="Goals\Tactics\ClearObstructions.h" />
     <ClInclude Include="Goals\Tactics\ScoutEverything.h" />
     <ClInclude Include="Goals\Tactics\ScoutMain.h" />
     <ClInclude Include="Goals\Upgrades\AirArmor.h" />
@@ -276,6 +279,7 @@
     <ClInclude Include="Common\Strategy\Attacks\UnitMicro.h" />
     <ClInclude Include="Goals\Army\Starport.h" />
     <ClInclude Include="Goals\Tactics\RetreatGoal.h" />
+    <ClInclude Include="Common\Analyzers\RushAnalyzer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

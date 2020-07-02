@@ -57,6 +57,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_IMMORTAL, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions);
+		return Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_IMMORTAL, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions, query, state);
 	}
 };

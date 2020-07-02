@@ -35,7 +35,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 			//	, obs, query, action, state, debug);
 
 			// For any cluster that's near enemy clusters that are bigger, retreat
-			for (auto cluster : clusters)
+			for (const auto& cluster : clusters)
 			{
 				if (ShouldUnitsRetreat(cluster, knownEnemyPresences, obs, query, state)) 
 				{
@@ -169,7 +169,6 @@ void ArmyManager::ClusterUnits(BattleGroup* group, bool includeAll, const Observ
 void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	//Send attack command and choose targets
-	//action->UnitCommand(group->units, ABILITY_ID::ATTACK, group->target);
 
 	auto averagePoint = Util::GetAveragePoint(group->units);
 	auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsHighPrioirtyEnemy(), averagePoint, obs, 20);
@@ -479,10 +478,7 @@ bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vec
 		auto disToTownHall = Distance2D(closestTownHall->pos, cluster.first);
 
 		// Retreat unless we are at home
-		if (disToTownHall > 20)
-		{
-			isAwayFromHome = true;
-		}
+		isAwayFromHome = disToTownHall > 20;
 	}
 
 	return isAwayFromHome && (friendlyUnitsCost < (enemyCostsInRange * 1.2));

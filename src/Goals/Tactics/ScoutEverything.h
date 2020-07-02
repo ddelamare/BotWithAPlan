@@ -10,7 +10,7 @@ class ScoutEverythingGoal : public BaseAction
 
 public:
 	ScoutEverythingGoal() : BaseAction() {
-		this->BaseAction::name = "Scout Sweep";
+		this->BaseAction::name = "Find Last Bases";
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 

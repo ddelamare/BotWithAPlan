@@ -10,6 +10,7 @@ public:
 	uint32_t idx = 0;
 	vector<UPGRADE_ID> upgrades;
 	vector<ABILITY_ID> abilities;
+	RushAnalyzer rushAnalyzer;
 	GroundWeaponsUpgradeGoal() : BaseAction() {
 		upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL1);
 		upgrades.push_back(UPGRADE_ID::PROTOSSGROUNDWEAPONSLEVEL2);
@@ -24,7 +25,9 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		if (idx >= upgrades.size()) return 0;
+
+		auto rushChance = rushAnalyzer.GetRushPossibiliy(obs);
+		if (idx >= upgrades.size() || rushChance > 1) return 0;
 		auto upgradesHad = obs->GetUpgrades();
 		auto hasUpgrade = VectorHelpers::FoundInVector(upgradesHad, ((UpgradeID)(upgrades[idx])));
 		if (hasUpgrade) idx++; // Move on to the next
@@ -43,6 +46,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(abilities[idx], UNIT_TYPEID::PROTOSS_FORGE, obs, actions);
+		return Util::TryBuildUpgrade(abilities[idx], UNIT_TYPEID::PROTOSS_FORGE, obs, actions, query);
 	}
 };

@@ -57,12 +57,13 @@ public:
 				if (queryResults[i])
 				{
 					buildPos = Util::ToPoint3D(queries[i].target_pos);
+					debug->DebugSphereOut(Util::ToPoint3D(queries[i].target_pos, 8), 3, Colors::Teal);
 					foundSpot = true;
 					break;
 				}
 				else
 				{
-					debug->DebugSphereOut(Util::ToPoint3D(queries[i].target_pos), 3, Colors::Yellow);
+					debug->DebugSphereOut(Util::ToPoint3D(queries[i].target_pos, 8), 3, Colors::White);
 				}
 				if (foundSpot) break;
 			}

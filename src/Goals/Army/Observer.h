@@ -21,15 +21,15 @@ public:
 			state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_BANSHEE] > 0
 			|| state->HasCloakedUnits)
 		{
-			score = Util::FeedbackFunction(percent, .06, 1.5);
+			score = Util::FeedbackFunction(percent, .02, 1.5);
 		}
 
-		if (percent >= 1 && score < .1)	 // We really don;t need that many
+		if (percent >= .01 && score < .35)	 // We really don;t need that many
 			return 0;
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_OBSERVER, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions);
+		return Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_OBSERVER, UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY, obs, actions, query, state);
 	}
 };

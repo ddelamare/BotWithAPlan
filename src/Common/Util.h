@@ -230,6 +230,11 @@ namespace Util
 		return Point3D(point.x, point.y, 0);
 	}
 
+	Point3D static ToPoint3D(Point2D point, float z)
+	{
+		return Point3D(point.x, point.y, z);
+	}
+
 	std::string static GetStringFromRace(const sc2::Race& race)
 	{
 		switch (race)

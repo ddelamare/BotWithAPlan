@@ -16,7 +16,7 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		timeSinceLastExec++;
 		if (state->ScoutingUnits.size() || state->KilledScouts > 3)  return 0;
-		return 1 + ( obs->GetIdleWorkerCount() > 1) + (timeSinceLastExec / 100.0);
+		return 2 * (timeSinceLastExec / 500.0);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

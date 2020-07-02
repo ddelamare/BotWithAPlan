@@ -28,6 +28,7 @@ public:
 
 		if (state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_CARRIER] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BATTLECRUISER] >= 2
+			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_SIEGETANK] >= 5
 			|| state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_COLOSSUS] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_ULTRALISK] >= 2
 			|| state->MaxEnemyUnits[UNIT_TYPEID::ZERG_BROODLORD] >= 3
@@ -52,6 +53,6 @@ public:
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{
-		return Util::TryBuildUnit(ABILITY_ID::TRAIN_TEMPEST, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions);
+		return Util::TryBuildUnit(UNIT_TYPEID::PROTOSS_TEMPEST, UNIT_TYPEID::PROTOSS_STARGATE, obs, actions, query, state);
 	}
 };

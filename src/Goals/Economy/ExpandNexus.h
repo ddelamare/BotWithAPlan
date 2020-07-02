@@ -3,6 +3,7 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
+#include "Common/Analyzers/RushAnalyzer.h"
 #include "Common\Util.h"
 #include "Common\Constants.h"
 #include "Common\Strategy\Building\ExpandStrategy.h"
@@ -13,6 +14,8 @@ class ExpandGoal : public BaseAction
 	int MIN_ARMY_PER_EXPO = 0;
 	// Roughly this value means that it gets more greedy with time
 	float GREED_DAMPER = 1500.0;
+	RushAnalyzer rushAnalyzer;
+
 public:
 	ExpandGoal() : BaseAction() {
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_NEXUS, 1));
@@ -24,6 +27,13 @@ public:
 		auto townHallsBuilding = obs->GetUnits(sc2::Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_NEXUS));
 
 		if (townHallsBuilding.size()) return 0;
+
+		// If there's a rush happening we should delay
+		auto rushChance = rushAnalyzer.GetRushPossibiliy(obs);
+		if (rushChance > 1)
+		{
+			return 0;
+		}
 
 		int assignedHarvesters = 0;
 		int idealHarvesters = 0;
@@ -42,6 +52,7 @@ public:
 		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_WORKER_CAP, .25, .5);
 		auto food = obs->GetFoodArmy();
 		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
+		if (assignedHarvesters < 8) return 0;
 		if (idealHarvesters > Constants::HARD_WORKER_CAP) return 0;
 		if (townhalls.size())
 		{

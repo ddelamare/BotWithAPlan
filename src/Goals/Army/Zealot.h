@@ -9,7 +9,9 @@
 
 class ZealotGoal : public BaseAction
 {
-public:
+	RushAnalyzer rushAnalyzer;
+
+public:																										  
 	ZealotGoal() : BaseAction() {
 		this->conditions.push_back(new HaveGateWayTrainer());
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::PROTOSS_ZEALOT, 1));
@@ -24,6 +26,12 @@ public:
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] > 0)
 		{
 			score *= 4;
+		}
+
+		auto rushChance = rushAnalyzer.GetRushPossibiliy(obs);
+		if (rushChance > 1 && obs->GetVespene() < 50)
+		{
+			score *= 2;
 		}
 
 		if (obs->GetMinerals() > 1000 && obs->GetVespene() < 200)
@@ -41,6 +49,8 @@ public:
 		{
 			score /= 4;
 		}
+
+
 		return score;
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
