@@ -3,9 +3,9 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
-#include "Common\Util.h"
+#include "Common\Util\Util.h"
 #include "Common\Strategy\Building\PylonStrategy.h"
-#include "Common\UnitHelpers.h"
+#include "Common\Util\UnitHelpers.h"
 
 using namespace sc2;
 class PylonGoal : public BaseAction

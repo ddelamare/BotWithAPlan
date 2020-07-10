@@ -1,5 +1,5 @@
 #pragma once
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 #include "Common\Strategy\Attacks\UnitMicro.h"
 #include "sc2lib\sc2_search.h"
 #include <iostream>

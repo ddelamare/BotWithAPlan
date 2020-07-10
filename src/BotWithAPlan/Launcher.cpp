@@ -6,7 +6,7 @@
 #include "sc2utils/sc2_arg_parser.h"
 #include "LadderInterface.h"
 #include "BotWithAPlan.h"
-#include "Common\Util.h"
+#include "Common\Util\Util.h"
 using namespace sc2;
 const char* kAcidPlant = "Ladder/(2)AcidPlantLE.SC2Map";
 const char* kDreamCatcher = "Ladder/(2)DreamCatcherLE.SC2Map";

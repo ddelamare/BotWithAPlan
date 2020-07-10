@@ -148,7 +148,7 @@ namespace Util {
 			if (buildingStrategy->foundUnit)
 			{
 				actions->UnitCommand(worker, build_ability, buildingStrategy->foundUnit);
-				actions->UnitCommand(worker, ABILITY_ID::STOP, true); // Send worker to idle pool to be reassigned
+				//actions->UnitCommand(worker, ABILITY_ID::STOP, true); // Send worker to idle pool to be reassigned
 			}
 			// Standard Placement
 			else if (worker)

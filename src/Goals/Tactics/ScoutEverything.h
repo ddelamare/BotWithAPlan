@@ -3,7 +3,7 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 
 class ScoutEverythingGoal : public BaseAction
 {

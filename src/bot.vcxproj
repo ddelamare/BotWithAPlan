@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Common\Managers\ActionManager.cpp" />
     <ClCompile Include="Common\Analyzers\BattleAnalyzer.cpp" />
     <ClCompile Include="Common\BotBase\PlanBotBase.cpp" />
     <ClCompile Include="Common\ItemDependencies.cpp" />
@@ -159,10 +160,13 @@
     <None Include="Goals\Army\Stalker.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\Managers\ActionManager.h" />
     <ClInclude Include="Common\Analyzers\BattleAnalyzer.h" />
     <ClInclude Include="Common\Entity\UnitBattleData.h" />
+    <ClInclude Include="Common\Util\CombatUtil.h" />
     <ClInclude Include="Goals\Army\Factory.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />
+    <ClInclude Include="Goals\Army\TechLab.h" />
     <ClInclude Include="Goals\BuildOrder\RushDefense.h" />
     <ClInclude Include="Goals\Tactics\ClearObstructions.h" />
     <ClInclude Include="Goals\Tactics\ScoutEverything.h" />
@@ -188,10 +192,10 @@
     <ClInclude Include="Common\Strategy\Building\AssimilatorStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\ExpandStrategy.h" />
     <ClInclude Include="Common\Strategy\Building\GridStrategy.h" />
-    <ClInclude Include="Common\UnitFilters.h" />
-    <ClInclude Include="Common\UnitHelpers.h" />
-    <ClInclude Include="Common\Util.h" />
-    <ClInclude Include="Common\VectorHelpers.h" />
+    <ClInclude Include="Common\Util\UnitFilters.h" />
+    <ClInclude Include="Common\Util\UnitHelpers.h" />
+    <ClInclude Include="Common\Util\Util.h" />
+    <ClInclude Include="Common\Util\VectorHelpers.h" />
     <ClInclude Include="Goals\Army\Adept.h" />
     <ClInclude Include="Goals\Army\Archon.h" />
     <ClInclude Include="Goals\Army\Barracks.h" />
@@ -243,11 +247,13 @@
     <ClInclude Include="Goals\Tech\TwilightCouncil.h" />
     <ClInclude Include="Goals\Upgrades\Blink.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
+    <ClInclude Include="Goals\Upgrades\CombatShields.h" />
     <ClInclude Include="Goals\Upgrades\Glaives.h" />
     <ClInclude Include="Goals\Upgrades\GroundArmor.h" />
     <ClInclude Include="Goals\Upgrades\GroundWeaponsUpgrade.h" />
     <ClInclude Include="Goals\Upgrades\PsiStorm.h" />
     <ClInclude Include="Goals\Upgrades\Shields.h" />
+    <ClInclude Include="Goals\Upgrades\Stim.h" />
     <ClInclude Include="Goals\Upgrades\ThermalLance.h" />
     <ClInclude Include="Goals\Upgrades\WarpGate.h" />
     <ClInclude Include="Goals\Army\Mothership.h" />

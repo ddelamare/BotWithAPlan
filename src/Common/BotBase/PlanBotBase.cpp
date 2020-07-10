@@ -1,11 +1,13 @@
 #include "PlanBotBase.h"
 
+
 PlanBotBase::PlanBotBase()
 {
 	goalPicker = GoalPicker();
 	planner = Planner();
 	EconomyGoals = vector<BaseAction*>();
 	ArmyGoals = vector<BaseAction*>();
+	UpgradeGoals = vector<BaseAction*>();
 	state.CurrentUnits = UnitMap();
 	state.ArmyManager = &armyManager;
 	threatAnalyzer = ThreatAnalyzer();
@@ -13,6 +15,7 @@ PlanBotBase::PlanBotBase()
 void PlanBotBase::Init()
 {
 	state.ArmyManager = &armyManager;
+	this->actionManager = new ActionManager(Actions());
 
 	// Must init after AvailableActions is populated
 	// TODO: refactor
@@ -22,6 +25,12 @@ void PlanBotBase::Init()
 	Lost = false;
 	StepCounter = STEPS_PER_GOAL;
 }
+
+ActionManager* PlanBotBase::GetActionManager()
+{
+	return this->actionManager;
+}
+
 void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
 {
 	if (stopOthers) return;
@@ -124,16 +133,19 @@ void PlanBotBase::OnStep()
 	}
 	StepCounter = 0;
 
+	GetActionManager()->BeginStep(Actions());
 
 	UpdateGameState();
 	ManageScouts();
-	ChooseGoals();
 	BalanceWorkerAssignments();
+	ChooseGoals();
+	ManageUnits();
 	DefendBase();
 	CancelBuildingsUnderAttack();
-	ManageUnits();
 
 
+	auto commands = GetActionManager()->Commands();
+	GetActionManager()->SendCommands();
 	DebugDrawState(startTime);
 
 #if LADDER_MODE
@@ -143,11 +155,10 @@ void PlanBotBase::OnStep()
 	{
 		this->Lost = true;
 		//auto y = Control()->RequestLeaveGame();
-		Actions()->SendChat("My plan has failed...");
-		Actions()->SendChat("gg");
+		GetActionManager()->SendChat("My plan has failed...");
+		GetActionManager()->SendChat("gg");
 	}
 #endif
-
 
 #if DEBUG_MODE	
 	Debug()->SendDebug();
@@ -162,12 +173,19 @@ void PlanBotBase::UpdateGameState()
 {
 	auto obs = Observation();
 	auto query = Query();
-	auto actions = Actions();
 
 	state.threat.gameTime = obs->GetGameLoop();
 	state.threat.friendlyBases = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall()).size();
 	state.threat.enemyBases = obs->GetUnits(sc2::Unit::Alliance::Enemy, IsTownHall()).size();
 	state.AvailableAffordableAbilties = query->GetAbilitiesForUnits(obs->GetUnits(sc2::Unit::Alliance::Self, IsBuilding()), false, false);
+
+	if (state.threat.gameTime % 10 == 0 && state.threat.gameTime > 0)
+	{
+		auto resources = Observation()->GetMinerals();
+		state.resourceSamples++;
+		state.averageUnspentResourcesTotal += resources;
+		state.averageUnspentResources = state.averageUnspentResourcesTotal / state.resourceSamples;
+	}
 }
 
 void PlanBotBase::ManageScouts()
@@ -177,7 +195,7 @@ void PlanBotBase::ManageScouts()
 
 	// Be annoying to building SCVs
 	auto obs = Observation();
-	auto actions = Actions();
+	auto actions = GetActionManager();
 
 
 	auto inProgressBuildings = obs->GetUnits(Unit::Alliance::Enemy, UnitsInProgress(UNIT_TYPEID::TERRAN_BARRACKS));
@@ -209,7 +227,7 @@ void PlanBotBase::ChooseGoals()
 {
 	auto obs = Observation();
 	auto query = Query();
-	auto actions = Actions();
+	auto actions = GetActionManager();
 
 	//if (StepCounter == STEPS_PER_GOAL)
 	{
@@ -230,7 +248,7 @@ void PlanBotBase::BalanceWorkerAssignments()
 {
 	auto obs = Observation();
 	auto query = Query();
-	auto actions = Actions();
+	auto actions = GetActionManager();
 	// Reassign Excess Workers
 	auto townHalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 	auto gas = obs->GetUnits(sc2::Unit::Alliance::Self, IsGasBuilding());
@@ -316,7 +334,7 @@ void PlanBotBase::DefendBase()
 void PlanBotBase::CancelBuildingsUnderAttack()
 {
 	auto obs = Observation();
-	auto actions = Actions();
+	auto actions = GetActionManager();
 	// Cancel all buildings that are close to being killed
 	auto inProgess = obs->GetUnits(sc2::Unit::Alliance::Self, InProgressUnits());
 	for (auto ipBuilding : inProgess)
@@ -337,7 +355,7 @@ void PlanBotBase::ManageUnits()
 {
 	auto obs = Observation();
 	auto query = Query();
-	auto actions = Actions();
+	auto actions = GetActionManager();
 
 	armyManager.ManageGroups(obs, query, actions, &state, Debug());
 
@@ -422,7 +440,7 @@ void PlanBotBase::OnGameStart()
 	{
 		auto nexus = townhalls[0];
 
-		Actions()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
+		GetActionManager()->UnitCommand(nexus, ABILITY_ID::SMART, nexus->pos);
 		auto enemyLocations = Observation()->GetGameInfo().enemy_start_locations;
 		if (enemyLocations.size() == 1)
 			state.EnemyBase = enemyLocations[0];
@@ -507,7 +525,8 @@ void PlanBotBase::OnGameStart()
 
 	auto obs = Observation();
 	auto query = Query();
-	auto actions = Actions();
+	auto actions = GetActionManager();
+	auto debug = Debug();
 	if (obs->GetPlayerID() == 1)
 	{
 		state.selfRace = obs->GetGameInfo().player_info[0].race_actual;
@@ -519,7 +538,69 @@ void PlanBotBase::OnGameStart()
 		state.selfRace = obs->GetGameInfo().player_info[1].race_actual;
 		if (players.size() > 1)
 
+
 			state.opponentRace = obs->GetGameInfo().player_info[0].race_actual;
 	}
 
+
+	auto strat = new ExpandStrategy(ABILITY_ID::BUILD_NEXUS, false, false);
+	for (auto exp : state.ExpansionLocations)
+	{
+		state.PrecomputedStartLocations.push_back(std::pair<Point3D, Point3D>(exp, strat->GetFirstMatchingPlacement(exp, obs, query, debug, 5, strat->NEXUS_MAX_TRIES)));
+	}
+
+}
+
+std::string ClientErrorToString(sc2::ClientError error)
+{
+	switch (error)
+	{
+	case(sc2::ClientError::ErrorSC2): return "ErrorSC2";
+	case(sc2::ClientError::InvalidAbilityRemap): return "InvalidAbilityRemap"; /*! An ability was improperly mapped to an ability id that doesn't exist. */
+	case(sc2::ClientError::InvalidResponse): return "InvalidResponse";     /*! The response does not contain a field that was expected. */
+	case(sc2::ClientError::NoAbilitiesForTag): return "NoAbilitiesForTag";   /*! The unit does not have any abilities. */
+	case(sc2::ClientError::ResponseNotConsumed): return "ResponseNotConsumed"; /*! A request was made without consuming the response from the previous request, that puts this library in an illegal state. */
+	case(sc2::ClientError::ResponseMismatch): return "ResponseMismatch";    /*! The response received from SC2 does not match the request. */
+	case(sc2::ClientError::ConnectionClosed): return "ConnectionClosed";    /*! The websocket connection has prematurely closed, this could mean starcraft crashed or a websocket timeout has occurred. */
+	case(sc2::ClientError::SC2UnknownStatus): return "SC2UnknownStatus";
+	case(sc2::ClientError::SC2AppFailure): return "SC2AppFailure";       /*! SC2 has either crashed or been forcibly terminated by this library because it was not responding to requests. */
+	case(sc2::ClientError::SC2ProtocolError): return "SC2ProtocolError";    /*! The response from SC2 contains errors, most likely meaning the API was not used in a correct way. */
+	case(sc2::ClientError::SC2ProtocolTimeout): return "SC2ProtocolTimeout";  /*! A request was made and a response was not received in the amount of time given by the timeout. */
+	case(sc2::ClientError::WrongGameVersion): return "WrongGameVersion";
+	}
+	return "Unknown ClientError";
+}
+
+void PlanBotBase::OnError(const std::vector<sc2::ClientError>& client_errors, const std::vector<std::string>& protocol_errors)
+{
+	for (const auto& error : protocol_errors)
+	{
+		std::cerr << "Protocol error: " << error << std::endl;
+	}
+	for (const auto& error : client_errors)
+	{
+		std::cerr << "Client error: " << ClientErrorToString(error) << std::endl;
+	}
+	this->errorOccurred = true;
+
+}
+
+
+void::PlanBotBase::OnUnitCreated(const Unit* unit)
+{
+	if (unit->unit_type == UNIT_TYPEID::PROTOSS_NEXUS)
+	{
+		// Clear Rally Point
+		GetActionManager()->UnitCommand(unit, ABILITY_ID::RALLY_WORKERS, unit->pos);
+	}
+
+	if (state.UnitInfo.size() == 0)
+	{
+		// On Game Start Does not seem to get called some times
+		OnGameStart();
+		cout << "Ran Game Start after game has started...";
+	}
+
+	auto type = state.UnitInfo[unit->unit_type];
+	state.CurrentUnits[unit->unit_type]++;
 }

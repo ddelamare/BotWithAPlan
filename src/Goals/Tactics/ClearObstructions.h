@@ -42,6 +42,9 @@ public:
 		if (idleUnit && !alreadyMining)
 		{
 			actions->UnitCommand(idleUnit, ABILITY_ID::HARVEST_GATHER, blockingPath, false);
+			return true;
 		}
+
+		return false;
 	}
 };

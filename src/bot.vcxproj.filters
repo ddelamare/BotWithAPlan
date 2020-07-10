@@ -49,6 +49,7 @@
     <ClCompile Include="Common\Analyzers\ThreatAnalyzer.cpp" />
     <ClCompile Include="Common\Analyzers\BattleAnalyzer.cpp" />
     <ClCompile Include="Common\Analyzers\RushAnalyzer.cpp" />
+    <ClCompile Include="Common\Managers\ActionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\ItemDependencies.h">
@@ -87,14 +88,10 @@
     <ClInclude Include="Planner\Results\WorkerResult.h">
       <Filter>Planner\Results</Filter>
     </ClInclude>
-    <ClInclude Include="Common\UnitFilters.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Goals\Economy\Pylon.h" />
     <ClInclude Include="Goals\Economy\Chrono.h" />
     <ClInclude Include="Goals\Economy\Assimilator.h" />
     <ClInclude Include="Goals\GoalPicker.h" />
-    <ClInclude Include="Common\Util.h" />
     <ClInclude Include="Planner\Actions\UseAbility.h">
       <Filter>Planner\Actions</Filter>
     </ClInclude>
@@ -116,8 +113,6 @@
     <ClInclude Include="Goals\Army\DarkTemplar.h" />
     <ClInclude Include="Goals\Upgrades\Chargelots.h" />
     <ClInclude Include="Goals\Army\Zealot.h" />
-    <ClInclude Include="Common\VectorHelpers.h" />
-    <ClInclude Include="Common\UnitHelpers.h" />
     <ClInclude Include="Goals\Army\Robotics.h" />
     <ClInclude Include="Goals\Tech\RoboticsBay.h" />
     <ClInclude Include="Goals\Army\Immortal.h" />
@@ -202,6 +197,17 @@
     <ClInclude Include="Goals\BuildOrder\RushDefense.h" />
     <ClInclude Include="Common\Analyzers\RushAnalyzer.h" />
     <ClInclude Include="Goals\Tactics\ClearObstructions.h" />
+    <ClInclude Include="Common\Util\Util.h" />
+    <ClInclude Include="Common\Util\UnitHelpers.h" />
+    <ClInclude Include="Common\Util\UnitFilters.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Util\VectorHelpers.h" />
+    <ClInclude Include="Common\Util\CombatUtil.h" />
+    <ClInclude Include="Goals\Army\TechLab.h" />
+    <ClInclude Include="Goals\Upgrades\Stim.h" />
+    <ClInclude Include="Goals\Upgrades\CombatShields.h" />
+    <ClInclude Include="Common\Managers\ActionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

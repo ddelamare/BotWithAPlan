@@ -4,7 +4,7 @@
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
 #include "Common/Strategy/Building/SpiralStrategy.h"
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 #include "Common/Analyzers/RushAnalyzer.h"
 
 class ShieldBatteryGoal : public BaseAction

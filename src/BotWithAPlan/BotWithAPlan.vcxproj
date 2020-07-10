@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\src</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -164,7 +164,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BotEvents.cpp" />
     <ClCompile Include="BotWithAPlan.cpp" />
     <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="stdafx.cpp">

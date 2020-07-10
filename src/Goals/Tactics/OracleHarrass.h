@@ -4,7 +4,7 @@
 #include "sc2api\sc2_api.h"
 #include "Planner/Actions/BuildResource.h"
 #include "Common/Resource.h"
-#include "Common/UnitFilters.h"
+#include "Common/Util/UnitFilters.h"
 
 class OracleHarrassGoal : public BaseAction
 {

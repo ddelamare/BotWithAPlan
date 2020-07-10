@@ -6,23 +6,16 @@
 #include "sc2utils/sc2_arg_parser.h"
 #include "LadderInterface.h"
 #include "TerranPlan.h"
-#include "Common\Util.h"
+#include "Common\Util\Util.h"
 using namespace sc2;
 const char* kAcidPlant = "Ladder/(2)AcidPlantLE.SC2Map";
 const char* kDreamCatcher = "Ladder/(2)DreamCatcherLE.SC2Map";
 
 // 
-  
-int main(int argc, char* argv[]) {
-#if LADDER_MODE
-	for (int i = 0; i < argc; i++)
-	{
-		LOG(4) << argv[i] << endl;
-	}
-	RunBot(argc, argv, new TerranPlan(), sc2::Race::Terran);
 
-	return 0;
-#elif PLANNER_MODE
+int main(int argc, char* argv[]) {
+
+#if PLANNER_MODE
 	InitResources();
 
 	GenerateDependencyList();
@@ -37,10 +30,29 @@ int main(int argc, char* argv[]) {
 	planner->PrintPlan(plan);
 	std::cin.get();
 #else  // Run local sims
-	auto races = new Race[3]{Race::Protoss, Race::Zerg, Race::Terran };
+
+	bool isLadder = false;
+	for (int i = 0; i < argc; i++)
+	{
+		LOG(4) << argv[i] << endl;
+	}
+
+	if (argc > 5)
+		isLadder = true;
+
+	if (isLadder)
+	{
+		RunBot(argc, argv, new TerranPlan(), sc2::Race::Terran);
+
+		return 0;
+	}
+
+
+	// Not ladder code
+	auto races = new Race[3]{ Race::Terran, Race::Zerg,  Race::Protoss };
 	std::map<std::string, sc2::Point2D> mapScore;
 	std::map<sc2::Race, sc2::Point2D> raceScore;
-	std::vector<std::string> maps = {  "16-BitLE.SC2Map", "DarknessSanctuaryLE.SC2Map","LostAndFoundLE.SC2Map",  "AcidPlantLE.SC2Map","RedShiftLE.SC2Map",  "DreamcatcherLE.SC2Map", "CatalystLE.SC2Map" };
+	std::vector<std::string> maps = { "ZenLE.SC2Map", "ThunderbirdLE.SC2Map","GoldenWallLE.SC2Map",  "SimulacrumLE.SC2Map",  "NightshadeLE.SC2Map" ,"EverDreamLE.SC2Map" ,"EternalEmpireLE.SC2Map" };
 	while (true)
 	{
 		for (int i = 0; i < maps.size(); i++)
@@ -48,27 +60,35 @@ int main(int argc, char* argv[]) {
 			auto map = "Ladder/" + maps[i];
 			for (int j = 0; j < 3; j++)
 			{
+
 				auto race = races[j];
 
 				Coordinator coordinator;
 				coordinator.LoadSettings(argc, argv);
 				coordinator.SetMultithreaded(true);
 				coordinator.SetRealtime(REALTIME);
-				coordinator.SetStepSize(10);
-				//coordinator.SetProcessPath("D:\\LadderSC2\\StarCraftII\\StarCraft II\\Versions\\Base67188\\SC2_x64.exe");
+				//coordinator.SetStepSize(10);
 				TerranPlan bot;
 				TerranPlan bot2;
+
 				coordinator.SetParticipants({
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::VeryHard)
+					CreateComputer(race, sc2::Difficulty::VeryHard, sc2::AIBuild::RandomBuild)
 					});
 
 				coordinator.LaunchStarcraft();
 				coordinator.StartGame(map);
 				while (coordinator.Update()) {
 					if (bot.Lost) break;
+					std::this_thread::sleep_for(std::chrono::milliseconds(0));
+				}
+				if (bot.errorOccurred)
+				{
+					// Try it again
+					j--;
+					continue;
 				}
 				if (bot.Observation() && bot.Observation()->GetResults().size() > 0 && bot.Observation()->GetResults().front().result == sc2::GameResult::Win)
 				{
@@ -81,14 +101,14 @@ int main(int argc, char* argv[]) {
 					raceScore[race] += sc2::Point2D(0, 1);
 				}
 				std::cout << std::endl;
-				for (const auto & rs : raceScore)
+				for (const auto& rs : raceScore)
 				{
 					std::cout << Util::GetStringFromRace(rs.first) << " = " << rs.second.x << " : " << rs.second.y << " (" << roundf(rs.second.x / (rs.second.x + rs.second.y) * 100.0f) << "%)" << std::endl;
 				}
 				std::cout << std::endl;
-				for (const auto & ms : mapScore)
+				for (const auto& ms : mapScore)
 				{
-					std::cout << ms.first << " = " << ms.second.x << " : " << ms.second.y << " (" << roundf(ms.second.x / (ms.second.x + ms.second.y) * 100.0f)<< "%)" << std::endl;
+					std::cout << ms.first << " = " << ms.second.x << " : " << ms.second.y << " (" << roundf(ms.second.x / (ms.second.x + ms.second.y) * 100.0f) << "%)" << std::endl;
 				}
 				std::cout << std::endl << std::endl;
 				coordinator.LeaveGame();
@@ -100,5 +120,5 @@ int main(int argc, char* argv[]) {
 
 #endif
 
-    return 0;
+	return 0;
 }

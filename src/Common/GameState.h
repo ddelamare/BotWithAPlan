@@ -40,5 +40,8 @@ struct GameState
 	std::vector<std::pair<Point3D, Point3D>> PrecomputedStartLocations;
 	UnitCache EnemyUnits;
 	std::vector<AvailableAbilities> AvailableAffordableAbilties;
+	float averageUnspentResources = 0;
+	float averageUnspentResourcesTotal = 0;
+	int resourceSamples = 0;
 
 };

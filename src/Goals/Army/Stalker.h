@@ -21,9 +21,9 @@ public:
 
 		double percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_STALKER, 2, obs);
 		score = Util::FeedbackFunction(percent, .4, 2.9);
-		if (
-			 state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3
-			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BANSHEE] >= 2)
+		if (state->MaxEnemyUnits[UNIT_TYPEID::PROTOSS_VOIDRAY] >= 3
+			|| state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_BANSHEE] >= 2
+			|| (state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_MARINE] >= 1 && state->MaxEnemyUnits[UNIT_TYPEID::TERRAN_MARAUDER] <= 2))
 		{
 			score *= 4;
 		}

@@ -50,7 +50,7 @@ public:
 		if (obs->GetFoodUsed() < 180 && obs->GetMinerals() > 1500)
 			score *= 2;
 
-		double CLAMP = .35;
+		double CLAMP = .25;
 		if (score < CLAMP)
 			return 0;
 

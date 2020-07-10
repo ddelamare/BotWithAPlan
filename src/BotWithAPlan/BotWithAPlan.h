@@ -22,13 +22,6 @@ public:
 	BotWithAPlan();
 	void OnGameStart();
 	void OnStep();
-	void OnBuildingConstructionComplete(const Unit *);
-	void OnUnitCreated(const Unit *);
-	void OnUnitEnterVision(const Unit *);
-	void OnUnitDestroyed(const Unit* unit);
-	void OnGameEnd();
-	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors);
-
 };
 
 

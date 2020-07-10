@@ -3,7 +3,7 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 
 class ScoutSweepGoal : public BaseAction
 {
@@ -15,8 +15,8 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		timeSinceLastExec++;
-		if (state->ScoutingUnits.size() || state->KilledScouts > 3)  return 0;
-		return 2 * (timeSinceLastExec / 500.0);
+		if (state->ScoutingUnits.size() || (state->KilledScouts > 3 && obs->GetGameLoop() < 7000))  return 0;
+		return 2 * (timeSinceLastExec / 750.0);
 	};
 	bool virtual Excecute(const sc2::ObservationInterface *obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, sc2::DebugInterface* debug, GameState* state)
 	{

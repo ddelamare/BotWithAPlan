@@ -1,7 +1,7 @@
 #pragma once
 #include "sc2api\sc2_api.h"
 #include "Common\GameState.h"
-#include "Common\Util.h"
+#include "Common\Util\Util.h"
 
 class BuildingStrategy
 {

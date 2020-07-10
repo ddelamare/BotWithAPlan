@@ -1,5 +1,5 @@
 #pragma once
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 #include "Common\Strategy\Attacks\UnitMicro.h"
 
 #include <vector>
@@ -50,13 +50,13 @@ void TemplarMicro::Execute(const sc2::ObservationInterface* obs, sc2::ActionInte
 			auto enemyClusters = Util::FindClusters(enemyUnits, STORM_RADIUS); //Find clusters the size of templar
 			auto stormsActive = obs->GetEffects();
 
-			if (unit->energy < 50 || readyCasts > 3)
+			if (unit->energy < 50 || readyCasts > 1)
 			{
 				templar_merge.push_back(unit);
+				continue;
 			}
 			else if (feedbackTargets.size())
 			{
-				readyCasts++;
 				for (auto u : feedbackTargets)
 				{
 					if (u->energy >75)
@@ -65,7 +65,7 @@ void TemplarMicro::Execute(const sc2::ObservationInterface* obs, sc2::ActionInte
 					}
 				}
 			}
-			if (enemyClusters.size())
+			else if (enemyClusters.size())
 			{
 				std::sort(enemyClusters.begin(), enemyClusters.end(), Sorters::sort_by_cost(state));
 				std::reverse(enemyClusters.begin(), enemyClusters.end());
@@ -99,11 +99,14 @@ void TemplarMicro::Execute(const sc2::ObservationInterface* obs, sc2::ActionInte
 
 				}
 			}
+			readyCasts++;
 		}
 	}
 
-	// Morph the leftovers
-	actions->UnitCommand(templar_merge, ABILITY_ID::MORPH_ARCHON);
+	if (templar_merge.size() > 1)
+	{	// Morph the leftovers
+		actions->UnitCommand(templar_merge, ABILITY_ID::MORPH_ARCHON);
+	}
 
 
 }

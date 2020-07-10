@@ -4,7 +4,7 @@
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
 #include "Common/Analyzers/RushAnalyzer.h"
-#include "Common\Util.h"
+#include "Common\Util\Util.h"
 #include "Common\Constants.h"
 #include "Common\Strategy\Building\ExpandStrategy.h"
 
@@ -51,7 +51,6 @@ public:
 
 		auto score = Util::FeedbackFunction(assignedHarvesters / (double)Constants::HARD_WORKER_CAP, .25, .5);
 		auto food = obs->GetFoodArmy();
-		if (food <= (MIN_ARMY_PER_EXPO * (townhalls.size() + 1))) return 0;
 		if (assignedHarvesters < 8) return 0;
 		if (idealHarvesters > Constants::HARD_WORKER_CAP) return 0;
 		if (townhalls.size())
@@ -64,14 +63,9 @@ public:
 			else if (townhalls.size() > 2)
 				return 0;
 
-			if (townhalls.size() == 1)
-			{
-				score = 1;
-			}
-
 			if (townhalls.size() < 2)
 			{
-				score *= 3.5;
+				score = 3.5;
 			}
 
 			score *= obs->GetGameLoop() / (GREED_DAMPER * (townhalls.size()));

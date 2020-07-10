@@ -22,7 +22,7 @@ public:
 	double GetRelativeStrength(UnitTypeID leftUnit, UnitTypeID right_Unit, GameState* state);
 	Weapon* GetBestWeapon(UnitTypeData* leftUnit, UnitTypeData* rightUnit);
 	double CalculateWeaponHitDamage(Weapon* weapon, UnitTypeData* enemyType);
-	int GetEstimatedAttacksToKill(double damage, UnitTypeData * enemyType);
+	int GetEstimatedAttacksToKill(Weapon* weapon, UnitTypeData * enemyType);
 	void LoadConfigFromFile(string filepath, bool forceClear);
 	int PredictWinner(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, GameState* state);
 	double PredictSurvivors(double lhsRelStr, int lhsCount, double rhsRelStr, int rhsCount, UnitBattleData* lhsUnit, UnitBattleData* rhsUnit, GameState* state);

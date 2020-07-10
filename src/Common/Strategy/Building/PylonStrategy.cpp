@@ -1,5 +1,5 @@
 #include "PylonStrategy.h"
-#include "Common\UnitHelpers.h"
+#include "Common\Util\UnitHelpers.h"
 #include "Common\Constants.h"
 using namespace sc2;
 PylonStrategy::PylonStrategy(ABILITY_ID unit, bool needsClearance, bool needsPylon, Race race = Race::Protoss) : BuildingStrategy(unit, needsClearance, needsPylon)

@@ -5,6 +5,7 @@
 #include "Goals\GoalPicker.h"
 #include "Common\ItemDependencies.h"
 #include "Common\Managers\ArmyManager.h"
+#include "Common\Managers\ActionManager.h"
 #include "sc2api/sc2_api.h"
 #include "Common\GameState.h"
 #include <iostream>
@@ -14,6 +15,7 @@
 #include "sc2utils/sc2_arg_parser.h"
 #include "Common\Analyzers\ThreatAnalyzer.h"
 #include "Common\Strategy\Attacks\UnitMicro.h"
+#include "Common/Strategy/Building/ExpandStrategy.h"
 #include <chrono>
 using Clock = std::chrono::high_resolution_clock;
 
@@ -30,12 +32,12 @@ public:
 	void Init();
 	void OnGameStart();
 	void OnStep();
-	void OnBuildingConstructionComplete(const Unit *) = 0;
-	void OnUnitCreated(const Unit *) = 0;
+	void virtual OnBuildingConstructionComplete(const Unit*) {};
+	void OnUnitCreated(const Unit *);
 	void OnUnitEnterVision(const Unit *);
 	void virtual OnUnitDestroyed(const Unit* unit);
-	void OnGameEnd() = 0;
-	void OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors) = 0;
+	void virtual OnGameEnd() {};
+	void virtual OnError(const std::vector<sc2::ClientError> & client_errors, const std::vector<std::string> & protocol_errors);
 	void DebugWriteInView(string message, Point2D relativePosition, DebugInterface* debug, const ObservationInterface* obs);
     bool Lost;
 	bool errorOccurred = 0;
@@ -51,12 +53,14 @@ protected:
 	void DefendBase();
 	void CancelBuildingsUnderAttack();
 	void ManageUnits();
+	ActionManager* GetActionManager();
 
 
 	GoalPicker goalPicker;
 	Planner    planner;
 	ArmyManager armyManager;
 	GameState  state;
+	ActionManager* actionManager;
 	vector<BaseAction*> EconomyGoals;
 	vector<BaseAction*> BuildOrderGoals;
 	vector<BaseAction*> ArmyGoals;

@@ -1,6 +1,6 @@
 #pragma once
 #ifndef UNIT_FILTERS
-#include "GameState.h"
+#include "..\GameState.h"
 #include "VectorHelpers.h"
 #include "sc2api/sc2_unit_filters.h"
 
@@ -37,6 +37,8 @@ struct IsAttackable {
 		case UNIT_TYPEID::ZERG_OVERLORD: return false;
 		case UNIT_TYPEID::ZERG_OVERSEER: return false;
 		case UNIT_TYPEID::PROTOSS_OBSERVER: return false;
+		case UNIT_TYPEID::ZERG_LARVA: return false;
+		case UNIT_TYPEID::ZERG_EGG: return false;
 		default: return true;
 		}
 	}
@@ -517,4 +519,18 @@ struct CombineFilters
 		return filters[0](unit) && filters[1](unit);
 	}
 };
+
+struct IsNot
+{
+	Filter filter;
+	IsNot(Filter _filter)
+	{
+		filter = _filter;
+	}
+	bool operator()(const Unit& unit)
+	{
+		return !filter(unit);
+	}
+};
+
 #endif // UNIT_FILTERS

@@ -18,7 +18,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		double score = 0;
-		bool foundMorphing;
+		bool foundMorphing = false;
 		auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnits(morphableUnits));
 		// Count templar who are on the way to being archons
 		for (auto unit : units)

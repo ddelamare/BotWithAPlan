@@ -1,5 +1,5 @@
 #include "BattleAnalyzer.h"
-#include "Common/UnitFIlters.h"
+#include "Common/Util/UnitFIlters.h"
 using namespace sc2;
 using namespace rapidjson;
 std::map<int, UnitBattleData> BattleAnalyzer::unitData;
@@ -37,7 +37,7 @@ double BattleAnalyzer::GetRelativeStrength(UnitTypeID leftUnit, UnitTypeID right
 	// Save outselves from exceptions later
 	if (weaponDamage == 0.0 || bestWeapon->speed == 0) return 0;
 	
-	auto attacksToKill = GetEstimatedAttacksToKill(weaponDamage, &ruType);
+	auto attacksToKill = GetEstimatedAttacksToKill(bestWeapon, &ruType);
 
 	relStr = (float)1 / (attacksToKill * bestWeapon->speed);
 
@@ -85,8 +85,12 @@ double BattleAnalyzer::CalculateWeaponHitDamage(Weapon* weapon, UnitTypeData* en
 }
 
 // TODO: multiply armor reduction based on weapon attacks
-int BattleAnalyzer::GetEstimatedAttacksToKill(double damage, UnitTypeData* enemyType)
+int BattleAnalyzer::GetEstimatedAttacksToKill(Weapon* weapon, UnitTypeData* enemyType)
 {
+	if (!weapon) return INT_MAX;
+	auto damage = CalculateWeaponHitDamage(weapon, enemyType);		
+	if (damage == 0) return INT_MAX;
+
 	auto battleData = unitData[enemyType->unit_type_id];
 	auto hitsToKill = ((double)battleData.maxShields / damage) + (double(battleData.maxHealth) / (damage - enemyType->armor));
 	return ceil(hitsToKill);

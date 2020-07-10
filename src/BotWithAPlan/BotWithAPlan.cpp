@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BotWithAPlan.h"
 #include "sc2api/sc2_api.h"
-#include "Common\UnitFilters.h"
+#include "Common\Util\UnitFilters.h"
 #include <tuple>
 #include "Goals\Economy\Probe.h"
 #include "Goals\Economy\Pylon.h"
@@ -63,7 +63,16 @@
 #include "Goals\Upgrades\WarpGate.h"
 #include "Goals\Upgrades\AirWeapons.h"
 #include "Goals\Upgrades\AirArmor.h"
-#include "Common\Util.h"
+#include "Common\Util\Util.h"
+#include "Common\Strategy\Attacks\BlinkStalker.h"
+#include "Common\Strategy\Attacks\DisruptorAttack.h"
+#include "Common\Strategy\Attacks\Templar.h"
+#include "Common\Strategy\Attacks\VoidRay.h"
+#include "Common\Strategy\Attacks\SentryMicro.h"
+#include "Common\Strategy\Attacks\Phoenix.h"
+#include "Common\Strategy\Attacks\OracleAttack.h"
+#include "Common\Util\UnitFilters.h"
+#include "Common\Util\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
 BotWithAPlan::BotWithAPlan() 
@@ -182,6 +191,28 @@ void BotWithAPlan::OnStep() {
 
 }
 
+
+void BotWithAPlan::OnGameStart() {
+	auto obs = Observation();
+	auto query = Query();
+	auto debug = Debug();
+
+	PlanBotBase::OnGameStart();
+
+	// Init Micro
+	microManagers.push_back(new BlinkStalker(obs, query, &state));
+	microManagers.push_back(new DisruptorAttack(obs, query, &state));
+	microManagers.push_back(new TemplarMicro(obs, query, &state));
+	microManagers.push_back(new VoidRayAttack(obs, query, &state));
+	microManagers.push_back(new SentryMicro(obs, query, &state));
+	microManagers.push_back(new PhoenixLift(obs, query, &state));
+	microManagers.push_back(new OracleBeam(obs, query, &state));
+
+#if LADDER_MODE
+	Actions()->SendChat("gl hf!");
+	Actions()->SendChat("Bot version: 1.9");
+#endif
+}
 
 
 #pragma region Bot Ladder Hooks

@@ -8,18 +8,22 @@
 using namespace sc2;
 class ReactorGoal : public BaseAction
 {
+	vector<UNIT_TYPEID> addonTypes;
 private:
 public:
 	ReactorGoal() : BaseAction() {
 		this->conditions.push_back(new BaseCondition("Build Barracks", 4, sc2::UNIT_TYPEID::TERRAN_BARRACKS, 1));
 		this->results.push_back(new BaseResult(sc2::UNIT_TYPEID::TERRAN_BARRACKSREACTOR, 1));
 		name = "Build Reactor";
+		addonTypes.push_back(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB);
+		addonTypes.push_back(UNIT_TYPEID::TERRAN_BARRACKSREACTOR);
+
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
-		auto reactors = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSREACTOR));
+		auto reactors = obs->GetUnits(Unit::Alliance::Self, IsUnits(addonTypes));
 		auto barracks = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
 
-		if (reactors.size() == barracks.size())	return 0;
+		if (reactors.size() >= barracks.size()-1)	return 0;
 		int totalRax = reactors.size();
 		auto nexus = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		if (!totalRax)

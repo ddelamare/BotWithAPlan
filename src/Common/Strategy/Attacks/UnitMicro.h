@@ -1,5 +1,5 @@
 #pragma once
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 #include <vector>
 using namespace sc2;
 class UnitMicro

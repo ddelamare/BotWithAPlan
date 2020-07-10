@@ -5,7 +5,7 @@
 #include "sc2api\sc2_api.h"
 #include "Planner/Actions/BuildResource.h"
 #include "Common/Resource.h"
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 #include "Common/Analyzers/RushAnalyzer.h"
 
 class RushDefenseGoal : public BaseAction

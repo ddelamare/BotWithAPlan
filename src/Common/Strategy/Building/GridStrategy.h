@@ -2,7 +2,7 @@
 #include "BuildingStrategy.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "Common/Util.h"
+#include "Common/Util/Util.h"
 #include "Common\Constants.h"
 using namespace sc2;
 class GridStrategy: public BuildingStrategy

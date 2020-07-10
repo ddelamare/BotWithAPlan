@@ -21,11 +21,11 @@ public:
 		auto barracks = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
 		int totalRax = barracks.size();
 		auto th = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-		if (!totalRax)
+		if (totalRax < 3)
 		{
 			return 5;
 		}
-		else if (totalRax >= ((3 * th.size())))
+		else if (totalRax >= ((2.5 * th.size())))
 		{
 			return 0;
 		}

@@ -15,7 +15,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 
-		if (obs->GetFoodUsed() > 180)
+		if (obs->GetFoodUsed() > 180 || obs->GetUnits(Unit::Alliance::Self, IsUnit(sc2::UNIT_TYPEID::TERRAN_MARINE)).size() > 15)
 			return 5;
 
 		return (obs->GetFoodArmy() / 75) * threatAnalyzer.GetThreat(&state->threat);

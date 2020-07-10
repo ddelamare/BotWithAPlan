@@ -3,7 +3,7 @@
 #include "Planner/Actions/BuildResource.h"
 #include "sc2api\sc2_api.h"
 #include "Common/Resource.h"
-#include "Common/UnitHelpers.h"
+#include "Common/Util/UnitHelpers.h"
 #include "Planner/Conditions/HaveGatewayTrainer.h"
 
 

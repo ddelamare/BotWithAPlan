@@ -25,14 +25,22 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 
 	for (auto group : battleGroups)
 	{
+		for (auto& u : group.units)
+		{
+			Color c = Colors::White;
+			if (u->weapon_cooldown != 0)
+			{
+				c = Colors::Yellow;
+			}
+
+			debug->DebugBoxOut(u->pos - Point3D(u->radius / 2, u->radius / 2, -2), u->pos + Point3D(u->radius / 2, u->radius / 2, 2), c);
+		}
+
 		if (group.mode == BattleMode::Attack)
 		{
 			// Moves toward the target or attacks optimal units
 			AttackTarget(&group, obs, query, action, state, debug);
 			// Move units not in the cluster
-			//ClusterUnits(&group, 
-			//	!IsClustered(&group, obs, query, action, state, debug)
-			//	, obs, query, action, state, debug);
 
 			// For any cluster that's near enemy clusters that are bigger, retreat
 			for (const auto& cluster : clusters)
@@ -71,11 +79,13 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 
 
 	// TODO: Fan out better
-	auto allUnits = obs->GetUnits(sc2::Unit::Alliance::Self);
+	auto allUnits = obs->GetUnits(sc2::Unit::Alliance::Self, IsCombatUnit());
 	auto toAvoid = obs->GetUnits(IsUnit(UNIT_TYPEID::PROTOSS_DISRUPTORPHASED));
 	for (auto unit : allUnits)
 	{
 		auto nearbyEffects = Util::FindNearbyUnits(&toAvoid, unit->pos, obs, 5);
+
+		if (!nearbyEffects.size()) continue;
 
 		auto combinedVec = Point2D();
 		auto absVec = Point2D();
@@ -98,74 +108,6 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 	}
 }
 
-// Checks if a group is close enough together
-bool ArmyManager::IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
-{
-	if (threatAnalyzer.GetThreat(&state->threat) > 1.4)
-		return true;
-	//return true;
-	if (group->units.size() <= 5) return false;
-	//return true;
-	//see if units are clustered well enough
-	auto averagePoint = Util::GetAveragePoint(group->units);
-	int outsideOfCluster = 0;
-	for (auto unit : group->units)
-	{
-		auto dis = Distance2D(unit->pos, averagePoint);
-		if (dis > CLUSTER_DISTANCE_THRESHOLD_MIN && dis < CLUSTER_DISTANCE_THRESHOLD_MAX)
-		{
-			outsideOfCluster++;
-		}
-	}
-	auto clusterRatio = 1.0 - ((double)outsideOfCluster / (double)(group->units.size()));
-
-	if (clusterRatio <= CLUSTER_PERCENT_THRESHOLD_MIN)
-	{
-		group->isClustered = false;
-	}
-	if (clusterRatio >= CLUSTER_PERCENT_THRESHOLD_MAX)
-	{
-		group->isClustered = true;
-	}
-
-	return group->isClustered;
-}
-void ArmyManager::ClusterUnits(BattleGroup* group, bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
-{
-	//TODO: Based on where they're going, meet up in a sane spot.
-	if (group->units.size() <= 1) return;
-	auto distMult = 1;
-	if (threatAnalyzer.GetThreat(&state->threat) > 1)
-	{
-		distMult = threatAnalyzer.GetThreat(&state->threat);
-	}
-
-	auto averagePoint = Util::GetAveragePoint(group->units);
-	debug->DebugSphereOut(averagePoint, 5);
-	Units unitsToMove;
-	for (auto unit : group->units)
-	{
-		auto dis = Distance2D(unit->pos, averagePoint);
-
-		//if (abs(unit->pos.x - averagePoint.x) > CLUSTER_MOVE_THRESHOLD || abs(unit->pos.y - averagePoint.y) > CLUSTER_MOVE_THRESHOLD)
-		if (includeAll || (dis > CLUSTER_DISTANCE_THRESHOLD_MAX * distMult))
-		{
-			unitsToMove.push_back(unit);
-		}
-	}
-	auto adjustedTarget = Point2D();
-	if (HasTarget(group) && includeAll)
-	{
-		// Try and pick a spot that will move the units to their target
-		adjustedTarget = ((group->target - averagePoint) * .1) + averagePoint;
-	}
-	else
-	{
-		adjustedTarget = averagePoint;
-	}
-
-	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, adjustedTarget);
-}
 void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
 	//Send attack command and choose targets
@@ -191,51 +133,30 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 		{
 			//move unit to back of cluster
 			auto unitType = &state->UnitInfo[unit->unit_type];
-			float range = 1;
+			float range = GetUnitTypeRange(unitType);
 
 			auto closestUnit = Util::FindClosetOfType(this->cachedEnemyArmy, unit->pos, obs, query, false);
-			if (unitType->weapons.size())
-			{
-				//TODO: Find range based on eligibile targets ie air vs ground
-				range = unitType->weapons[0].range;
-			}
-			if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_DISRUPTOR)
-			{
-				// Allow disruptors to get a little closer
-				// TODO: only if they are not on cooldown
-				range = Constants::DISRUPTOR_RANGE - 1;
-			}
-			else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_COLOSSUS && HasThermalLance)
-			{
-				range = Constants::COLOSSUS_EXTENDED_RANGE;
-			}
-			else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_CARRIER)
-			{
-				range = Constants::CARRIER_RANGE;
-			}
-			else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)
-			{
-				range = Constants::STORM_RANGE;
-			}
-			// Keep units in the back, but also in range		
+			
+			// Keep units in the back, but also in searchRangeMod		
 			auto vectorAway = closestUnit->pos - unit->pos;
 			vectorAway.z = 0;
 			Normalize3D(vectorAway);
-			vectorAway *= -1 * range;
-
-			action->UnitCommand(unit, ABILITY_ID::GENERAL_MOVE, closestUnit->pos + vectorAway);
-			debug->DebugLineOut(unit->pos, closestUnit->pos + vectorAway, Colors::Teal);
+			vectorAway *= -1 * (range + 1);
+			auto distanceToKitePoint = DistanceSquared2D(closestUnit->pos + vectorAway, closestUnit->pos);
+			auto distanceAwayFromKitePoint(DistanceSquared2D(unit->pos, closestUnit->pos));
+			// Move away if it's further than the midpoint between the units
+			if (distanceToKitePoint > distanceAwayFromKitePoint)
+			{
+				action->UnitCommand(unit, ABILITY_ID::GENERAL_MOVE, closestUnit->pos + vectorAway);
+				debug->DebugLineOut(unit->pos, closestUnit->pos + vectorAway, Colors::Teal);
+			}
 		}
 		else if (abs(unit->pos.x - group->target.x) > CLUSTER_MOVE_THRESHOLD && abs(unit->pos.y - group->target.y) > CLUSTER_MOVE_THRESHOLD)
 		{
 			unitsToMove.push_back(unit);
 		}
 	}
-	//if (query->PathingDistance(averagePoint, averagePoint + vectorTowardTarget) > 0)
-	//{
-	//	action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, averagePoint + vectorTowardTarget);
-	//}
-	//else
+
 	if (HasTarget(group))
 	{
 		action->UnitCommand(unitsToMove, ABILITY_ID::ATTACK, group->target);
@@ -345,24 +266,64 @@ void ArmyManager::SneakToTarget(BattleGroup* group, const ObservationInterface* 
 	action->UnitCommand(group->units, ABILITY_ID::ATTACK, point);
 
 }
+
+// Gets the range of the units weapon with some exceptions
+int ArmyManager::GetUnitTypeRange(UnitTypeData* unitType)
+{
+	float range = 1;
+	if (unitType->weapons.size())
+	{
+		//TODO: Find searchRangeMod based on eligibile targets ie air vs ground
+		range = unitType->weapons[0].range;
+	}
+	if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_DISRUPTOR)
+	{
+		// Allow disruptors to get a little closer
+		// TODO: only if they are not on cooldown
+		range = Constants::DISRUPTOR_RANGE - 1;
+	}
+	else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_COLOSSUS && HasThermalLance)
+	{
+		range = Constants::COLOSSUS_EXTENDED_RANGE;
+	}
+	else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_CARRIER)
+	{
+		range = Constants::CARRIER_RANGE;
+	}
+	else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_HIGHTEMPLAR)
+	{
+		range = Constants::STORM_RANGE;
+	}
+	else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_SENTRY)
+	{
+		range = 5;
+	}
+	else if (unitType->unit_type_id == UNIT_TYPEID::PROTOSS_VOIDRAY)
+	{
+		range = 6;
+	}
+	return range;
+}
+
 const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 {
 	auto unitData = &state->UnitInfo;
 	if (!unitData->size()) return nullptr;
 	auto unitType = (*unitData)[unit->unit_type];
-	auto range = 1.3;
+	auto searchRangeMod = 1.3;
 	if (unitType.weapons.size())
 	{
+		float range = GetUnitTypeRange(&unitType);
 		// Prevent long range units from going too deep and dying.
-		if (unitType.weapons[0].range > 8)
+		if (range > 8)
 		{
-			range = 1.1;
+			searchRangeMod = 1.1;
 		}
-		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedHighPriorityEnemies, unit->pos, obs, unitType.weapons[0].range * range);
+		auto nearbyEnemies = Util::FindNearbyUnits(&this->cachedHighPriorityEnemies, unit->pos, obs, range * searchRangeMod);
 		bool isHighPriority = true;
 		if (nearbyEnemies.size() == 0)
 		{
-			nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, unitType.weapons[0].range * range);
+			nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, range * searchRangeMod);
 			isHighPriority = false;
 		}
 		double minPercent = DBL_MAX;
@@ -376,7 +337,6 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		// Units needing to get sniped RIGHT NOW
 		for (auto eu : nearbyEnemies)
 		{
-
 			// Infestors must die
 			if (IsUnit(UNIT_TYPEID::TERRAN_SIEGETANK)(*eu))
 			{
@@ -391,16 +351,30 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 			{
 				auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
 				// Find weakest unit below full health, unless it's high priority, in which case include full health. This is so we can target pylons even if there's observers or something near by
-				if (percentHealth < minPercent && (isHighPriority || percentHealth < 1.0))
+				if (percentHealth < minPercent && (isHighPriority || percentHealth < 1.0) && Util::CanAttack(unit, eu, state))
 				{
 					weakestUnit = eu;
 					minPercent = percentHealth;
 				}
 			}
 		}
+		auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, range * searchRangeMod * 5);
+
 		if (!weakestUnit)
 		{
-			auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, unitType.weapons[0].range * range);
+			// Attack workers before buildings
+			for (auto eu : nearbyBuildings)
+			{
+				if (IsWorker()(*eu))
+				{
+					weakestUnit = eu;
+				}
+			}
+		}
+		if (!weakestUnit)
+		{
+
+
 			int pylons = 0;
 			int poweredBuildings = 0;
 			auto isPylon = IsUnit(UNIT_TYPEID::PROTOSS_PYLON);
@@ -456,17 +430,16 @@ ArmyManager::ArmyManager()
 	HasThermalLance = false;
 }
 
-int ENEMY_CLUSTER_SEARCH_RANGE = 15;
+int ENEMY_CLUSTER_SEARCH_RANGE = 20;
 // This method should take a cluster of friendly units near a cluster of enemy units and see if they should retreat.
 bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<KnownEnemyPresence*> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
 {
-
 	int enemyCostsInRange = 0;
 	for (auto ecluster : enemyClusters)
 	{
 		if (Distance2D(cluster.first, ecluster->location) <= ENEMY_CLUSTER_SEARCH_RANGE)
 		{
-			enemyCostsInRange = Util::GetUnitValues(ecluster->enemies, &state->UnitInfo);
+			enemyCostsInRange += ecluster->unitValue;
 		}
 	}
 
@@ -481,7 +454,7 @@ bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vec
 		isAwayFromHome = disToTownHall > 20;
 	}
 
-	return isAwayFromHome && (friendlyUnitsCost < (enemyCostsInRange * 1.2));
+	return isAwayFromHome && (friendlyUnitsCost < (enemyCostsInRange * .8));
 }
 
 
