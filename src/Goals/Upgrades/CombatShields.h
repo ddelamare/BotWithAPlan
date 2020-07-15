@@ -16,6 +16,7 @@ public:
 		double score = 0;
 		auto upgrades = obs->GetUpgrades();
 		auto hasUpgrade = VectorHelpers::FoundInVector(upgrades, (UpgradeID)UPGRADE_ID::COMBATSHIELD);
+		hasUpgrade |= VectorHelpers::FoundInVector(upgrades, (UpgradeID)16);
 		if (hasUpgrade || Util::DoesAnyUnitHaveOrder(IsUnit(sc2::UNIT_TYPEID::TERRAN_TECHLAB), ABILITY_ID::RESEARCH_COMBATSHIELD, obs))
 			return 0;
 		int unitCount = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_MARINE)).size();

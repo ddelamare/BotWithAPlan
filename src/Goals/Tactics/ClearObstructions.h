@@ -16,12 +16,12 @@ public:
 	double virtual CalculateScore(const sc2::ObservationInterface* obs, GameState* state) {
 
 		blockingPath = nullptr;
-		auto townhalls = obs->GetUnits(Unit::Alliance::Self, IsTownHall());
+		auto townhalls = obs->GetUnits(Unit::Alliance::Self, CompletedUnits(IsTownHall()));
 		auto minerals = obs->GetUnits(Unit::Alliance::Neutral, IsSmallMineralPatch());
 		std::sort(minerals.begin(), minerals.end(), Sorters::sort_by_tag());
 		for (auto& th : townhalls)
 		{
-			auto blockingMinerals = Util::FindNearbyUnits(&minerals, th->pos, obs, 15.0);
+			auto blockingMinerals = Util::FindNearbyUnits(&minerals, th->pos, obs, 20.0);
 			if (blockingMinerals.size())
 			{
 				blockingPath = blockingMinerals.front();

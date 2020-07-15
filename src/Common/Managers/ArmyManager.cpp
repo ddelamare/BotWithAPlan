@@ -75,6 +75,7 @@ void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* 
 				ClusterUnits(&group, obs, query, action, state, debug);
 			}*/
 		}
+		debug->DebugSphereOut(Util::ToPoint3D(group.target, 8), 3, Colors::Green);
 	}
 
 
@@ -124,8 +125,8 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	float minSpeed = 0;
 	for (auto unit : group->units)
 	{
-		auto enemyUnit = FindOptimalTarget(unit, obs, query, state);
-		if (enemyUnit && unit->weapon_cooldown == 0 && !VectorHelpers::FoundInVector(nonAutoAttackUnits, unit->unit_type)) // If a enemy is near and can fire, target them
+		const Unit* enemyUnit = nullptr; 
+		if (unit->weapon_cooldown == 0 && !VectorHelpers::FoundInVector(nonAutoAttackUnits, unit->unit_type) && (enemyUnit = FindOptimalTarget(unit, obs, query, state))) // If a enemy is near and can fire, target them
 		{
 			action->UnitCommand(unit, ABILITY_ID::ATTACK, enemyUnit);
 		}
@@ -358,7 +359,8 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 				}
 			}
 		}
-		auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, range * searchRangeMod * 5);
+		auto nearbyBuildings = Util::FindNearbyUnits(&this->cachedEnemies, unit->pos, obs, range * searchRangeMod * 3);
+		std::sort(nearbyBuildings.begin(), nearbyBuildings.end(), Sorters::sort_by_tag());
 
 		if (!weakestUnit)
 		{
@@ -373,8 +375,6 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		}
 		if (!weakestUnit)
 		{
-
-
 			int pylons = 0;
 			int poweredBuildings = 0;
 			auto isPylon = IsUnit(UNIT_TYPEID::PROTOSS_PYLON);

@@ -20,6 +20,10 @@ public:
 		double score = 0;
 		bool foundMorphing = false;
 		auto units = obs->GetUnits(sc2::Unit::Alliance::Self, IsUnits(morphableUnits));
+
+		auto percent = Util::GetUnitPercent(UNIT_TYPEID::PROTOSS_ARCHON, 4, obs); 		
+		score = Util::FeedbackFunction(percent, .6, 1.5);
+
 		// Count templar who are on the way to being archons
 		for (auto unit : units)
 		{
@@ -39,11 +43,6 @@ public:
 		{
 			score *= 4;
 		}
-
-		int unitFood = 4 * obs->GetUnits(sc2::Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ARCHON)).size();
-
-		auto percent = (double)unitFood / (1 + obs->GetFoodArmy()); // Get percent archons
-		score = Util::FeedbackFunction(percent, .6, 3.5);
 
 		return score;
 	};

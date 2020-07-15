@@ -253,6 +253,8 @@ namespace Util
 		auto alreadyVisited = std::vector<Point3D>();
 		alreadyVisited.push_back(startingPoint);
 		auto currentPoint = &startingPoint;
+		if (!currentPoint) return alreadyVisited;
+
 		for (int i = 0; i < pointsToVisit.size(); i++)
 		{
 			if (VectorHelpers::FoundInVector(alreadyVisited, pointsToVisit[i]) || &pointsToVisit[i] == currentPoint)
@@ -275,7 +277,10 @@ namespace Util
 				}
 			}
 			currentPoint = min_point;
-			alreadyVisited.push_back(*min_point);
+			if (min_point)
+			{
+				alreadyVisited.push_back(*min_point);
+			}
 		}
 
 		return alreadyVisited;

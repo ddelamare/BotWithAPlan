@@ -7,6 +7,7 @@
 #include "LadderInterface.h"
 #include "TerranPlan.h"
 #include "Common\Util\Util.h"
+
 using namespace sc2;
 const char* kAcidPlant = "Ladder/(2)AcidPlantLE.SC2Map";
 const char* kDreamCatcher = "Ladder/(2)DreamCatcherLE.SC2Map";
@@ -69,13 +70,12 @@ int main(int argc, char* argv[]) {
 				coordinator.SetRealtime(REALTIME);
 				//coordinator.SetStepSize(10);
 				TerranPlan bot;
-				TerranPlan bot2;
 
 				coordinator.SetParticipants({
 					//CreateParticipant(Race::Protoss, nullptr),
 					CreateParticipant((Race)GetAgentRace(), &bot),
 					//CreateParticipant((Race)GetAgentRace(), &bot2),
-					CreateComputer(race, sc2::Difficulty::VeryHard, sc2::AIBuild::RandomBuild)
+					CreateComputer(race, sc2::Difficulty::Hard, sc2::AIBuild::RandomBuild)
 					});
 
 				coordinator.LaunchStarcraft();

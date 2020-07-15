@@ -208,6 +208,8 @@
     <ClInclude Include="Goals\Upgrades\Stim.h" />
     <ClInclude Include="Goals\Upgrades\CombatShields.h" />
     <ClInclude Include="Common\Managers\ActionManager.h" />
+    <ClInclude Include="Goals\Tech\EngineeringBay.h" />
+    <ClInclude Include="Goals\Upgrades\TerranInfantryWeapons.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Common\ItemDependencies.cog">

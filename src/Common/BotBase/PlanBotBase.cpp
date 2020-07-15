@@ -326,7 +326,6 @@ void PlanBotBase::DefendBase()
 		{
 			// RALLY THE TROOPS!
 			armyManager.RequestAction(nearbyUnits[0]->pos, BattleMode::Defend);
-
 		}
 	}
 }

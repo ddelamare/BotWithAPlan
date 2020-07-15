@@ -23,7 +23,7 @@ public:
 		auto th = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
 		if (totalRax < 3)
 		{
-			return 5;
+			return 8;
 		}
 		else if (totalRax >= ((2.5 * th.size())))
 		{
@@ -31,7 +31,7 @@ public:
 		}
 		else if (obs->GetFoodArmy() > 0)
 		{
-			return obs->GetFoodArmy() / (int)(3 * totalRax);
+			return obs->GetFoodArmy() / (int)(1.5 * totalRax);
 		}
 		return 0;
 	}

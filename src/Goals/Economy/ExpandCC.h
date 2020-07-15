@@ -23,7 +23,7 @@ public:
 	}
 	double virtual CalculateScore(const sc2::ObservationInterface *obs, GameState* state) {
 		auto townhalls = obs->GetUnits(sc2::Unit::Alliance::Self, IsTownHall());
-		auto townHallsBuilding = obs->GetUnits(sc2::Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::PROTOSS_NEXUS));
+		auto townHallsBuilding = obs->GetUnits(sc2::Unit::Alliance::Self, UnitsInProgress(UNIT_TYPEID::TERRAN_COMMANDCENTER));
 
 		if (townHallsBuilding.size()) return 0;
 

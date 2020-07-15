@@ -21,8 +21,10 @@
 #include "Goals\Tactics\PickOffExpo.h"
 #include "Goals\Tactics\AttackProxy.h"
 #include "Goals\Tactics\DefendWithWorkers.h"
+#include "Goals\Tech\EngineeringBay.h"
 #include "Goals\Upgrades\Stim.h"
 #include "Goals\Upgrades\CombatShields.h"
+#include "Goals\Upgrades\TerranInfantryWeapons.h"
 #include "Common\Util\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
@@ -44,6 +46,7 @@ TerranPlan::TerranPlan()
 	// Tactics and Upgrade Goals
 	UpgradeGoals.push_back(new StimGoal());
 	UpgradeGoals.push_back(new CombatShieldsGoal());
+	UpgradeGoals.push_back(new GroundWeaponsUpgradeGoal());
 
 	//TacticsGoals.push_back(new AllOutGoal());
 	TacticsGoals.push_back(new ScoutSweepGoal());
@@ -61,6 +64,7 @@ TerranPlan::TerranPlan()
 	AvailableActions.push_back(new FactoryGoal());
 	AvailableActions.push_back(new StarportGoal());
 	AvailableActions.push_back(new TechLabGoal());
+	AvailableActions.push_back(new EngineeringBayGoal());
 
 	PlanBotBase::Init();
 }
