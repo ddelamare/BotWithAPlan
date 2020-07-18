@@ -17,12 +17,12 @@
 #include "Common\Strategy\Attacks\UnitMicro.h"
 #include "Common/Strategy/Building/ExpandStrategy.h"
 #include <chrono>
+#include <Common/Util/UtilConfig.h>
 using Clock = std::chrono::high_resolution_clock;
 
 
 using namespace sc2;
 #define LADDER_MODE 1
-#define DEBUG_MODE 	1
 #define PLANNER_MODE 0
 #define REALTIME 0	 
 class PlanBotBase : public Agent
@@ -53,6 +53,7 @@ protected:
 	void DefendBase();
 	void CancelBuildingsUnderAttack();
 	void ManageUnits();
+	void CheckChat();
 	ActionManager* GetActionManager();
 
 
@@ -73,6 +74,15 @@ protected:
 	ThreatAnalyzer threatAnalyzer;
 	vector<UnitMicro*> microManagers;
 	int goalCategory = 0;
+
+	//Config Values
+	map<string, string> Configs;
+	bool DebugEnabled = 0;
+	bool IsRealTime = 0;
+	bool EnableChat = 0;
+	bool EnableSurrender = 0;
+	bool IgnoreSelected = 0;
+	std::string TargetingType;
 
 };
 

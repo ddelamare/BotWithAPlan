@@ -17,9 +17,8 @@ class ArmyManager
 	std::vector<UnitTypeID> nonAutoAttackUnits;
 	std::vector<std::pair<Point2D, BattleMode>> requestedActions;
 	std::vector<KnownEnemyPresence*> knownEnemyPresences;
+	int TARGETING_TYPE = 1;
 private:
-	bool IsClustered(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
-	void ClusterUnits(BattleGroup* group,bool includeAll, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	void AttackTarget(BattleGroup* group, const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 	bool HasTarget(BattleGroup* group);
 	void PartitionGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
@@ -35,15 +34,13 @@ private:
 	void SetMode(BattleGroup* group, BattleMode mode);
 	void UpdateKnownEnemyPositions(const ObservationInterface* obs, DebugInterface* debug, GameState* state);
 	bool ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<KnownEnemyPresence*> enemyClusters, const ObservationInterface* obs, QueryInterface* query, GameState* state);
+	int GetTargetingType(std::string targeting_type);
+	double GetTargetScore(const Unit* unit, const Unit* eu, GameState* state);
 
 public:
 	std::vector<BattleGroup> battleGroups;
 	ArmyManager();
-
-
-
-
-
+	void SetTargetingType(std::string targeting_type);
 	void RequestAction(Point2D target, BattleMode action);
 	void ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug);
 };

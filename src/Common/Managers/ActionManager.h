@@ -2,9 +2,9 @@
 #include "cpp-sc2/include/sc2api/sc2_unit.h"
 #include "cpp-sc2/include/sc2api/sc2_interfaces.h"
 #include "cpp-sc2/include/sc2api/sc2_control_interfaces.h"
+#include <iostream>
 #pragma once
 using namespace sc2;
-
 struct Command {
 
 	Command() {}
@@ -22,15 +22,28 @@ struct Command {
 		queued_command = _queued_command;
 	}
 
+	bool equals (const Command& othercommand) {
+		bool a = ability == othercommand.ability;
+		bool b = point.x == othercommand.point.x && point.y == othercommand.point.y;
+		bool c = (target == othercommand.target || (target != nullptr && othercommand.target  != nullptr && target->tag == othercommand.target->tag));
+		bool d = queued_command == othercommand.queued_command;
+		return a && b && c && d;
+	}
 
-	const Unit* unit;
-	AbilityID ability;
-	Point2D point;
-	const Unit* target;
+	bool operator== (const sc2::UnitOrder& order) {
+		return
+			ability == order.ability_id
+			&& point == order.target_pos
+			&& (target == nullptr && order.target_unit_tag == Tag()|| target->tag == order.target_unit_tag);
+	}
+
+	const Unit* unit = nullptr;
+	AbilityID ability = 0;
+	Point2D point = Point2D();
+	const Unit* target = nullptr;
 	bool queued_command = false;
 	bool alreadySent = false;
 };
-
 
 class ActionManager : public ActionInterface
 {
@@ -50,7 +63,7 @@ public:
 		realInterface = inner;
 	}
 
-	void SendCommands()
+	void SendCommands(bool ignoreSelected)
 	{
 		if (sent) return;
 
@@ -62,18 +75,20 @@ public:
 			auto command = &i->second;
 			Units toBatch;
 		
-			if (command->alreadySent) continue;
+			if (command->alreadySent ||
+				(command->unit->is_selected && ignoreSelected)
+				|| (command->unit->orders.size() == 1 && (*command) == command->unit->orders.front())) continue;
 		
 			for (auto j = i; j != _commands.end();)
 			{
 				// Incrementing here so i is left alone.. I. Iterators do not support + 1 only, ++
 				j++;
+				if (j == _commands.end()) break;
 				auto othercommand = &j->second;
-				if (othercommand->alreadySent) continue;
+				if (othercommand->alreadySent ||
+					(othercommand->unit != nullptr && othercommand->unit->is_selected && ignoreSelected)) continue;
 		
-				if (command->ability == othercommand->ability 
-					&& command->point == othercommand->point
-					&& command->target == othercommand->target)
+				if (command->equals(*othercommand))
 				{
 					toBatch.push_back(othercommand->unit);
 					command->alreadySent = true;
@@ -92,7 +107,7 @@ public:
 
 		for (auto& command : _commands)
 		{
-			if (command.second.alreadySent) continue;
+			if (command.second.alreadySent || (command.second.unit->is_selected && ignoreSelected)) continue;
 
 			if (command.second.target != nullptr) realInterface->UnitCommand(command.second.unit, command.second.ability, command.second.target, command.second.queued_command);
 			else if (command.second.point.x > 0) realInterface->UnitCommand(command.second.unit, command.second.ability, command.second.point, command.second.queued_command);

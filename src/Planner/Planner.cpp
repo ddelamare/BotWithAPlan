@@ -18,7 +18,7 @@ ResourceState Planner::GetResourceState(const sc2::ObservationInterface* obs)
 {
 	auto units = obs->GetUnits(sc2::Unit::Alliance::Self);
 	auto state = ResourceState();
-	for (auto unit : units)
+	for (const auto& unit : units)
 	{
 		state.AddResource(unit->unit_type, 1);
 	}
@@ -42,17 +42,17 @@ ResourceState Planner::CalculateTargetResourceState(ResourceState state, BaseAct
 	auto goalState = ResourceState();
 
 	// Make sure all resources known in state make it to the returned state
-	for (auto res : state.resources)
+	for (const auto& res : state.resources)
 	{
 		goalState.resources[res.first] = state.resources[res.first];
 	}
 
 	// Calculate the total number of resources to get to the goal state
-	for (auto cond : neededConditions)
+	for (const auto& cond : neededConditions)
 	{
 		LOG(5) << "\t" << cond->GetName() << endl;
 		auto needed = cond->UnmetResources(&state);
-		for (auto res : needed)
+		for (const auto& res : needed)
 		{
 			goalState.resources[res.first] += res.second;
 			if (state.resources[res.first] >= cond->GetRequiredResources(&state)[res.first])
@@ -74,7 +74,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	auto plan = vector<BaseAction*>(0);
 
 	bool isGoalState = true;
-	for (auto res : goalState.resources)
+	for (const auto& res : goalState.resources)
 	{
 		if (res.second > currentState->resources[res.first])
 		{
@@ -92,13 +92,13 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	// Look for actions that meet the resouce need. This list holds the action and it's calculated score
 	//TODO: This can all be migrated to calc heuristics. scores < 0 are not eligible.
 	auto actionsThatGetCorrectResources = vector<tuple<BaseAction*, float>>();
-	for (auto action : availableActions)
+	for (const auto& action : availableActions)
 	{
 		bool hasAny = false;
 		float heuristic = -1;
 
 		auto resourcesGained = action->GetPossibleResults()[0]->ResourcesGained();
-		for (auto res : goalState.resources)
+		for (const auto& res : goalState.resources)
 		{
 			// Check if this action gives any of a needed resource
 			if (resourcesGained[res.first] > 0 && goalState.resources[res.first] > currentState->resources[res.first])
@@ -124,7 +124,7 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	// Get action with highest score
 	BaseAction* chosen = 0;
 	float maxValue = 0;
-	for (auto action : actionsThatGetCorrectResources)
+	for (const auto& action : actionsThatGetCorrectResources)
 	{
 		if (get<1>(action) > maxValue)
 		{
@@ -153,11 +153,11 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 		auto newPlan = CalculatePlan(*currentState, chosen);
 		plan.insert(plan.begin(), newPlan.begin(), newPlan.end());
 		//Since we successfully got a plan, we can add the plan values to out state
-		for (auto action : newPlan)
+		for (const auto& action : newPlan)
 		{
-			for (auto result : action->GetPossibleResults())
+			for (const auto& result : action->GetPossibleResults())
 			{
-				for (auto res : result->ResourcesGained())
+				for (const auto& res : result->ResourcesGained())
 				{
 					currentState->resources[res.first] += res.second;
 				}
@@ -166,9 +166,9 @@ vector<BaseAction*> Planner::CalculatePlan(ResourceState* currentState, Resource
 	}
 	else
 	{
-		for (auto result : chosen->GetPossibleResults())
+		for (const auto& result : chosen->GetPossibleResults())
 		{
-			for (auto res : result->ResourcesGained())
+			for (const auto& res : result->ResourcesGained())
 			{
 				currentState->resources[res.first] += res.second;
 			}
@@ -220,7 +220,7 @@ float Planner::CalculateHeuristic(BaseAction* action, ResourceState* state, Reso
 {
 	auto value = 0.0f;
 	auto actionResults = action->GetPossibleResults()[0]->ResourcesGained();
-	for(auto res : *neededResources)
+	for(const auto& res : *neededResources)
 	{
 		int resApplied = min(res.second, actionResults[res.first]);
 		if (resApplied > 0)

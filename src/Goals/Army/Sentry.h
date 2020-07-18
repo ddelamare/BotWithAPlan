@@ -26,7 +26,7 @@ public:
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::ZERG_ROACH] >= 5
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_MARINE] >= 10)
 		{
-			score = Util::FeedbackFunction(percent, .1, .9);
+			score = Util::FeedbackFunction(percent, .01, .9);
 		}
 		return score;
 	};

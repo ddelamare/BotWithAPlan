@@ -1,5 +1,6 @@
 #include "Common/Managers/ArmyManager.h"
 #include <iostream>
+#include <string>
 using namespace sc2;
 void ArmyManager::ManageGroups(const ObservationInterface* obs, QueryInterface* query, ActionInterface* action, GameState* state, DebugInterface* debug)
 {
@@ -114,11 +115,11 @@ void ArmyManager::AttackTarget(BattleGroup* group, const ObservationInterface* o
 	//Send attack command and choose targets
 
 	auto averagePoint = Util::GetAveragePoint(group->units);
-	auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsHighPrioirtyEnemy(), averagePoint, obs, 20);
+	auto enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsHighPrioirtyEnemy(), averagePoint, obs, 30);
 	// No High Priority? Then look for all
 	if (enemyUnits.size() == 0)
 	{
-		enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), averagePoint, obs, 20);
+		enemyUnits = Util::FindNearbyUnits(sc2::Unit::Alliance::Enemy, IsEnemyArmy(), averagePoint, obs, 30);
 	}
 
 	Units unitsToMove;
@@ -306,6 +307,54 @@ int ArmyManager::GetUnitTypeRange(UnitTypeData* unitType)
 	return range;
 }
 
+
+// TOOD: Enum/Config
+enum TARGETING_TYPE {
+	NONE,
+	WEAKEST,
+	HITSTOKILL,
+	INVERTEDDPS,
+	DPSRATIO
+};
+
+int ArmyManager::GetTargetingType(std::string target_type)
+{
+	int typ = TARGETING_TYPE::WEAKEST;
+	if (target_type == "NONE") typ = NONE;
+	if (target_type == "WEAKEST") typ = WEAKEST;
+	if (target_type == "HITSTOKILL") typ = HITSTOKILL;
+	if (target_type == "INVERTEDDPS") typ = INVERTEDDPS;
+	if (target_type == "DPSRATIO") typ = DPSRATIO;
+
+	return typ;
+}
+
+// Lower score means higher attack priority
+double ArmyManager::GetTargetScore(const Unit* unit,const Unit* eu, GameState* state)
+{
+	double score = 0;
+	if (TARGETING_TYPE == TARGETING_TYPE::WEAKEST)
+	{
+		score = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
+	}
+	// Default to weakest
+	else if (TARGETING_TYPE == TARGETING_TYPE::HITSTOKILL)
+	{
+		score = Util::GetEstimatedAttacksToKill(unit, eu, state);
+	}
+	else if (TARGETING_TYPE == TARGETING_TYPE::INVERTEDDPS)
+	{
+		score = Util::GetDPS(unit, eu, state);
+		score = score > 0 ? (1 / score) : DBL_MAX;
+	}
+	else if (TARGETING_TYPE == TARGETING_TYPE::DPSRATIO)
+	{
+		score = Util::GetEstimatedAttacksToKill(unit, eu, state);
+		score = score != 0 && score != INT_MAX ? Util::GetDPS(unit, eu, state) / score : DBL_MAX;
+	}
+	return score;
+}
+
 const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationInterface* obs, QueryInterface* query, GameState* state)
 {
 	auto unitData = &state->UnitInfo;
@@ -327,7 +376,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 			nearbyEnemies = Util::FindNearbyUnits(&this->cachedEnemyArmy, unit->pos, obs, range * searchRangeMod);
 			isHighPriority = false;
 		}
-		double minPercent = DBL_MAX;
+		double minScore = DBL_MAX;
 		const Unit* weakestUnit = nullptr;
 
 		// Sort by tag to prevent units from switching too quickly between units with the same health percentage. Otherwise, they change targets so much they can't attack.
@@ -338,7 +387,7 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		// Units needing to get sniped RIGHT NOW
 		for (auto eu : nearbyEnemies)
 		{
-			// Infestors must die
+			// Tanks must die
 			if (IsUnit(UNIT_TYPEID::TERRAN_SIEGETANK)(*eu))
 			{
 				weakestUnit = eu;
@@ -350,12 +399,12 @@ const Unit* ArmyManager::FindOptimalTarget(const Unit* unit, const ObservationIn
 		{
 			for (auto eu : nearbyEnemies)
 			{
-				auto percentHealth = (eu->health + eu->shield) / (eu->health_max + eu->shield_max);
+				auto score = GetTargetScore(unit,eu,state);
 				// Find weakest unit below full health, unless it's high priority, in which case include full health. This is so we can target pylons even if there's observers or something near by
-				if (percentHealth < minPercent && (isHighPriority || percentHealth < 1.0) && Util::CanAttack(unit, eu, state))
+				if (score < minScore && Util::CanAttack(unit, eu, state))
 				{
 					weakestUnit = eu;
-					minPercent = percentHealth;
+					minScore = score;
 				}
 			}
 		}
@@ -430,10 +479,21 @@ ArmyManager::ArmyManager()
 	HasThermalLance = false;
 }
 
+void ArmyManager::SetTargetingType(std::string targeting_type)
+{
+	TARGETING_TYPE = GetTargetingType(targeting_type);
+}
+
 int ENEMY_CLUSTER_SEARCH_RANGE = 20;
+int MIN_FOOD_IGNORE_RETREAT = 180;
 // This method should take a cluster of friendly units near a cluster of enemy units and see if they should retreat.
 bool ArmyManager::ShouldUnitsRetreat(std::pair<Point3D, Units> cluster, std::vector<KnownEnemyPresence*> enemyClusters, const ObservationInterface* obs, QueryInterface* query,  GameState* state)
 {
+	int food = obs->GetFoodUsed();
+	if (food > MIN_FOOD_IGNORE_RETREAT)
+	{
+		return false;
+	}
 	int enemyCostsInRange = 0;
 	for (auto ecluster : enemyClusters)
 	{

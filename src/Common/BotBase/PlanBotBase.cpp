@@ -24,6 +24,16 @@ void PlanBotBase::Init()
 
 	Lost = false;
 	StepCounter = STEPS_PER_GOAL;
+	this->Configs = Util::GetConfigValues("config.txt");
+	this->DebugEnabled = Util::GetValueOrDefault(this->Configs, "DEBUG", "false") == "true";
+	this->EnableChat = Util::GetValueOrDefault(this->Configs, "ENABLECHAT", "true") == "true";
+	this->EnableSurrender = Util::GetValueOrDefault(this->Configs, "ENABLESURRENDER", "true") == "true";
+	this->IsRealTime = Util::GetValueOrDefault(this->Configs, "ISREALTIME", "false") == "true";
+	this->IgnoreSelected = Util::GetValueOrDefault(this->Configs, "IGNORESELECTED", "false") == "true";
+	this->TargetingType = Util::GetValueOrDefault(this->Configs, "TARGETINGTYPE", "WEAKEST");
+
+	armyManager.SetTargetingType(this->TargetingType);
+
 }
 
 ActionManager* PlanBotBase::GetActionManager()
@@ -34,15 +44,16 @@ ActionManager* PlanBotBase::GetActionManager()
 void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::ObservationInterface* obs, sc2::ActionInterface* actions, sc2::QueryInterface* query, string name, vector<string>* messages, bool withRetry, bool& stopOthers)
 {
 	if (stopOthers) return;
-	BaseAction* nextInPlan = nullptr;
 	auto actionList = goalPicker.GetGoals(goals, obs, &state);
 	bool allowDependencies = true;
 	Debug()->DebugTextOut(name + " Goals:", Point2D(.2 * goalCategory, 0), Colors::White, 8);
-
+	double MIN_GOAL_THRESHOLD = .25;
 	for (int i = 0; i < actionList.size(); i++)
 	{
-		if (get<0>(actionList[i]) <= 0) break; // Don't do goals with score 0;
+		BaseAction* nextInPlan = nullptr;
 
+		if (get<0>(actionList[i]) <= 0) break; // Don't do goals with score 0;
+		double goalScore = get<0>(actionList[i]);
 		auto goal = std::get<1>(actionList[i]);
 		auto resState = planner.GetResourceState(obs);
 
@@ -60,7 +71,12 @@ void PlanBotBase::ChooseActionFromGoals(vector<BaseAction*> goals, const sc2::Ob
 
 		if (goal && nextInPlan)
 		{
-			auto success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
+
+			auto success = false;
+			if (goalScore >= MIN_GOAL_THRESHOLD)
+			{
+				success = nextInPlan->Excecute(obs, actions, query, Debug(), &state);
+			}
 			if (goal->HoldOtherGoals(obs))
 			{
 				stopOthers = true;
@@ -124,6 +140,8 @@ void PlanBotBase::DebugDrawState(chrono::time_point<chrono::steady_clock> startT
 void PlanBotBase::OnStep()
 {
 	auto startTime = Clock::now();
+	CheckChat();
+
 
 	// Frame Skip
 	if (StepCounter != STEPS_PER_GOAL)
@@ -143,29 +161,32 @@ void PlanBotBase::OnStep()
 	DefendBase();
 	CancelBuildingsUnderAttack();
 
-
 	auto commands = GetActionManager()->Commands();
-	GetActionManager()->SendCommands();
+	GetActionManager()->SendCommands(this->IgnoreSelected);
 	DebugDrawState(startTime);
 
-#if LADDER_MODE
-	// This does not seem to work in local tests
-
-	if (!this->Lost && PlanBotBase::ShouldSurrender(Observation()))
+	if (this->EnableSurrender)
 	{
-		this->Lost = true;
-		//auto y = Control()->RequestLeaveGame();
-		GetActionManager()->SendChat("My plan has failed...");
-		GetActionManager()->SendChat("gg");
-	}
-#endif
+		// This does not seem to work in local tests
 
-#if DEBUG_MODE	
-	Debug()->SendDebug();
-#endif
-#if REALTIME
-	Actions()->SendActions();
-#endif
+		if (!this->Lost && PlanBotBase::ShouldSurrender(Observation()))
+		{
+			this->Lost = true;
+			//auto y = Control()->RequestLeaveGame();
+			GetActionManager()->SendChat("My plan has failed...");
+			GetActionManager()->SendChat("gg");
+		}
+	}
+
+	if (this->DebugEnabled)
+	{
+		Debug()->SendDebug();
+	}
+
+	if (this->IsRealTime)
+	{
+		Actions()->SendActions();
+	}
 }
 
 
@@ -602,4 +623,22 @@ void::PlanBotBase::OnUnitCreated(const Unit* unit)
 
 	auto type = state.UnitInfo[unit->unit_type];
 	state.CurrentUnits[unit->unit_type]++;
+}
+
+// Must be run on every frame
+void PlanBotBase::CheckChat() {
+	auto chats = Observation()->GetChatMessages();
+	if (chats.size())
+	{
+		for (auto chat : chats)
+		{
+			if (chat.player_id == Observation()->GetPlayerID())
+			{
+				auto msg = chat.message;
+				if (msg == "--debug") this->DebugEnabled = !this->DebugEnabled;
+				if (msg == "--surrender") this->Lost = true;
+				if (msg == "--archon") this->IgnoreSelected = !this->IgnoreSelected;
+			}
+		}
+	}
 }

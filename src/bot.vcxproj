@@ -93,6 +93,8 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\include\cpp-sc2\include;..\src;..\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>../lib</AdditionalLibraryDirectories>
@@ -127,6 +129,7 @@
       <AdditionalIncludeDirectories>C:\Users\ddelam\Documents\Git\BotWithAPlan\include;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\build\generated;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\src;C:\Users\ddelam\Documents\Git\BotWithAPlan\include\cpp-sc2\include;..\src;../include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -164,6 +167,7 @@
     <ClInclude Include="Common\Analyzers\BattleAnalyzer.h" />
     <ClInclude Include="Common\Entity\UnitBattleData.h" />
     <ClInclude Include="Common\Util\CombatUtil.h" />
+    <ClInclude Include="Common\Util\UtilConfig.h" />
     <ClInclude Include="Goals\Tech\EngineeringBay.h" />
     <ClInclude Include="Goals\Army\Factory.h" />
     <ClInclude Include="Goals\Army\Medivac.h" />

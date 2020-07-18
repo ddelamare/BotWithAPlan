@@ -25,7 +25,7 @@ public:
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANK] >= 3
 			|| state->MaxEnemyUnits[sc2::UNIT_TYPEID::TERRAN_SIEGETANKSIEGED] >= 3)
 		{
-			score *= 1.5;
+			score *= 2;
 		}
 
 		//// Disruptors can easily kill cannons even with shield batteries

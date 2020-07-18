@@ -263,6 +263,7 @@ struct IsArmy {
 		case UNIT_TYPEID::TERRAN_THORAP: return true;
 		case UNIT_TYPEID::TERRAN_VIKINGASSAULT: return true;
 		case UNIT_TYPEID::TERRAN_VIKINGFIGHTER: return true;
+		case UNIT_TYPEID:: TERRAN_PLANETARYFORTRESS: return true;
 		case UNIT_TYPEID::ZERG_BANELING: return true;
 		case UNIT_TYPEID::ZERG_BROODLING: return true;
 		case UNIT_TYPEID::ZERG_BROODLORD: return true;
@@ -320,6 +321,7 @@ struct IsArmy {
 		case UNIT_TYPEID::PROTOSS_VOIDRAY: return true;
 		case UNIT_TYPEID::PROTOSS_WARPPRISM: return true;
 		case UNIT_TYPEID::PROTOSS_ZEALOT: return true;
+		case UNIT_TYPEID::PROTOSS_PHOTONCANNON: return true;
 		default: return false;
 		}
 	}
@@ -590,6 +592,23 @@ struct IsNot
 	bool operator()(const Unit& unit)
 	{
 		return !filter(unit);
+	}
+};
+
+struct IsSplashUnit
+{
+	bool operator()(const Unit& unit)
+	{
+		// Ignore units that can be ignored. Changelings mess with the army manager
+		switch (unit.unit_type.ToType()) {
+		case UNIT_TYPEID::TERRAN_SIEGETANKSIEGED: return true;
+		case UNIT_TYPEID::TERRAN_WIDOWMINE: return true;
+		case UNIT_TYPEID::PROTOSS_COLOSSUS: return true;
+		case UNIT_TYPEID::PROTOSS_DISRUPTOR: return true;
+		case UNIT_TYPEID::PROTOSS_ARCHON: return true;
+		case UNIT_TYPEID::ZERG_LURKERMPBURROWED: return true;
+		default: return false;
+		}
 	}
 };
 

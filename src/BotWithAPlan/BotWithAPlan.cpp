@@ -208,10 +208,11 @@ void BotWithAPlan::OnGameStart() {
 	microManagers.push_back(new PhoenixLift(obs, query, &state));
 	microManagers.push_back(new OracleBeam(obs, query, &state));
 
-#if LADDER_MODE
-	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 1.9");
-#endif
+	if (this->EnableChat)
+	{
+		Actions()->SendChat("gl hf!");
+		Actions()->SendChat("Bot version: 1.10");
+	}
 }
 
 

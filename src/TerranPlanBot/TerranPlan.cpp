@@ -28,7 +28,7 @@
 #include "Common\Util\Util.h"
 using Clock = std::chrono::high_resolution_clock;
 
-TerranPlan::TerranPlan() 
+TerranPlan::TerranPlan()
 {
 	// Keep that sweet mineral coming
 	EconomyGoals.push_back(new SupplyDepotGoal());
@@ -36,7 +36,7 @@ TerranPlan::TerranPlan()
 	EconomyGoals.push_back(new RefineryGoal());
 	EconomyGoals.push_back(new ExpandGoal());
 	EconomyGoals.push_back(new BarracksGoal());
-	
+
 	BuildOrderGoals.push_back(new ReactorGoal());
 
 	// Build Because we Can
@@ -70,7 +70,7 @@ TerranPlan::TerranPlan()
 }
 
 void TerranPlan::OnStep() {
-	
+
 	PlanBotBase::OnStep();
 }
 
@@ -80,10 +80,11 @@ void TerranPlan::OnGameStart() {
 
 	PlanBotBase::OnGameStart();
 
-#if LADDER_MODE
-	Actions()->SendChat("gl hf!");
-	Actions()->SendChat("Bot version: 0.1");
-#endif
+	if (this->EnableChat)
+	{
+		Actions()->SendChat("gl hf!");
+		Actions()->SendChat("Bot version: 0.1");
+	}
 }
 
 void TerranPlan::OnGameEnd()
@@ -96,12 +97,12 @@ void TerranPlan::OnGameEnd()
 
 
 #pragma region Bot Ladder Hooks
-void *CreateNewAgent()
+void* CreateNewAgent()
 {
-	return (void *)new TerranPlan();
+	return (void*)new TerranPlan();
 }
 
-const char *GetAgentName()
+const char* GetAgentName()
 {
 	return "TerranPlan";
 }
